@@ -1,34 +1,44 @@
-// server/server.js
-
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
-import dotenv from "dotenv";
-
-dotenv.config();
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+require("dotenv").config(); // Load environment variables
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const port = 3000;
+
+// Configure CORS
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Replace with the URL of your frontend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 // Middleware
-app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Connect to MongoDB
+// MongoDB Connection
+const mongoURI =
+  process.env.MONGO_URI ||
+  "mongodb+srv://Yehara:S123@cluster0.y694y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((error) => console.log("Error connecting to MongoDB:", error));
+  .connect(mongoURI)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-// API Routes
-app.get("/", (req, res) => {
-  res.send("Hello, MERN Stack!");
-});
+// Routes
+const productRoutes = require("./routes/productRoutes");
+app.use("/api/products", productRoutes);
+
+const promotionRoutes = require("./routes/promotionRoutes");
+app.use("/api/promotions", promotionRoutes);
+
+//const userRoutes = require("./routes/userRoutes"); // Import userRoutes
+//app.use("/api/users", userRoutes); // Use the userRoutes for the /api/users endpoint
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
