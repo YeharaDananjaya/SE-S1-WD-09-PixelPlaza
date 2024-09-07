@@ -9,7 +9,7 @@ const port = 5000;
 // Configure CORS
 app.use(
   cors({
-    origin: "http://localhost:3001", // Replace with the URL of your frontend
+    origin: "http://localhost:3000", // Replace with the URL of your frontend
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -29,8 +29,8 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Routes
-const salesRoutes = require("./routes/SalesRoutes");
-app.use("/api/sales", salesRoutes);
+const salesRoutes = require("./routes/shops.js");
+app.use("/api/shops", salesRoutes);
 
 // Test route
 app.get("/test", (req, res) => {

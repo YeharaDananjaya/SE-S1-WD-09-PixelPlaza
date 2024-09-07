@@ -29,20 +29,6 @@ const Shoppanel = () => {
   ]);
 
   const [thirdFloorShop, setThirdFloorShop] = useState([
-    { id: 'F40' },
-    { id: 'F41' },
-    { id: 'F42' },
-    { id: 'F43' },
-    { id: 'F44' },
-    { id: 'F45' },
-    { id: 'F46' },
-    { id: 'F47' },
-    { id: 'F48' },
-    { id: 'F49' },
-  ]);
-
-
-  const [forthFloorShop, setForthFloorShop] = useState([
     { id: 'F30' },
     { id: 'F31' },
     { id: 'F32' },
@@ -53,6 +39,21 @@ const Shoppanel = () => {
     { id: 'F37' },
     { id: 'F38' },
     { id: 'F39' },
+  ]);
+
+
+  const [forthFloorShop, setForthFloorShop] = useState([
+    { id: 'F40' },
+    { id: 'F41' },
+    { id: 'F42' },
+    { id: 'F43' },
+    { id: 'F44' },
+    { id: 'F45' },
+    { id: 'F46' },
+    { id: 'F47' },
+    { id: 'F48' },
+    { id: 'F49' },
+
   ]);
   const [selectedShop, setSelectedShop] = useState(null);
 
