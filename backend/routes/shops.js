@@ -1,26 +1,90 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Shops = require('../models/Shops');
+const Shops = require("../models/Shops");
 
-// Helper function to generate Shop ID in the format Shop001, Shop002, etc.
-const generateShopID = async () => {
-  const lastShop = await Shops.findOne().sort({ shopID: -1 });
-  let newShopID = "Shop001"; // Default value if no shops exist
-  if (lastShop) {
-    const lastIDNumber = parseInt(lastShop.shopID.replace("Shop", "")); // Extract the number part of the ID
-    const newIDNumber = lastIDNumber + 1;
-    newShopID = `Shop${newIDNumber.toString().padStart(3, '0')}`; // Ensure the ID has 3 digits
+// Route to add only the floorID
+router.post("/addFloorID", async (req, res) => {
+  try {
+    const newFloorID = req.body.floorID; // Get floorID from the request body
+
+    // Check if a shop with this floorID already exists
+    const existingShop = await Shops.findOne({ floorID: newFloorID });
+    if (existingShop) {
+      return res.status(400).json({ message: "Shop with this floorID already exists" });
+    }
+
+    const newShop = new Shops({
+      floorID: newFloorID, // Set floorID from request
+    });
+
+    await newShop.save();
+    res.status(201).json({ message: "Floor ID added successfully", newShop });
+  } catch (error) {
+    console.error("Error adding floor ID:", error);
+    res.status(500).json({ message: "Failed to add floor ID", error });
   }
-  return newShopID;
-};
+});
+
+// Route to update other shop details after the floorID has been set
+router.put("/updateDetails/:floorID", async (req, res) => {
+  try {
+    const { floorID } = req.params; // Get the floorID from the request params
+
+    // Check if the shop with this floorID exists
+    const shop = await Shops.findOne({ floorID: floorID });
+    if (!shop) {
+      return res.status(404).json({ message: "Shop not found" });
+    }
+
+    // Update other details
+    shop.shopKeeperName = req.body.shopKeeperName;
+    shop.shopName = req.body.shopName;
+    shop.assignDate = req.body.assignDate;
+    shop.Value = req.body.Value;
+    shop.description = req.body.description; // Optional, as it's also updated in the next route
+
+    await shop.save();
+
+    res.status(200).json({ message: "Shop details updated successfully", shop });
+  } catch (error) {
+    console.error("Error updating shop details:", error);
+    res.status(500).json({ message: "Failed to update shop details", error });
+  }
+});
+
+
+// Route to add or update shopkeeper image and description
+router.put("/updateShopkeeper/:floorID", async (req, res) => {
+  try {
+    const { floorID } = req.params; // Get the floorID from the request params
+
+    // Find the shop with this floorID
+    const shop = await Shops.findOne({ floorID: floorID });
+    if (!shop) {
+      return res.status(404).json({ message: "Shop not found" });
+    }
+
+    // Update shopkeeper details
+    shop.shopKeeperPhoto = req.body.shopKeeperPhoto || shop.shopKeeperPhoto; // Update only if new value is provided
+    shop.description = req.body.description || shop.description; // Update only if new value is provided
+
+    await shop.save();
+
+    res.status(200).json({ message: "Shopkeeper details updated successfully", shop });
+  } catch (error) {
+    console.error("Error updating shopkeeper details:", error);
+    res.status(500).json({ message: "Failed to update shopkeeper details", error });
+  }
+});
+
 
 // Route to add a new shop
 router.post("/add", async (req, res) => {
   try {
-    const newShopID = await generateShopID(); // Get the new shop ID
+    const newFloorID = req.body.floorID; // Get floorID from the request body
+
     const newShop = new Shops({
-      shopID: newShopID,
-      floorID: req.body.floorID,
+      floorID: newFloorID, // Use provided floor ID
       shopKeeperPhoto: req.body.shopKeeperPhoto,
       shopKeeperName: req.body.shopKeeperName,
       shopName: req.body.shopName,
@@ -48,11 +112,11 @@ router.get("/get", async (req, res) => {
   }
 });
 
-// Route to get a single shop by ID
-router.get("/get/:id", async (req, res) => {
+// Route to get a single shop by floorID
+router.get("/get/:floorID", async (req, res) => {
   try {
-    const { id } = req.params;
-    const shop = await Shops.findById(id);
+    const { floorID } = req.params;
+    const shop = await Shops.findOne({ floorID: floorID });
     if (!shop) {
       return res.status(404).json({ message: "Shop not found" });
     }
@@ -63,13 +127,15 @@ router.get("/get/:id", async (req, res) => {
   }
 });
 
-// Route to update a shop by ID
-router.put("/update/:id", async (req, res) => {
+// Route to update a shop by floorID
+router.put("/update/:floorID", async (req, res) => {
   try {
-    const { id } = req.params;
-    const updatedShop = await Shops.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const { floorID } = req.params;
+    const updatedShop = await Shops.findOneAndUpdate(
+      { floorID: floorID },
+      req.body,
+      { new: true }
+    );
     if (!updatedShop) {
       return res.status(404).json({ message: "Shop not found" });
     }
@@ -80,11 +146,11 @@ router.put("/update/:id", async (req, res) => {
   }
 });
 
-// Route to delete a shop by ID
-router.delete("/delete/:id", async (req, res) => {
+// Route to delete a shop by floorID
+router.delete("/delete/:floorID", async (req, res) => {
   try {
-    const { id } = req.params;
-    const deletedShop = await Shops.findByIdAndDelete(id);
+    const { floorID } = req.params;
+    const deletedShop = await Shops.findOneAndDelete({ floorID: floorID });
     if (!deletedShop) {
       return res.status(404).json({ message: "Shop not found" });
     }
