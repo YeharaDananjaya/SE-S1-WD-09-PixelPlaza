@@ -7,17 +7,14 @@ const Shoppanel = () => {
   const [shops, setShops] = useState([]);
   const [selectedShop, setSelectedShop] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const floors = [1, 2, 3, 4];
 
 
-
-
-
-
-
-// Set the selected shop
+  // Set the selected shop
   const handleShopClick = (shop) => {
     setSelectedShop(shop); 
   };
+
 
   const handleClosePopup = () => {
     setSelectedShop(null);
@@ -45,15 +42,16 @@ const Shoppanel = () => {
   };
 
 
-    //this is for updating shopping compartments -- this function is not be needed lately
+    //this is for updating shopping compartments
     const handleSaveDetails = async (updatedShop) => {
       try {
-        const response = await axios.put(`/api/updateDetails/${updatedShop.floorID}`, updatedShop);
+        const response = await axios.put(`http://localhost:5000/api/shops/updateDetails/${updatedShop.floorID}`, updatedShop);
         if (response.status === 200) {
           console.log('Updated Shop:', response.data.shop);
           setSelectedShop(null);
         } else {
           console.error('Failed to update shop details:', response.data.message);
+          alert("Error Updating data on this form");
         }
       } catch (error) {
         console.error('Error saving shop details:', error);
@@ -81,6 +79,7 @@ const Shoppanel = () => {
 
    }, []);
 
+   //this is for adding floors to the application 
   const ShopFormPopup = ({ shop, onClose, onSave }) => {
     const [floorID, setFloorID] = useState(shop.floorID || '');
 
@@ -141,6 +140,121 @@ const Shoppanel = () => {
       </div>
     );
   };
+
+
+
+
+  const UpdateShopFormPopup = ({ shop, onClose, onSave }) => {
+     
+    const [shopName, setShopName] = useState(shop.shopName || '');
+    const [shopKeeperName, setShopKeeperName] = useState(shop.shopKeeperName || '');
+    const [assignDate, setAssignDate] = useState(shop.assignDate || '');
+    const [description, setDescription] = useState(shop.description || '');
+  
+    const handleSubmit = (e) => {
+      e.preventDefault();
+
+      const updatedShop = {
+        ...shop,
+        shopName,
+        shopKeeperName,
+        assignDate,
+        description,
+      };
+
+      onSave(updatedShop);
+    };
+  
+    return (
+      <div className="fixed inset-0 bg-secondary bg-opacity-40 flex justify-center items-center z-40">
+        <div className="bg-white w-[50vw] p-6 rounded-xl shadow-lg">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-2xl font-bold">Update Shop Details</h3>
+            <button
+              onClick={onClose}
+              className="bg-red-500 text-white px-4 py-2 rounded-md"
+            >
+              Close
+            </button>
+          </div>
+  
+          <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+              <label htmlFor="shopName" className="block text-sm font-medium text-gray-700">
+                Floor ID : {shop.floorID}
+              </label>
+
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="shopName" className="block text-sm font-medium text-gray-700">
+                Shop Name
+              </label>
+              <input
+                id="shopName"
+                type="text"
+                value={shopName}
+                onChange={(e) => setShopName(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+                required
+              />
+            </div>
+  
+            <div className="mb-4">
+              <label htmlFor="shopKeeperName" className="block text-sm font-medium text-gray-700">
+                Shopkeeper Name
+              </label>
+              <input
+                id="shopKeeperName"
+                type="text"
+                value={shopKeeperName}
+                onChange={(e) => setShopKeeperName(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+  
+            <div className="mb-4">
+              <label htmlFor="assignDate" className="block text-sm font-medium text-gray-700">
+                Assign Date
+              </label>
+              <input
+                id="assignDate"
+                type="date"
+                value={assignDate}
+                onChange={(e) => setAssignDate(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+  
+            <div className="mb-4">
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                Description
+              </label>
+              <textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+                rows="4"
+              />
+            </div>
+  
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  };
+  
+
+  
 
   return (
     <div className="flex flex-col min-h-screen w-[100vw] bg-primary items-center mt-16">
@@ -225,81 +339,54 @@ const Shoppanel = () => {
 
         <div className="grid grid-cols-2 h-auto w-full p-5 pt-44">
         
-        {/*First Floor */}
-            <div className="relative flex h-auto w-auto p-5">
-              <div className="flex flex-col h-auto w-[50vw] justify-start items-start p-5 border-2 border-secondary rounded-2xl">
-                <div className="flex w-full h-auto items-start">
-                  <h2 className="font-russoone text-3xl text-baseextra4 text-start ml-10">
-                    Floor : 1
-                  </h2>
+          {floors.map((floor, index) => {
+          return (
+
+            <div key={index} className="relative flex h-auto w-auto p-5">
+            <div className="flex flex-col h-auto w-[50vw] justify-start items-start p-5 border-2 border-secondary rounded-2xl">
+              <div className="flex w-full h-auto items-start">
+                <h2 className="font-russoone text-3xl text-baseextra4 text-start ml-10">
+                    Floor: {floor}
+                </h2>
+              </div>
+              <div className ="flex flex-col w-full h-auto items-start justify-start p-5 space-y-5">
+                <div className="grid grid-cols-5 gap-2 w-full justify-start items-start">
+                  {shops.slice(index * 10, index * 10 + 5).map((shop) => (
+                    <div
+                      key={shop._id}
+                      onClick={()=> handleShopClick(shop._id)}
+                      className={`flex flex-col h-28 w-28 p-2 rounded-b-xl cursor-pointer hover:scale-110 transition-transform duration-200 ease-in-out ${
+                        shop.name ? 'bg-green-500' : 'bg-gray-500'
+                      }`}
+                    >
+                      {shop.floorID || 'Empty'}
+                    </div>
+                  ))}
                 </div>
-                <div className="flex flex-col w-full h-auto items-start justify-start p-5 space-y-5">
-                  <div className="grid grid-cols-5 gap-2 w-full justify-start items-start">
-                    {shops.slice(0, 5).map((shop) => (
-                      <div
-                        key={shop._id}
-                        className={`flex flex-col h-28 w-28 p-2 rounded-b-xl cursor-pointer hover:scale-110 transition-transform duration-200 ease-in-out ${
-                          shop.name ? 'bg-green-500' : 'bg-gray-500'
-                        }`}
-                      >
-                        {shop.floorID || 'Empty'}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex flex-col w-[40vw] h-10 bg-gray-500" />
-                  <div className="grid grid-cols-5 gap-2 w-full justify-center">
-                    {shops.slice(5, 10).map((shop) => (
-                      <div
-                        key={shop._id}
-                        className={`flex flex-col h-28 w-28 p-2 rounded-t-xl cursor-pointer hover:scale-110 transition-transform duration-200 ease-in-out ${
-                          shop.name ? 'bg-green-500' : 'bg-gray-500'
-                        }`}
-                      >
-                        {shop.floorID || 'Empty'}
-                      </div>
-                    ))}
-                  </div>
+                <div className="flex flex-col w-[40vw] h-10 bg-gray-500" />
+                <div className="grid grid-cols-5 gap-2 w-full justify-center">
+                  {shops.slice(index * 10 + 5, (index + 1) * 10).map((shop)=> (
+                    <div
+                      key={shop._id}
+                      onClick={()=> handleShopClick(shop._id)}
+                      className={`flex flex-col h-28 w-28 p-2 rounded-t-xl cursor-pointer hover:scale-110 transition-transform duration-200 ease-in-out ${
+                        shop.name ? 'bg-green-500' : 'bg-gray-500'
+                      }`}
+                    >
+                      {shop.floorID || 'Empty'}
+                    </div>
+                  ))}
                 </div>
               </div>
+            </div>
             </div>
 
-        {/*Second Floor */}
-            <div className="relative flex h-auto w-auto p-5">
-              <div className="flex flex-col h-auto w-[50vw] justify-start items-start p-5 border-2 border-secondary rounded-2xl">
-                <div className="flex w-full h-auto items-start">
-                  <h2 className="font-russoone text-3xl text-baseextra4 text-start ml-10">
-                    Floor : 2
-                  </h2>
-                </div>
-                <div className="flex flex-col w-full h-auto items-start justify-start p-5 space-y-5">
-                  <div className="grid grid-cols-5 gap-2 w-full justify-start items-start">
-                    {shops.slice(10, 15).map((shop) => (
-                      <div
-                        key={shop._id}
-                        className={`flex flex-col h-28 w-28 p-2 rounded-b-xl cursor-pointer hover:scale-110 transition-transform duration-200 ease-in-out ${
-                          shop.name ? 'bg-green-500' : 'bg-gray-500'
-                        }`}
-                      >
-                        {shop.floorID || 'Empty'}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex flex-col w-[40vw] h-10 bg-gray-500" />
-                  <div className="grid grid-cols-5 gap-2 w-full justify-center">
-                    {shops.slice(15, 20).map((shop) => (
-                      <div
-                        key={shop._id}
-                        className={`flex flex-col h-28 w-28 p-2 rounded-t-xl cursor-pointer hover:scale-110 transition-transform duration-200 ease-in-out ${
-                          shop.name ? 'bg-green-500' : 'bg-gray-500'
-                        }`}
-                      >
-                        {shop.floorID || 'Empty'}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+
+          );
+
+
+          })}
+
 
       </div>
 
@@ -317,6 +404,15 @@ const Shoppanel = () => {
           shop={selectedShop}
           onClose={handleClosePopup}
           onSave={handleSubmit}
+        />
+      )}
+
+            {/* Render the UpdateShopFormPopup conditionally */}
+        {selectedShop && (
+        <UpdateShopFormPopup
+          shop={selectedShop}
+          onClose={handleClosePopup}
+          onSave={handleSaveDetails}
         />
       )}
     </div>
