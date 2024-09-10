@@ -319,11 +319,16 @@ const Shoppanel = () => {
                         shop.shopName ? 'bg-green-500' : 'bg-gray-500'
                       }`}
                     >
-                        <h2 className='font-russoone text-md text-primary'>
+                        <h2 className='font-russoone text-md text-yellow-400'>
                           {shop.floorID || 'Empty'}
                         </h2>
                         <h2 className='font-ibmplexsans text-sm text-primary'>
                           {shop.shopName || 'Empty'}
+                        </h2>
+                        <h2 className='font-ibmplexsans text-xs text-primary mt-1' style={{
+                          fontWeight:200
+                        }}>
+                          {shop.shopKeeperName || 'Empty'}
                         </h2>
                     </div>
                   ))}
@@ -338,11 +343,14 @@ const Shoppanel = () => {
                         shop.shopName ? 'bg-gradient-to-b from-green-700 to-primary' : 'bg-gray-500'
                       }`}
                     >
-                       <h2 className='font-russoone text-md text-primary'>
+                       <h2 className='font-russoone text-md text-yellow-400'>
                           {shop.floorID || 'Empty'}
                         </h2>
                         <h2 className='font-ibmplexsans text-sm text-primary'>
                           {shop.shopName || 'Empty'}
+                        </h2>
+                        <h2 className='font-ibmplexsans text-xs text-primary'>
+                          {shop.shopKeeperName || 'Empty'}
                         </h2>
                     </div>
                   ))}

@@ -6,6 +6,7 @@ import Navbar from './Componenets/Navbar';
 import Dashboard from './Pages/Dashboard';
 import Loading from './Utils/Loading';
 import Shoppanel from './Pages/Shoppanel';
+import Mapmodel from './Pages/Mapmodel';
 
 const AppContent = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,6 +37,7 @@ const AppContent = () => {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/Shops" element={<Shoppanel />} />
+            <Route path='/MapModel' element={<Mapmodel/>} />
           </Routes>
         )}
       </div>

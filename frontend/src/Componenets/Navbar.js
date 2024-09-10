@@ -26,7 +26,7 @@ const Navbar = () => {
                     <ul className='flex text-xl text-primary font-russoone space-x-10'>
                         <li  className='hover:scale-110 hover:text-baseextra2 cursor-pointer transition-transform duration-200 ease-in-out'><Link to={`/`}>Dashboard</Link>{''}</li>
                         <li  className='hover:scale-110 hover:text-baseextra2 cursor-pointer transition-transform duration-200 ease-in-out'><Link to={`/Shops`}>Shop Panel</Link>{''}</li>
-                        <li className='hover:scale-110 hover:text-baseextra2 cursor-pointer transition-transform duration-200 ease-in-out'> 3D Map Panel{''}</li>
+                        <li className='hover:scale-110 hover:text-baseextra2 cursor-pointer transition-transform duration-200 ease-in-out'><Link to={`/MapModel`}>Map Model</Link>{''}</li>
                         <li className='hover:scale-110 hover:text-baseextra2 cursor-pointer transition-transform duration-200 ease-in-out'>Settings{''}</li>
 
                     </ul>
