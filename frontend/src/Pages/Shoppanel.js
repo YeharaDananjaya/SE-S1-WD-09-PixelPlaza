@@ -27,19 +27,6 @@ const Shoppanel = () => {
     setSelectedShop(null);
   };
 
-    // Function to format date to dd/mm/yyyy
-    const formatDate = (dateString) => {
-      if (!dateString) return '';
-      const [year, month, day] = dateString.split('-');
-      return `${day}/${month}/${year}`;
-    };
-  
-    // Function to convert dd/mm/yyyy to yyyy-mm-dd for input
-    const parseDate = (dateString) => {
-      if (!dateString) return '';
-      const [day, month, year] = dateString.split('/');
-      return `${year}-${month}-${day}`;
-    }; 
 
 
   const handleSaveDetails = async (updatedShop) => {
@@ -62,6 +49,8 @@ const Shoppanel = () => {
       console.error('Error saving shop details:', error);
     }
   };
+
+
 
   useEffect(() => {
     const fetchShopDetails = async () => {
@@ -91,23 +80,46 @@ const Shoppanel = () => {
     fetchShopDetails();
   }, []);
 
-  const UpdateShopFormPopup = ({ shop, onClose, onSave }) => {
-    const [shopName, setShopName] = useState(shop.shopName || '');
-    const [shopKeeperName, setShopKeeperName] = useState(shop.shopKeeperName || '');
-    const [assignDate, setAssignDate] = useState(shop.assignDate || '');
-    const [description, setDescription] = useState(shop.description || '');
 
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      const updatedShop = {
-        ...shop,
-        shopName,
-        shopKeeperName,
-        assignDate: parseDate(assignDate),
-        description,
-      };
-      onSave(updatedShop);
+  const UpdateShopFormPopup = ({ shop, onClose, onSave }) => {
+
+  // Convert ISO date string to yyyy-mm-dd
+  const formatDateFromISO = (isoString) => {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    const year = date.getFullYear();
+    const month = (`0${date.getMonth() + 1}`).slice(-2); // Add leading zero for months
+    const day = (`0${date.getDate()}`).slice(-2); // Add leading zero for days
+    return `${year}-${month}-${day}`;
+  };
+
+
+
+  const [shopName, setShopName] = useState(shop.shopName || '');
+  const [shopKeeperName, setShopKeeperName] = useState(shop.shopKeeperName || '');
+  const [assignDate, setAssignDate] = useState(formatDateFromISO(shop.assignDate) || ''); // Format ISO date
+  const [description, setDescription] = useState(shop.description || '');
+  
+
+  // Convert yyyy-mm-dd to ISO format
+  const parseDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString();
+  };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const updatedShop = {
+      ...shop,
+      shopName,
+      shopKeeperName,
+      assignDate: parseDate(assignDate), // Convert back to ISO
+      description,
     };
+    onSave(updatedShop);
+  };
+
 
     return (
       <div className="fixed inset-0 bg-secondary bg-opacity-40 flex justify-center items-center z-40">
@@ -136,18 +148,18 @@ const Shoppanel = () => {
                 </div>
 
                 <div className="mb-1 w-[20rem]">
-                    <label htmlFor="assignDate" className="block text-lg font-ibmplexsans font-medium text-gray-700">
-                    <FontAwesomeIcon icon = {faCalendar} className='mx-2'/>
-                      Assign Date
-                    </label>
-                    <input
-                      id="assignDate"
-                      type="date"
-                      value={parseDate(assignDate)}
-                      onChange={(e) => setAssignDate(formatDate(e.target.value))}
-                      className="mt-1 h-10 w-[20rem] block border border-gray-300 rounded-md shadow-sm p-3 drop-shadow-md"
-                />
-               </div>
+      <label htmlFor="assignDate" className="block text-lg font-ibmplexsans font-medium text-gray-700">
+        <FontAwesomeIcon icon={faCalendar} className="mx-2" />
+        Assign Date
+      </label>
+      <input
+        id="assignDate"
+        type="date"
+        value={assignDate} // Value is in yyyy-mm-dd format
+        onChange={(e) => setAssignDate(e.target.value)}
+        className="mt-1 h-10 w-[20rem] block border border-gray-300 rounded-md shadow-sm p-3 drop-shadow-md"
+      />
+    </div>
 
 
 
@@ -316,7 +328,7 @@ const Shoppanel = () => {
                       key={shop._id}
                       onClick={()=> handleShopClickUpdate(shop)}
                       className={`flex flex-col h-28 w-28 p-2 rounded-b-xl cursor-pointer hover:scale-110 transition-transform duration-200 ease-in-out hover:drop-shadow-xl ${
-                        shop.shopName ? 'bg-green-500' : 'bg-gray-500'
+                        shop.shopName ? 'bg-gradient-to-t from-green-700 to-green-400' : 'bg-gray-500'
                       }`}
                     >
                         <h2 className='font-russoone text-md text-yellow-400'>
@@ -340,7 +352,7 @@ const Shoppanel = () => {
                       key={shop._id}
                       onClick={()=> handleShopClickUpdate(shop)}
                       className={`flex flex-col h-28 w-28 p-2 rounded-t-xl cursor-pointer hover:scale-110 transition-transform duration-200 ease-in-out ${
-                        shop.shopName ? 'bg-gradient-to-b from-green-700 to-primary' : 'bg-gray-500'
+                        shop.shopName ? 'bg-gradient-to-b from-green-700 to-green-400' : 'bg-gray-500'
                       }`}
                     >
                        <h2 className='font-russoone text-md text-yellow-400'>
