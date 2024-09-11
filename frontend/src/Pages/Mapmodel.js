@@ -58,7 +58,7 @@ const Mapmodel = () => {
                                 {/* Floor1 1st Shop */}
                                 <div className= 'flex flex-col w-[15vw] h-[25vh] bg-transparent cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out'>
                                         
-                                        <div className='flex flex-col w-[15vw] h-[16vh] bg-blue-500 rounded-r-lg items-start justify-start p-2'>
+                                        <div className='flex flex-col w-[15vw] h-[16vh] bg-baseextra4 rounded-r-lg items-start justify-start p-2'>
 
                                                 <h2 className='font-russoone text-2xl text-primary'>
                                                     {shops.find(shop => shop.floorID === 'F10')?.floorID}
@@ -72,7 +72,7 @@ const Mapmodel = () => {
                                         </div>
                                                                                 
                                         <div className='flex w-[15vw] h-[9vh] bg-transparent'>
-                                                <div className='flex w-[12vw] h-[9vh] bg-blue-500 rounded-b-full'/>
+                                                <div className='flex w-[12vw] h-[9vh] bg-baseextra4 rounded-b-full'/>
                                         </div>
 
                                 </div>
@@ -80,7 +80,7 @@ const Mapmodel = () => {
 
                                 {/* Floor1 2nd Shop */}
                                 <div className= 'flex flex-col w-[15vw] h-[25vh] bg-transparent cursor-pointer  hover:scale-105 hover:drop-shadow-2xl transition-transform duration-300 ease-in-out'>
-                                        <div className='flex flex-col w-[15vw] h-[20vh] bg-red-700 p-2'>
+                                        <div className='flex flex-col w-[15vw] h-[20vh] bg-baseextra4 p-2'>
                                                 <h2 className='font-russoone text-2xl text-primary'>
                                                     {shops.find(shop => shop.floorID === 'F11')?.floorID}
                                                 </h2>
@@ -88,12 +88,12 @@ const Mapmodel = () => {
                                                     {shops.find(shop => shop.floorID === 'F11')?.shopName || 'Empty'}
                                                 </h2>
                                         </div>
-                                        <div className='flex w-[15vw] h-[25vh] bg-red-700 rounded-b-3xl'/>
+                                        <div className='flex w-[15vw] h-[25vh] bg-baseextra4 rounded-b-3xl'/>
         	                </div>
 
                                 {/* Floor1 3rd Shop */}                
                                 <div className= 'flex flex-col w-[30vw] h-[25vh] bg-transparent hover:scale-105 hover:drop-shadow-2xl transition-transform duration-300 ease-in-out'>
-                                        <div className='flex flex-col w-[30vw] h-[15vh] bg-green-600  p-2'>
+                                        <div className='flex flex-col w-[30vw] h-[15vh] bg-baseextra4  p-2'>
 
                                               <h2 className='font-russoone text-2xl text-primary'>
                                                     {shops.find(shop => shop.floorID === 'F12')?.floorID}
@@ -105,9 +105,9 @@ const Mapmodel = () => {
 
                                         <div className='flex w-[30vw] h-[10vh] bg-transparent'>
 
-                                           <div className='flex w-[8vw] h-[10vh] bg-green-600 rounded-b-xl '/>
+                                           <div className='flex w-[8vw] h-[10vh] bg-baseextra4 rounded-b-xl '/>
                                            <div className='flex w-[14vw] h-[10vh] bg-transparent'/>
-                                           <div className='flex w-[8vw] h-[10vh] bg-green-600  rounded-b-xl'/>
+                                           <div className='flex w-[8vw] h-[10vh] bg-baseextra4  rounded-b-xl'/>
 
 
                                         </div>
@@ -116,7 +116,7 @@ const Mapmodel = () => {
 
                                 
                                 {/* Floor1 4th Shop */}    
-                                <div className= 'flex w-[5vw] h-[25vh] bg-blue-300 rounded-b-3xl hover:scale-105 cursor-pointer hover:drop-shadow-2xl transition-transform duration-300 ease-in-out'>
+                                <div className= 'flex w-[5vw] h-[25vh] bg-baseextra4 rounded-b-3xl hover:scale-105 cursor-pointer hover:drop-shadow-2xl transition-transform duration-300 ease-in-out'>
                                         <div className='flex flex-col h-auto w-auto p-2'>
                                         <h2 className='font-russoone text-2xl text-primary'>
                                                     {shops.find(shop => shop.floorID === 'F13')?.floorID}
@@ -179,12 +179,12 @@ const Mapmodel = () => {
                                 {/* Floor1 6th Shop */}
                                 <div className= 'flex flex-col w-[15vw] h-[25vh] bg-transparent cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out'>
                                         
-                                        <div className='flex w-[15vw] h-[15vh] bg-red-800  items-start justify-start'>
+                                        <div className='flex w-[15vw] h-[15vh] bg-baseextra4 items-start justify-start'>
                                           <div className='flex bg-primary w-[8vw] h-[15vh] rounded-br-full'/>
 
                                         </div>
                                                                                 
-                                        <div className='flex flex-col w-[15vw] h-[10vh] bg-red-800 p-2'>
+                                        <div className='flex flex-col w-[15vw] h-[10vh] bg-baseextra4 p-2'>
                                                 <h2 className='font-russoone text-2xl text-primary'>
                                                     {shops.find(shop => shop.floorID === 'F15')?.floorID}
                                                 </h2>
@@ -200,11 +200,11 @@ const Mapmodel = () => {
                                 {/* Floor1 7th Shop */}                
                                 <div className= 'flex flex-col w-[25vw] h-[25vh] bg-transparent cursor-pointer hover:scale-105 hover:drop-shadow-2xl transition-transform duration-300 ease-in-out'>
                                         
-                                        <div className='flex w-[25vw] h-[15vh] bg-blue-500 rounded-t-full '/>
+                                        <div className='flex w-[25vw] h-[15vh] bg-baseextra4 rounded-t-full '/>
 
                                         <div className='flex w-[25vw] h-[10vh] bg-transparent'>
 
-                                           <div className='flex flex-col w-[25vw] h-[10vh] bg-blue-500 p-2'>
+                                           <div className='flex flex-col w-[25vw] h-[10vh] bg-baseextra4 p-2'>
       
                                                  <h2 className='font-russoone text-2xl text-primary'>
                                                     {shops.find(shop => shop.floorID === 'F16')?.floorID}
@@ -241,11 +241,11 @@ const Mapmodel = () => {
                                 
                                 {/* Floor1 9th Shop */}    
                                 <div className= 'flex flex-col w-[15vw] h-[25vh] bg-transparent cursor-pointer rounded-b-3xl hover:scale-105 hover:drop-shadow-2xl transition-transform duration-300 ease-in-out'>
-                                        <div className='flex w-[15vw] h-[15vh] bg-orange-600 rounded-t-full items-center justify-center'>
+                                        <div className='flex w-[15vw] h-[15vh] bg-baseextra4 rounded-t-full items-center justify-center'>
                                            <div className='flex w-[15vw] h-[15vh] bg-primary rounded-b-full'/>
                                         </div>
 
-                                        <div className='flex flex-col w-[15vw] h-[15vh] bg-orange-600  p-2'>
+                                        <div className='flex flex-col w-[15vw] h-[15vh] bg-baseextra4  p-2'>
                                                 <h2 className='font-russoone text-2xl text-primary'>
                                                     {shops.find(shop => shop.floorID === 'F18')?.floorID}
                                                 </h2>
@@ -259,9 +259,9 @@ const Mapmodel = () => {
                                 </div>
                                {/* Floor1 10th Shop */}   
                                 <div className= 'flex flex-col w-[10vw] h-[25vh] bg-transparent cursor-pointer hover:scale-105 hover:drop-shadow-2xl transition-transform duration-300 ease-in-out '>
-                                        <div className='flex w-[10vw] h-[15vh] bg-gray-700 rounded-t-full'/>
+                                        <div className='flex w-[10vw] h-[15vh] bg-baseextra4 rounded-t-full'/>
        
-                                        <div className='flex flex-col w-[10vw] h-[10vh] bg-gray-700 p-2'>
+                                        <div className='flex flex-col w-[10vw] h-[10vh] bg-baseextra4 p-2'>
 
 
                                                                 <h2 className='font-russoone text-2xl text-primary'>
@@ -330,8 +330,20 @@ const Mapmodel = () => {
 
                                 {/* Floor1 3nd Shop */}                
                                 <div className= 'flex flex-col w-[20vw] h-[25vh] bg-transparent cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out'>
-                                        <div className='flex flex-col items-center justify-end w-[20vw] h-[15vh] bg-baseextra4 '>
-                                                <div className='flex w-[4vw] bg-primary h-[5vh] rounded-t-xl'/>
+                                        <div className='flex flex-col items-center justify-center w-[20vw] h-[15vh] bg-baseextra4 '>
+                                                <div className='flex flex-col items-start  w-[20vw] h-[10vh] bg-baseextra4 p-2'>
+                                                        <h2 className='font-russoone text-2xl text-primary'>
+                                                        {shops.find(shop => shop.floorID === 'F22')?.floorID}
+                                                        </h2>
+                                                        <h2 className=' font-ibmplexsans text-md text-primary'>
+                                                        {shops.find(shop => shop.floorID === 'F22')?.shopName || 'Empty'}
+                                                        </h2>
+                                                </div>
+                                                <div className='flex flex-col items-center justify-end w-[20vw] h-[5vh] bg-baseextra4'>
+                                                    <div className='flex w-[4vw] bg-primary h-[5vh] rounded-t-xl'/>
+                                                </div>
+
+
                                         </div>
 
                                         <div className='flex w-[20vw] h-[10vh] bg-transparent'>
@@ -413,7 +425,13 @@ const Mapmodel = () => {
 
                                         </div>
                                                                                 
-                                        <div className='flex w-[15vw] h-[10vh] bg-baseextra4'>
+                                        <div className='flex flex-col w-[15vw] h-[10vh] bg-baseextra4 p-2'>
+                                                        <h2 className='font-russoone text-2xl text-primary'>
+                                                        {shops.find(shop => shop.floorID === 'F25')?.floorID}
+                                                        </h2>
+                                                        <h2 className=' font-ibmplexsans text-md text-primary'>
+                                                        {shops.find(shop => shop.floorID === 'F25')?.shopName || 'Empty'}
+                                                        </h2>
 
                                         </div>
 
@@ -425,7 +443,14 @@ const Mapmodel = () => {
                                         <div className='flex w-[15vw] h-[20vh] bg-baseextra4 rounded-t-3xl'>
 
                                         </div>
-                                        <div className='flex w-[15vw] h-[25vh] bg-baseextra4'/>
+                                        <div className='flex flex-col w-[15vw] h-[25vh] bg-baseextra4 p-2'>
+                                                        <h2 className='font-russoone text-2xl text-primary'>
+                                                        {shops.find(shop => shop.floorID === 'F26')?.floorID}
+                                                        </h2>
+                                                        <h2 className=' font-ibmplexsans text-md text-primary'>
+                                                        {shops.find(shop => shop.floorID === 'F26')?.shopName || 'Empty'}
+                                                        </h2>
+                                        </div>
         	                </div>
 
                                 {/* Floor1 8th Shop */}                
@@ -443,8 +468,13 @@ const Mapmodel = () => {
 
                                         </div>
 
-                                        <div className='flex w-[30vw] h-[10vh] bg-baseextra4'>
-
+                                        <div className='flex flex-col w-[30vw] h-[10vh] bg-baseextra4 p-2'>
+                                                         <h2 className='font-russoone text-2xl text-primary'>
+                                                        {shops.find(shop => shop.floorID === 'F27')?.floorID}
+                                                        </h2>
+                                                        <h2 className=' font-ibmplexsans text-md text-primary'>
+                                                        {shops.find(shop => shop.floorID === 'F27')?.shopName || 'Empty'}
+                                                        </h2>
 
 
 
@@ -454,15 +484,27 @@ const Mapmodel = () => {
 
                                 
                                 {/* Floor1 9th Shop */}    
-                                <div className= 'flex w-[5vw] h-[25vh] bg-baseextra4 rounded-b-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out'>
-
+                                <div className= 'flex flex-col w-[5vw] h-[25vh] bg-baseextra4 rounded-b-3xl p-2 cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out'>
+                                             <h2 className='font-russoone text-2xl text-primary'>
+                                                        {shops.find(shop => shop.floorID === 'F28')?.floorID}
+                                                        </h2>
+                                                        <h2 className=' font-ibmplexsans text-md text-primary'>
+                                                        {shops.find(shop => shop.floorID === 'F28')?.shopName || 'Empty'}
+                                                        </h2>
                                 </div>
                                {/* Floor1 10th Shop */}   
                                 <div className= 'flex flex-col w-[10vw] h-[25vh] bg-transparent cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out'>
-                                        <div className='flex w-[10vw] h-[15vh] bg-baseextra4'/>
+                                        <div className='flex flex-col w-[10vw] h-[15vh] bg-baseextra4 p-2'>
+                                                       <h2 className='font-russoone text-2xl text-primary'>
+                                                        {shops.find(shop => shop.floorID === 'F29')?.floorID}
+                                                        </h2>
+                                                        <h2 className=' font-ibmplexsans text-md text-primary'>
+                                                        {shops.find(shop => shop.floorID === 'F29')?.shopName || 'Empty'}
+                                                        </h2>
+                                        </div>
                                         
-                                        <div className='flex w-[10vw] h-[10vh] bg-baseextra4 justify-center items-center rounded-b-3xl'>
-                                            
+                                        <div className='flex  w-[10vw] h-[10vh] bg-baseextra4 justify-center items-center rounded-b-3xl'>
+
 
 
 
