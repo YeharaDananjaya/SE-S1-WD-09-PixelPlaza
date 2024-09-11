@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 
 //icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDoubleLeft, faAngleDoubleRight, faCalendar, faClose, faFile, faIdCardAlt, faPortrait, faShop,} from '@fortawesome/free-solid-svg-icons';
+import { faAngleDoubleLeft, faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
 
 const Mapmodel = () => {
  
