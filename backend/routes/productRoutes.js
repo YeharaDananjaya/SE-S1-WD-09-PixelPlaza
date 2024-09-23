@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
-const Promotion = require("../models/Promotion"); // Assuming you have a Promotion model
+const Promotion = require("../models/Promotion");
 
 // Create a new product
 router.post("/", async (req, res) => {
@@ -17,16 +17,52 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Create multiple products (bulk insert)
+router.post("/bulk", async (req, res) => {
+  try {
+    const products = req.body;
+    if (!Array.isArray(products)) {
+      return res
+        .status(400)
+        .json({ message: "Request body must be an array of products" });
+    }
+
+    // Validate each product object if necessary
+    for (const product of products) {
+      // Example validation, you can adjust it as needed
+      if (
+        !product.name ||
+        !product.price ||
+        !product.description ||
+        !product.category
+      ) {
+        return res.status(400).json({
+          message:
+            "Each product must have name, price, description, and category",
+        });
+      }
+    }
+
+    // Insert products into the database
+    const result = await Product.insertMany(products);
+    res
+      .status(201)
+      .json({ message: "Products created successfully", products: result });
+  } catch (error) {
+    console.error("Failed to create products:", error.message);
+    res
+      .status(400)
+      .json({ message: "Failed to create products", error: error.message });
+  }
+});
+
 // Update a product by ID
 router.put("/:id", async (req, res) => {
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
+      { new: true, runValidators: true }
     );
 
     if (!updatedProduct) {
@@ -94,12 +130,12 @@ router.put("/applyPromotion/:id", async (req, res) => {
       product.originalPrice = product.price;
     }
 
-    // Update product fields for promotion
-    product.promotionApplied = true;
-    product.promotionId = promotionId;
+    // Calculate discounted price
     const discountedPrice =
       product.originalPrice * (1 - promotion.discount / 100);
     product.price = discountedPrice;
+    product.promotionApplied = true;
+    product.promotionId = promotionId;
     product.promotionEndDate = promotion.endDate;
 
     await product.save();
@@ -128,11 +164,13 @@ router.put("/removePromotion/:id", async (req, res) => {
     if (product.originalPrice !== undefined) {
       product.price = product.originalPrice;
       product.originalPrice = undefined; // Remove the field
-      product.promotionEndDate = undefined;
+    } else {
+      return res.status(400).json({ message: "No promotion was applied" });
     }
 
     product.promotionApplied = false;
     product.promotionId = "";
+    product.promotionEndDate = undefined;
 
     await product.save();
 

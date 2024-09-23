@@ -35,8 +35,8 @@ app.use("/api/products", productRoutes);
 const promotionRoutes = require("./routes/promotionRoutes");
 app.use("/api/promotions", promotionRoutes);
 
-//const userRoutes = require("./routes/userRoutes"); // Import userRoutes
-//app.use("/api/users", userRoutes); // Use the userRoutes for the /api/users endpoint
+const userRoutes = require("./routes/userRoutes"); // Import userRoutes
+app.use("/api/users", userRoutes); // Use the userRoutes for the /api/users endpoint
 
 // Start the server
 app.listen(port, () => {
