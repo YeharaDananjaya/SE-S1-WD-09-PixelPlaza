@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useUserSession } from "../components/UserSession"; // Import the useUserSession hook
 import {
   FaGooglePlusG,
   FaFacebookF,
@@ -23,6 +24,8 @@ export const LoginRegister = () => {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const { setUser } = useUserSession(); // Use the hook to get setUser
 
   const handleToggle = () => {
     setIsRegistering(!isRegistering);
@@ -57,12 +60,7 @@ export const LoginRegister = () => {
     try {
       const response = await axios.post(
         "http://localhost:3000/api/users/register",
-        {
-          name,
-          email,
-          password,
-          phone,
-        }
+        { name, email, password, phone }
       );
       setSuccess("User registered successfully!");
       setError("");
@@ -78,19 +76,32 @@ export const LoginRegister = () => {
     try {
       const response = await axios.post(
         "http://localhost:3000/api/users/login",
-        {
-          email,
-          password,
-        }
+        { email, password }
       );
+
+      const { token, user: loggedInUser } = response.data;
+
+      // Store token
+      localStorage.setItem("token", token);
+
+      // Update user state using the UserSession hook
+      setUser(loggedInUser);
+
+      // Redirect based on user level
+      if (loggedInUser.userLevel === 2) {
+        window.location.href = "/adminDashboard";
+      } else if (loggedInUser.userLevel === 1) {
+        window.location.href = "/seller/dashboard";
+      } else {
+        window.location.href = "/customer/dashboard";
+      }
+
       setSuccess("Login successful!");
       setError("");
-      // Store token or perform any additional actions needed after login
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     }
   };
-
   return (
     <div className={styles["login-register-page"]}>
       <div

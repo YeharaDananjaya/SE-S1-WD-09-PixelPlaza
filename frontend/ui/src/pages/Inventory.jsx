@@ -67,19 +67,15 @@ export const Inventory = () => {
 
   const handleApplyPromotion = async () => {
     try {
-      await axios.put(
+      const response = await axios.put(
         `http://localhost:3000/api/products/applyPromotion/${selectedProduct._id}`,
         { promotionId: selectedPromotion }
       );
+
+      const updatedProduct = response.data.product;
       setProducts(
         products.map((product) =>
-          product._id === selectedProduct._id
-            ? {
-                ...product,
-                promotionApplied: true,
-                promotionId: selectedPromotion,
-              }
-            : product
+          product._id === updatedProduct._id ? updatedProduct : product
         )
       );
       setSelectedPromotion("");
@@ -91,14 +87,14 @@ export const Inventory = () => {
 
   const handleRemovePromotion = async () => {
     try {
-      await axios.put(
+      const response = await axios.put(
         `http://localhost:3000/api/products/removePromotion/${selectedProduct._id}`
       );
+
+      const updatedProduct = response.data.product;
       setProducts(
         products.map((product) =>
-          product._id === selectedProduct._id
-            ? { ...product, promotionApplied: false, promotionId: null }
-            : product
+          product._id === updatedProduct._id ? updatedProduct : product
         )
       );
       setShowPromotionModal(false);
@@ -149,116 +145,122 @@ export const Inventory = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {filteredProducts.map((product) => (
-            <div
-              key={product._id}
-              className="p-4 bg-white rounded-lg shadow-lg border border-[#E76F51]"
-            >
-              <div className="relative h-40 bg-gray-300 rounded-lg overflow-hidden">
-                {product.images && product.images.length > 0 ? (
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="object-cover w-full h-full"
-                  />
-                ) : (
-                  <div className="h-full bg-gray-300 rounded-lg flex items-center justify-center text-gray-500">
-                    No Images Available
-                  </div>
-                )}
-              </div>
-              <h3 className="text-center mb-4 text-xl font-semibold">
-                {product.name}
-              </h3>
-              <div className="text-center mb-4">
-                <p className="text-lg font-medium text-gray-700">
-                  ${product.price.toFixed(2)}
-                </p>
-                <p
-                  className={`text-sm ${
-                    product.stock > 0 ? "text-green-500" : "text-red-500"
-                  }`}
-                >
-                  {product.stock > 0 ? "In Stock" : "Out of Stock"}
-                </p>
-                <p className="text-sm text-gray-600 mt-2">
-                  {product.promotionApplied ? (
-                    <span>
-                      Promotion: {getPromotionDetails(product.promotionId)}
-                    </span>
+          {filteredProducts.map((product) => {
+            // Conditional border color based on product status
+            const borderColor = product.promotionApplied
+              ? "border-green-500"
+              : product.stock <= 0
+              ? "border-red-500"
+              : "border-[#E76F51]";
+
+            return (
+              <div
+                key={product._id}
+                className={`p-4 bg-white rounded-lg shadow-lg border-4 ${borderColor}`}
+              >
+                <div className="relative h-40 bg-gray-300 rounded-lg overflow-hidden">
+                  {product.images && product.images.length > 0 ? (
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="object-cover w-full h-full"
+                    />
                   ) : (
-                    <span>No Promotion Applied</span>
+                    <div className="h-full bg-gray-300 rounded-lg flex items-center justify-center text-gray-500">
+                      No Images Available
+                    </div>
                   )}
-                </p>
-              </div>
-              <div className="flex justify-between mt-4">
-                {product.promotionApplied ? (
+                </div>
+                <h3 className="text-center mb-4 text-xl font-semibold">
+                  {product.name}
+                </h3>
+                <div className="text-center mb-4">
+                  <p className="text-lg font-medium text-gray-700">
+                    Rs. {product.price.toFixed(2)}
+                  </p>
+                  <p
+                    className={`text-sm ${
+                      product.stock > 0 ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {product.stock > 0 ? "In Stock" : "Out of Stock"}
+                  </p>
+                  <p className="text-sm text-gray-600 mt-2">
+                    {product.promotionApplied ? (
+                      <span>
+                        Promotion: {getPromotionDetails(product.promotionId)}
+                      </span>
+                    ) : (
+                      <span>No Promotion Applied</span>
+                    )}
+                  </p>
+                </div>
+                <div className="flex justify-between mt-4">
+                  {product.promotionApplied ? (
+                    <button
+                      onClick={() => {
+                        setSelectedProduct(product);
+                        setShowPromotionModal(true);
+                      }}
+                      className="btn bg-red-500 text-white flex items-center space-x-2 px-4 py-2 rounded-md shadow-md hover:bg-red-600 transition-colors"
+                    >
+                      <HiOutlineTag /> <span>Remove Promotion</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setSelectedProduct(product);
+                        setShowPromotionModal(true);
+                      }}
+                      className="btn bg-green-500 text-white flex items-center space-x-2 px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition-colors"
+                    >
+                      <HiOutlineTag /> <span>Apply Promotion</span>
+                    </button>
+                  )}
                   <button
                     onClick={() => {
                       setSelectedProduct(product);
-                      setShowPromotionModal(true);
+                      setShowRestockModal(true);
                     }}
-                    className="btn bg-red-500 text-white flex items-center space-x-2 px-4 py-2 rounded-md shadow-md hover:bg-red-600 transition-colors"
+                    className="btn bg-[#E76F51] text-white flex items-center space-x-2 px-4 py-2 rounded-md shadow-md hover:bg-[#D64F3D] transition-colors"
                   >
-                    <HiOutlineTag /> <span>Remove Promotion</span>
+                    <BiRefresh /> <span>Restock</span>
                   </button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setSelectedProduct(product);
-                      setShowPromotionModal(true);
-                    }}
-                    className="btn bg-green-500 text-white flex items-center space-x-2 px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition-colors"
-                  >
-                    <HiOutlineTag /> <span>Apply Promotion</span>
-                  </button>
-                )}
-                <button
-                  onClick={() => {
-                    setSelectedProduct(product);
-                    setShowRestockModal(true);
-                  }}
-                  className="btn bg-[#E76F51] text-white flex items-center space-x-2 px-4 py-2 rounded-md shadow-md hover:bg-[#D64F3D] transition-colors"
-                >
-                  <BiRefresh /> <span>Restock</span>
-                </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </motion.div>
       </div>
 
       {/* Restock Modal */}
       {showRestockModal && (
-        <div className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50">
-          <div className="bg-white border-4 border-[#E76F51] p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-2xl font-bold mb-4 text-center">
-              Restock Product
-            </h2>
-            <div className="space-y-4">
-              <label className="block">
-                <span className="text-gray-700">Quantity to Restock</span>
-                <input
-                  type="number"
-                  value={restockQuantity}
-                  onChange={(e) => setRestockQuantity(Number(e.target.value))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm"
-                />
-              </label>
-              <div className="flex justify-between">
-                <button
-                  onClick={handleRestock}
-                  className="btn bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition-colors"
-                >
-                  Restock
-                </button>
-                <button
-                  onClick={() => setShowRestockModal(false)}
-                  className="btn bg-gray-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-600 transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
+            <h2 className="text-2xl font-semibold mb-4">Restock Product</h2>
+            <p className="mb-4">Product: {selectedProduct?.name}</p>
+            <label className="block mb-2">
+              Quantity:
+              <input
+                type="number"
+                value={restockQuantity}
+                onChange={(e) => setRestockQuantity(Number(e.target.value))}
+                className="input input-bordered rounded-md w-full mt-1"
+              />
+            </label>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setShowRestockModal(false)}
+                className="btn bg-gray-400 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-500 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleRestock}
+                className="btn bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition-colors ml-2"
+              >
+                Restock
+              </button>
             </div>
           </div>
         </div>
@@ -266,21 +268,22 @@ export const Inventory = () => {
 
       {/* Promotion Modal */}
       {showPromotionModal && (
-        <div className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50">
-          <div className="bg-white border-4 border-[#E76F51] p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-2xl font-bold mb-4 text-center">
-              {selectedProduct.promotionApplied
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
+            <h2 className="text-2xl font-semibold mb-4">
+              {selectedProduct?.promotionApplied
                 ? "Remove Promotion"
                 : "Apply Promotion"}
             </h2>
-            <div className="space-y-4">
-              {!selectedProduct.promotionApplied && (
-                <label className="block">
-                  <span className="text-gray-700">Select Promotion</span>
+            <p className="mb-4">Product: {selectedProduct?.name}</p>
+            {!selectedProduct?.promotionApplied && (
+              <>
+                <label className="block mb-2">
+                  Select Promotion:
                   <select
                     value={selectedPromotion}
                     onChange={(e) => setSelectedPromotion(e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm"
+                    className="input input-bordered rounded-md w-full mt-1"
                   >
                     <option value="">Select a promotion</option>
                     {promotions.map((promo) => (
@@ -290,31 +293,38 @@ export const Inventory = () => {
                     ))}
                   </select>
                 </label>
-              )}
-              <div className="flex justify-between">
-                {selectedProduct.promotionApplied ? (
+                <div className="flex justify-end mt-4">
                   <button
-                    onClick={handleRemovePromotion}
-                    className="btn bg-red-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-red-600 transition-colors"
+                    onClick={() => setShowPromotionModal(false)}
+                    className="btn bg-gray-400 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-500 transition-colors"
                   >
-                    Remove Promotion
+                    Cancel
                   </button>
-                ) : (
                   <button
                     onClick={handleApplyPromotion}
-                    className="btn bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition-colors"
+                    className="btn bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition-colors ml-2"
                   >
                     Apply Promotion
                   </button>
-                )}
+                </div>
+              </>
+            )}
+            {selectedProduct?.promotionApplied && (
+              <div className="flex justify-end mt-4">
+                <button
+                  onClick={handleRemovePromotion}
+                  className="btn bg-red-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-red-600 transition-colors"
+                >
+                  Remove Promotion
+                </button>
                 <button
                   onClick={() => setShowPromotionModal(false)}
-                  className="btn bg-gray-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-600 transition-colors"
+                  className="btn bg-gray-400 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-500 transition-colors ml-2"
                 >
                   Cancel
                 </button>
               </div>
-            </div>
+            )}
           </div>
         </div>
       )}

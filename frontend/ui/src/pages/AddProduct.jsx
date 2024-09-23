@@ -57,21 +57,18 @@ export const AddProduct = () => {
       return;
     }
 
-    const validateDate = (date) => {
-      const d = new Date(date);
-      return !isNaN(d.getTime()) ? d.toISOString() : null;
-    };
-
+    // Directly use colors, sizes, and images as arrays
     const productData = {
       name,
       price,
-      colors: colors.join(", "),
-      sizes: sizes.join(", "),
+      colors: colors.filter((item) => item !== ""), // Remove empty values if necessary
+      sizes: sizes.filter((item) => item !== ""), // Remove empty values if necessary
+      category,
       description,
       manufacturedDate: manufacturedDate
         ? validateDate(manufacturedDate)
         : null,
-      images,
+      images: images.filter((item) => item !== ""), // Remove empty values if necessary
     };
 
     try {
@@ -83,7 +80,7 @@ export const AddProduct = () => {
 
       if (response.status === 201) {
         alert("Product added successfully!");
-        navigate("/products");
+        navigate("/allProducts");
         resetForm();
       }
     } catch (error) {

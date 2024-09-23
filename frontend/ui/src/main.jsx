@@ -2,10 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-//import "./styles/custom.css";
+import { UserSessionProvider } from "./components/UserSession.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
+    <UserSessionProvider>
+      <App />
+    </UserSessionProvider>
   </React.StrictMode>
 );
