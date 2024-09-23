@@ -4,7 +4,7 @@ import Loading from '../Utils/Loading';
 
 //icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar, faClose, faFile, faIdCardAlt, faPortrait, faShop,} from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faClose, faFile, faIdCardAlt, faPortrait, faSearch, faShop,} from '@fortawesome/free-solid-svg-icons';
 
 
 const Shoppanel = () => {
@@ -278,13 +278,19 @@ const Shoppanel = () => {
 
         {/* Operation Bar */}
         <div className="flex h-[5rem] w-[100vw] bg-primary items-center justify-center drop-shadow-lg">
-          <div className="flex h-[5rem] w-[40vw] bg-baseextra2 items-center justify-center drop-shadow-lg"></div>
+          <div className="flex h-[5rem] w-[40vw] bg-baseextra2 items-center justify-center drop-shadow-lg">
+
+          <div className='flex w-[35vw] h-[3rem] bg-primary items-center justify-start drop-shadow-lg rounded-full p-5'>
+              <FontAwesomeIcon icon={faSearch} className='mx-2'/><span className='opacity-60'>Search by Shop Name</span>
+          </div>
+
+          </div>
           <div className="flex h-[5rem] w-[60vw] bg-primary justify-center items-center p-5 drop-shadow-lg space-x-5">
             <button
               className="h-[3rem] w-[12vw] bg-primary rounded-3xl drop-shadow-lg hover:scale-110 transition-transform duration-200 ease-out"
             >
-              <span className="font-ibmplexsans text-md text-blue-700">
-                Add
+              <span className="font-ibmplexsans text-md text-yellow-600">
+                Fetch
               </span>
             </button>
             <button
@@ -295,7 +301,13 @@ const Shoppanel = () => {
               </span>
             </button>
             <button className="h-[3rem] w-[12vw] bg-primary rounded-3xl drop-shadow-lg hover:scale-110 transition-transform duration-200 ease-out">
-              <span className="font-ibmplexsans text-md text-blue-700">
+              <span className="font-ibmplexsans text-md text-green-600">
+                Update Shop
+              </span>
+            </button>
+
+            <button className="h-[3rem] w-[12vw] bg-primary rounded-3xl drop-shadow-lg hover:scale-110 transition-transform duration-200 ease-out">
+              <span className="font-ibmplexsans text-md text-red-600">
                 Remove
               </span>
             </button>
