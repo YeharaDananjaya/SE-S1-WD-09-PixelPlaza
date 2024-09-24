@@ -14,6 +14,9 @@ const productSchema = new mongoose.Schema({
   stock: { type: Number, default: 0 }, // Add stock attribute with default value 0
   promotionApplied: { type: Boolean, default: false }, // Indicates if a promotion is applied
   promotionId: { type: String, default: "" }, // Stores the ID of the applied promotion
+  shopID: {
+    type: String,
+  },
 });
 
 const Product = mongoose.model("Product", productSchema);

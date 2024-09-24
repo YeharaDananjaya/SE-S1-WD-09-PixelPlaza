@@ -7,19 +7,15 @@ const UserContext = createContext();
 export const UserSessionProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // Store user data in local storage
   useEffect(() => {
     if (user) {
       localStorage.setItem("userId", user.id);
       localStorage.setItem("userLevel", user.userLevel);
 
-      // Store sellerId and shopId for sellers
-      if (user.userLevel === 1) {
-        localStorage.setItem("sellerId", user.sellerId);
+      // Store shopId for sellers (userLevel === 1)
+      if (user.userLevel === 1 && user.shopId) {
         localStorage.setItem("shopId", user.shopId);
       } else {
-        // Clear sellerId and shopId if the user is not a seller
-        localStorage.removeItem("sellerId");
         localStorage.removeItem("shopId");
       }
     }
@@ -29,7 +25,7 @@ export const UserSessionProvider = ({ children }) => {
   const clearUserSession = () => {
     setUser(null); // Clear user state
     localStorage.removeItem("userId");
-    localStorage.removeItem("sellerId");
+
     localStorage.removeItem("shopId");
     localStorage.removeItem("userLevel");
   };

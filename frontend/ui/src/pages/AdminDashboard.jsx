@@ -4,7 +4,7 @@ import { HiOutlinePlusCircle } from "react-icons/hi";
 
 export const AdminDashboard = () => {
   return (
-    <div className="flex-1 bg-light p-8">
+    <div className="flex-1 w-[98vw] bg-light p-8">
       <h1 className="font-russo text-dark text-4xl">Admin Dashboard</h1>
       <HorizontalLine />
       <div className="grid grid-cols-2 gap-8 mt-8">

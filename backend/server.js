@@ -38,6 +38,9 @@ app.use("/api/promotions", promotionRoutes);
 const userRoutes = require("./routes/userRoutes"); // Import userRoutes
 app.use("/api/users", userRoutes); // Use the userRoutes for the /api/users endpoint
 
+const salesRoutes = require("./routes/shops");
+app.use("/api/shops", salesRoutes);
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

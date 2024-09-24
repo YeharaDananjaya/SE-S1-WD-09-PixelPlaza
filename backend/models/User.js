@@ -7,7 +7,6 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true }, // Keep password as plain text
   phone: { type: String, required: true },
   userLevel: { type: Number, default: 0 }, // 0: Customer, 1: Seller, 2: Admin
-  sellerId: { type: String, default: null }, // Only for sellers
   shopId: { type: String, default: null }, // Only for sellers
 });
 

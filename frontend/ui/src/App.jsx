@@ -1,138 +1,120 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Sidebar } from "./components/SideBar";
-import { AdminSidebar } from "./components/AdminSidebar .jsx";
+import SellerLayout from "./layouts/SellerLayout"; // Import SellerLayout
+import AdminLayout from "./layouts/AdminLayout"; // Import AdminLayout
 import { Overview } from "./pages/Overview";
 import { LoginRegister } from "./pages/LoginRegister";
-import { AddProduct } from "./pages/AddProduct.jsx"; // Import the AddProduct component
+import { AddProduct } from "./pages/AddProduct"; // Import the AddProduct component
 import { AllProducts } from "./pages/AllProducts";
 import { Promotions } from "./pages/Promotions";
 import { Inventory } from "./pages/Inventory";
 import { SellerProfile } from "./pages/SellerProfile";
-import { CreateAdmin } from "./pages/CreateAdmin.jsx";
-import { CreateSeller } from "./pages/CreateSeller.jsx";
-import { AdminDashboard } from "./pages/AdminDashboard.jsx";
+import { CreateAdmin } from "./pages/CreateAdmin";
+import { CreateSeller } from "./pages/CreateSeller";
+import { AdminDashboard } from "./pages/AdminDashboard";
+import Shoppanel from "./pages/Shoppanel";
+import Mapmodel from "./pages/Mapmodel";
+
+const toggleTheme = () => {
+  document.documentElement.classList.toggle("friend-theme");
+};
 
 function App() {
   return (
     <Router>
       <Routes>
+        {/* Public Route */}
         <Route path="/" element={<LoginRegister />} />
+
+        {/* Seller Routes */}
         <Route
           path="/overview"
           element={
-            <div className="flex">
-              <Sidebar />
-              <div className="flex-1 ml-64">
-                {" "}
-                {/* Adjust margin-left */}
-                <Overview />
-              </div>
-            </div>
+            <SellerLayout>
+              <Overview />
+            </SellerLayout>
           }
         />
         <Route
           path="/addproduct"
           element={
-            <div className="flex">
-              <Sidebar />
-              <div className="flex-1 ml-64">
-                {" "}
-                {/* Adjust margin-left */}
-                <AddProduct />
-              </div>
-            </div>
+            <SellerLayout>
+              <AddProduct />
+            </SellerLayout>
           }
         />
         <Route
           path="/allproducts"
           element={
-            <div className="flex">
-              <Sidebar />
-              <div className="flex-1 ml-64">
-                {" "}
-                {/* Adjust margin-left */}
-                <AllProducts />
-              </div>
-            </div>
+            <SellerLayout>
+              <AllProducts />
+            </SellerLayout>
           }
         />
         <Route
           path="/promotions"
           element={
-            <div className="flex">
-              <Sidebar />
-              <div className="flex-1 ml-64">
-                {" "}
-                {/* Adjust margin-left */}
-                <Promotions />
-              </div>
-            </div>
+            <SellerLayout>
+              <Promotions />
+            </SellerLayout>
           }
         />
         <Route
           path="/inventory"
           element={
-            <div className="flex">
-              <Sidebar />
-              <div className="flex-1 ml-64">
-                {" "}
-                {/* Adjust margin-left */}
-                <Inventory />
-              </div>
-            </div>
+            <SellerLayout>
+              <Inventory />
+            </SellerLayout>
           }
         />
         <Route
           path="/sellerprofile"
           element={
-            <div className="flex">
-              <Sidebar />
-              <div className="flex-1 ml-64">
-                {" "}
-                {/* Adjust margin-left */}
-                <SellerProfile />
-              </div>
-            </div>
+            <SellerLayout>
+              <SellerProfile />
+            </SellerLayout>
           }
         />
+
+        {/* Admin Routes */}
         <Route
           path="/adminDashboard"
           element={
-            <div className="flex">
-              <AdminSidebar />
-              <div className="flex-1 ml-64">
-                {" "}
-                {/* Adjust margin-left */}
-                <AdminDashboard />
-              </div>
-            </div>
+            <AdminLayout>
+              <AdminDashboard />
+            </AdminLayout>
           }
         />
         <Route
           path="/CreateAdmin"
           element={
-            <div className="flex">
-              <AdminSidebar />
-              <div className="flex-1 ml-64">
-                {" "}
-                {/* Adjust margin-left */}
-                <CreateAdmin />
-              </div>
-            </div>
+            <AdminLayout>
+              <CreateAdmin />
+            </AdminLayout>
           }
         />
         <Route
           path="/CreateSeller"
           element={
-            <div className="flex">
-              <AdminSidebar />
-              <div className="flex-1 ml-64">
-                {" "}
-                {/* Adjust margin-left */}
-                <CreateSeller />
-              </div>
-            </div>
+            <AdminLayout>
+              <CreateSeller />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/Mapmodel"
+          element={
+            <AdminLayout>
+              <Mapmodel />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/Shoppanel"
+          element={
+            <AdminLayout>
+              <Shoppanel />
+            </AdminLayout>
           }
         />
       </Routes>

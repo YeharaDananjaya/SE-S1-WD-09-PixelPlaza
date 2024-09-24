@@ -3,6 +3,7 @@ import axios from "axios";
 import { HiOutlinePlusCircle } from "react-icons/hi";
 
 export const Promotions = () => {
+  const shopID = localStorage.getItem("shopId"); // Get shopID from localStorage
   const [description, setDescription] = useState("");
   const [discount, setDiscount] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -10,7 +11,7 @@ export const Promotions = () => {
   const [promotions, setPromotions] = useState([]);
   const [error, setError] = useState("");
   const [imageURL, setImageURL] = useState("");
-  const [poster, setPoster] = useState(""); // Changed from posterURL to poster
+  const [poster, setPoster] = useState("");
   const [countdowns, setCountdowns] = useState({});
 
   // Handle form submission
@@ -31,18 +32,19 @@ export const Promotions = () => {
         discount: Number(discount),
         startDate,
         endDate,
-        poster: imageURL, // Changed from posterURL to poster
+        poster: imageURL,
+        shopID, // Include shopID when creating a promotion
       };
       await axios.post("http://localhost:3000/api/promotions", newPromotion);
       alert("Promotion added successfully!");
       setError("");
-      fetchPromotions();
+      fetchPromotions(); // Fetch promotions after adding a new one
       setDescription("");
       setDiscount("");
       setStartDate("");
       setEndDate("");
-      setPoster(""); // Reset poster after submission
-      setImageURL(""); // Reset imageURL after submission
+      setPoster("");
+      setImageURL("");
     } catch (error) {
       console.error("Failed to create promotion:", error);
       setError("Failed to create promotion. Please check your inputs.");
@@ -51,8 +53,15 @@ export const Promotions = () => {
 
   // Fetch ongoing promotions
   const fetchPromotions = async () => {
+    if (!shopID) {
+      console.error("shopID is null. Cannot fetch promotions.");
+      return; // Prevent fetching if shopID is null
+    }
+
     try {
-      const response = await axios.get("http://localhost:3000/api/promotions");
+      const response = await axios.get(
+        `http://localhost:3000/api/promotions/shop/${shopID}` // Fetch promotions by shopID
+      );
       const ongoingPromotions = response.data.filter((promo) => {
         const now = new Date();
         return (
@@ -67,7 +76,7 @@ export const Promotions = () => {
 
   useEffect(() => {
     fetchPromotions();
-  }, []);
+  }, [shopID]); // Ensure to fetch promotions when shopID changes
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -100,7 +109,7 @@ export const Promotions = () => {
   };
 
   return (
-    <div className="flex-1 bg-[#F4F4F4] p-8">
+    <div className="flex-1 w-[80vw] bg-[#F4F4F4] p-8">
       <h1 className="font-russo text-[#212529] text-4xl text-center">
         Promotions
       </h1>
@@ -115,7 +124,7 @@ export const Promotions = () => {
           <div className="w-1/3 p-4 bg-gray-300 rounded-lg">
             <div
               className="h-40 bg-gray-400 rounded-lg mb-4 flex items-center justify-center cursor-pointer"
-              onClick={() => setPoster(imageURL)} // Changed from setPosterURL to setPoster
+              onClick={() => setPoster(imageURL)}
             >
               {poster ? (
                 <img
@@ -215,49 +224,39 @@ export const Promotions = () => {
                 className="bg-[#E76F51] text-white py-2 px-4 rounded-lg"
                 onClick={handleAddPromotion}
               >
-                Add
+                Add Promotion
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="relative mt-8 p-8 bg-[#F4F4F4] border-[#E76F51] border-4 rounded-lg">
-        <div
-          className="absolute top-0 left-0 w-1/2 h-12 flex items-center justify-center bg-[#E76F51]"
-          style={{ borderTopLeftRadius: "0.25rem" }}
-        >
-          <h2 className="font-russo text-white text-2xl">Ongoing Promotions</h2>
-        </div>
-        <div className="ml-1/2 mt-12 flex flex-wrap">
-          {promotions.map((promo) => (
+      {/* Display ongoing promotions */}
+      <div className="mt-8">
+        <h2 className="font-russo text-[#212529] text-2xl">
+          Ongoing Promotions
+        </h2>
+        <div className="flex flex-wrap">
+          {promotions.map((promotion) => (
             <div
-              key={promo._id}
-              className="w-1/3 p-4 bg-white border border-gray-300 rounded-lg mb-4 flex flex-col"
+              key={promotion._id}
+              className="bg-white p-4 m-2 rounded-lg shadow-md w-1/4"
             >
               <img
-                src={promo.poster}
+                src={promotion.poster}
                 alt="Promotion Poster"
-                className="h-40 object-cover mb-4"
+                className="w-full h-32 object-cover mb-2 rounded-lg"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = "path/to/placeholder-image.jpg"; // Optional: Add a placeholder image
                 }}
               />
-              <p className="text-xl font-semibold mb-2 text-[#E76F51]">
-                {promo.discount}% OFF
-              </p>
-              <p className="text-sm mb-4">
-                Ends in:{" "}
-                <span className="font-semibold">
-                  {countdowns[promo._id] || "Calculating..."}
-                </span>
-              </p>
-              <p className="text-sm text-gray-500">
-                Start Date: {new Date(promo.startDate).toLocaleDateString()}
-              </p>
-              <p className="text-sm text-gray-500">
-                End Date: {new Date(promo.endDate).toLocaleDateString()}
+              <h3 className="font-semibold text-lg">{promotion.description}</h3>
+              <p>
+                Discount: {promotion.discount}%<br />
+                Valid: {promotion.startDate} - {promotion.endDate}
+                <br />
+                Countdown: {countdowns[promotion._id] || "Loading..."}
               </p>
             </div>
           ))}

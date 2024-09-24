@@ -59,7 +59,7 @@ export const CreateAdmin = () => {
   };
 
   return (
-    <div className="flex-1 bg-[#F4F4F4] p-8">
+    <div className="flex-1 w-[100vw] bg-[#F4F4F4] p-8">
       <h1 className="font-russo text-[#212529] text-4xl mb-4">
         Create New Admin
       </h1>
