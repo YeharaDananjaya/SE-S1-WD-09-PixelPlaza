@@ -72,9 +72,9 @@ export const Sidebar = ({ setUser }) => {
         />
         <SidebarItem
           Icon={HiOutlineLogout}
-          label="Profile"
+          label="Seller Profile"
           selected={selected}
-          link="/profile"
+          link="/sellerProfile"
           handleItemClick={handleItemClick}
         />
       </nav>

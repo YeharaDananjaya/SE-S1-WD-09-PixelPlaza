@@ -171,6 +171,22 @@ router.get("/profile", verifyToken, async (req, res) => {
       .json({ message: "Failed to get user profile", error: error.message });
   }
 });
+// Route to get user profile by ID
+router.get("/profile/:id", async (req, res) => {
+  const { id } = req.params; // Get the custom ID from the request parameters
+  try {
+    const user = await User.findOne({ id }).select("-password"); // Fetch the user by custom ID
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(user); // Return the user details
+  } catch (error) {
+    console.error("Failed to get user profile by ID:", error.message);
+    res
+      .status(400)
+      .json({ message: "Failed to get user profile", error: error.message });
+  }
+});
 
 // Example of a protected route for admins
 router.get("/admin", verifyToken, checkUserLevel(2), (req, res) => {
