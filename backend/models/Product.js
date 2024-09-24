@@ -10,6 +10,7 @@ const productSchema = new mongoose.Schema({
   sizes: [String],
   description: { type: String, required: true },
   manufacturedDate: { type: Date, required: false },
+  category: [String],
   images: [String],
   stock: { type: Number, default: 0 }, // Add stock attribute with default value 0
   promotionApplied: { type: Boolean, default: false }, // Indicates if a promotion is applied

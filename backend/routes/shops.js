@@ -212,6 +212,37 @@ router.put("/update/:floorID", async (req, res) => {
   }
 });
 
+// Route to update shop details by shopID
+router.put("/updateByShopID/:shopID", async (req, res) => {
+  try {
+    const { shopID } = req.params; // Get the shopID from the request params
+
+    // Check if the shop with this shopID exists
+    const shop = await Shops.findOne({ shopID: shopID });
+    if (!shop) {
+      return res.status(404).json({ message: "Shop not found" });
+    }
+
+    // Update shop details
+    shop.floorID = req.body.floorID || shop.floorID; // Update only if new value is provided
+    shop.shopKeeperName = req.body.shopKeeperName || shop.shopKeeperName;
+    shop.shopName = req.body.shopName || shop.shopName;
+    shop.assignDate = req.body.assignDate || shop.assignDate;
+    shop.Value = req.body.Value || shop.Value;
+    shop.description = req.body.description || shop.description;
+    shop.shopKeeperPhoto = req.body.shopKeeperPhoto || shop.shopKeeperPhoto; // Update shopKeeperPhoto if new value is provided
+
+    await shop.save();
+
+    res
+      .status(200)
+      .json({ message: "Shop details updated successfully", shop });
+  } catch (error) {
+    console.error("Error updating shop details by shopID:", error);
+    res.status(500).json({ message: "Failed to update shop details", error });
+  }
+});
+
 // Route to delete a shop by floorID
 router.delete("/delete/:floorID", async (req, res) => {
   try {

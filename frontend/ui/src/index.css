@@ -13,3 +13,16 @@
     @apply flex-1; /* Make the container take up all available space */
   }
 }
+
+@keyframes fill {
+  0% {
+    transform: scaleY(0);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+.animate-fill {
+  animation: fill 3s ease-in-out forwards;
+}

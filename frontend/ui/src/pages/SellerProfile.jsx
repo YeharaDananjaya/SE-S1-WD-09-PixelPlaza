@@ -1,162 +1,312 @@
-import React, { useState } from "react";
-import { HiOutlinePlusCircle } from "react-icons/hi";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import { HorizontalLine } from "../components/HorizontalLine";
-import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { AiOutlineMail, AiOutlinePhone, AiOutlineIdcard } from "react-icons/ai";
+import { MdStoreMallDirectory } from "react-icons/md";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import Modal from "react-modal";
+
+// Custom styles for the modal
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    transform: "translate(-50%, -50%)",
+    width: "90%",
+    maxWidth: "500px",
+  },
+};
 
 export const SellerProfile = () => {
-  const [salesPerformance, setSalesPerformance] = useState({
-    totalSales: 0,
-    averageOrderValue: 0,
-    orders: 0,
+  const [shopDetails, setShopDetails] = useState(null);
+  const [sellerDetails, setSellerDetails] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [updatedShop, setUpdatedShop] = useState({
+    shopKeeperPhoto: "",
+    description: "",
+    contactInfo: "",
   });
-  const [notifications, setNotifications] = useState([]);
+  const shopID = localStorage.getItem("shopId");
+  const userID = localStorage.getItem("userId");
 
-  const handleSalesPerformanceChange = (key, value) => {
-    setSalesPerformance((prev) => ({ ...prev, [key]: value }));
+  useEffect(() => {
+    const fetchShopDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/shops/getByShopID/${shopID}`
+        );
+        setShopDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching shop details:", error);
+      }
+    };
+
+    const fetchSellerDetails = async (userId) => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/users/profile/${userId}`
+        );
+        setSellerDetails(response.data);
+      } catch (error) {
+        console.error(
+          "Error fetching user profile by ID:",
+          error.response?.data || error.message
+        );
+      }
+    };
+
+    fetchShopDetails();
+    if (userID) {
+      fetchSellerDetails(userID);
+    }
+  }, [shopID, userID]);
+
+  const openModal = () => {
+    setUpdatedShop({
+      shopKeeperPhoto: shopDetails.shopKeeperPhoto || "",
+      description: shopDetails.description || "",
+      contactInfo: sellerDetails.phone || "",
+    });
+    setModalIsOpen(true);
   };
 
-  const handleNotificationsChange = (key, value) => {
-    setNotifications((prev) => [...prev, { [key]: value }]);
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedShop((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.put(
+        `http://localhost:3000/api/shops/updateByShopID/${shopID}`,
+        updatedShop
+      );
+      setShopDetails(response.data);
+      closeModal();
+    } catch (error) {
+      console.error("Error updating shop details:", error);
+    }
   };
 
   return (
-    <div className="flex-1 w-[80vw] bg-[#F4F4F4] p-8">
-      <h1 className="font-russo text-[#212529] text-4xl text-center">
-        Profile
-      </h1>
-      <div className="relative mt-8 p-8 bg-[#F4F4F4] border-[#E76F51] border-4 rounded-lg">
-        <div
-          className="absolute top-0 left-0 w-1/2 h-12 flex items-center justify-center bg-[#E76F51]"
-          style={{ borderTopLeftRadius: "0.25rem" }}
-        >
-          <h2 className="font-russo text-white text-2xl">Store Information</h2>
-        </div>
-        <div className="ml-1/2 mt-12 flex gap-8">
-          <div className="w-1/3 p-4 bg-gray-300 rounded-lg">
-            <div className="h-40 bg-gray-400 rounded-lg mb-4 flex items-center justify-center">
-              <div className="w-24 h-24 bg-gray-500 rounded-full"></div>
-            </div>
-            <p className="text-center">Store Logo</p>
+    <div className="flex flex-col items-center w-full lg:w-[80vw] bg-[#F4F4F4] p-8">
+      <h1 className="font-russo text-[#212529] text-4xl mb-6">Profile</h1>
+
+      {/* Store Details Section */}
+      {shopDetails ? (
+        <div className="relative w-full lg:w-[75vw] mt-8 p-6 bg-white shadow-lg rounded-lg">
+          <div className="absolute top-0 left-0 w-full h-12 flex items-center justify-center bg-[#E76F51] rounded-t-lg">
+            <h2 className="font-russo text-white text-2xl">Store Details</h2>
           </div>
-          <div className="w-2/3 pl-8">
-            <div className="mb-4">
-              <label className="block text-sm font-semibold mb-2">
-                Store Name:
-              </label>
-              <h2 className="font-russo text-[#212529] text-2xl">Store Name</h2>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-semibold mb-2">
-                Address:
-              </label>
-              <p className="text-gray-500">123 Main Street, Anytown, USA</p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-semibold mb-2">
-                Description:
-              </label>
-              <p className="text-gray-500">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-semibold mb-2">
-                Contact Information:
-              </label>
-              <p className="text-gray-500">
-                <span className="font-bold">Email:</span> store@example.com
-              </p>
-              <p className="text-gray-500">
-                <span className="font-bold">Phone:</span> +1 (555) 555-5555
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="relative mt-8 p-8 bg-[#F4F4F4] border-[#E76F51] border-4 rounded-lg">
-        <div
-          className="absolute top-0 left-0 w-1/2 h-12 flex items-center justify-center bg-[#E76F51]"
-          style={{ borderTopLeftRadius: "0.25rem" }}
-        >
-          <h2 className="font-russo text-white text-2xl">Sales Performance</h2>
-        </div>
-        <div className="ml-1/2 mt-12 flex flex-col gap-4">
-          {["Total Sales", "Average Order Value", "Orders"].map(
-            (metric, index) => (
-              <div key={index} className="bg-gray-100 p-4 rounded-lg">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="font-bold text-gray-600">{metric}</h3>
-                  <span className="font-bold text-gray-900">
-                    ${salesPerformance[metric.toLowerCase().replace(/ /g, "")]}
-                  </span>
-                </div>
-                <input
-                  type="number"
-                  value={
-                    salesPerformance[metric.toLowerCase().replace(/ /g, "")]
-                  }
-                  onChange={(e) =>
-                    handleSalesPerformanceChange(
-                      metric.toLowerCase().replace(/ /g, ""),
-                      e.target.value
-                    )
-                  }
-                  className="input input-bordered rounded-md w-full"
-                />
+          <div className="flex flex-col lg:flex-row mt-12 gap-8">
+            <div className="lg:w-1/3 p-4 bg-gray-200 rounded-lg transition-transform transform hover:scale-105 shadow-lg relative">
+              {/* Store Name Label */}
+              <div className="mb-4">
+                <label className="block text-xl font-semibold mb-2">
+                  Store Name:
+                </label>
+                <h2 className="font-russo text-[#212529] text-3xl mb-6">
+                  {shopDetails.shopName}
+                </h2>
               </div>
-            )
-          )}
-          <button className="bg-[#E76F51] text-white py-2 px-4 rounded-lg">
-            View Graphical Representation
-          </button>
-        </div>
-      </div>
-      <div className="relative mt-8 p-8 bg-[#F4F4F4] border-[#E76F51] border-4 rounded-lg">
-        <div
-          className="absolute top-0 left-0 w-1/2 h-12 flex items-center justify-center bg-[#E76F51]"
-          style={{ borderTopLeftRadius: "0.25rem" }}
-        >
-          <h2 className="font-russo text-white text-2xl">Notifications</h2>
-        </div>
-        <div className="ml-1/2 mt-12 flex flex-col gap-4">
-          {notifications.length === 0 ? (
-            <p className="text-gray-500">No notifications available.</p>
-          ) : (
-            notifications.map((notification, index) => (
-              <div
-                key={index}
-                className="bg-gray-100 p-4 rounded-lg flex items-center"
-              >
-                <p className="text-gray-500 flex-1">
-                  {Object.values(notification)[0]}
+
+              {/* Store Logo Section */}
+              <div className="h-40 bg-gray-300 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+                {shopDetails.shopKeeperPhoto ? (
+                  <img
+                    src={shopDetails.shopKeeperPhoto}
+                    alt="Shop Keeper"
+                    className="w-32 h-32 rounded-full border-4 border-[#E76F51] shadow-md transform transition-transform hover:scale-110"
+                  />
+                ) : (
+                  <div className="w-24 h-24 bg-gray-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-lg font-semibold">
+                      No Photo
+                    </span>
+                  </div>
+                )}
+                <div className="absolute bottom-2 right-2 bg-white p-1 rounded-full shadow-lg">
+                  <MdStoreMallDirectory size={24} className="text-[#E76F51]" />
+                </div>
+              </div>
+
+              <p className="text-center font-semibold text-gray-700">
+                Store Logo
+              </p>
+            </div>
+
+            <div className="lg:w-2/3 pl-0 lg:pl-8">
+              <div className="mb-4">
+                <label className="block text-sm font-semibold mb-2">
+                  Shop Keeper Name:
+                </label>
+                <p className="text-gray-500">{shopDetails.shopKeeperName}</p>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-semibold mb-2">
+                  Assign Date:
+                </label>
+                <p className="text-gray-500">
+                  {new Date(shopDetails.assignDate).toLocaleDateString()}
                 </p>
-                <div className="ml-auto flex gap-2">
-                  <button className="btn btn-ghost btn-xs">
-                    <AiOutlineEdit />
-                  </button>
-                  <button className="btn btn-ghost btn-xs">
-                    <AiOutlineDelete />
-                  </button>
-                </div>
               </div>
-            ))
-          )}
-          <div className="flex items-center mt-4">
+              <div className="mb-4">
+                <label className="block text-sm font-semibold mb-2">
+                  Value:
+                </label>
+                <p className="text-gray-500">{shopDetails.Value}</p>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-semibold mb-2">
+                  Description:
+                </label>
+                <p className="text-gray-500">{shopDetails.description}</p>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-semibold mb-2">
+                  Contact Information:
+                </label>
+                <p className="text-gray-500 flex items-center gap-2">
+                  <AiOutlineMail className="text-lg text-[#E76F51]" />
+                  <span>{updatedShop.contactInfo || "store@example.com"}</span>
+                </p>
+                <p className="text-gray-500 flex items-center gap-2">
+                  <AiOutlinePhone className="text-lg text-[#E76F51]" />
+                  <span>{updatedShop.contactInfo || "+1 (555) 555-5555"}</span>
+                </p>
+              </div>
+              <button
+                onClick={openModal}
+                className="mt-4 bg-[#E76F51] text-white py-2 px-4 rounded-lg hover:bg-[#d65b4f] transition"
+              >
+                Edit Info
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <Skeleton height={400} />
+      )}
+
+      {/* Seller Details Section */}
+      {sellerDetails ? (
+        <div className="relative w-full lg:w-[75vw] mt-8 p-6 bg-white shadow-lg rounded-lg">
+          <div className="absolute top-0 left-0 w-full h-12 flex items-center justify-center bg-[#E76F51] rounded-t-lg">
+            <h2 className="font-russo text-white text-2xl">Seller Details</h2>
+          </div>
+          <div className="flex flex-col mt-12 gap-4">
+            <DetailCard label="Name" value={sellerDetails.name} />
+            <DetailCard
+              label="Email"
+              value={sellerDetails.email}
+              icon={<AiOutlineMail />}
+            />
+            <DetailCard
+              label="Phone"
+              value={sellerDetails.phone}
+              icon={<AiOutlinePhone />}
+            />
+            <DetailCard
+              label="User ID"
+              value={sellerDetails.id}
+              icon={<AiOutlineIdcard />}
+            />
+            <DetailCard
+              label="User Level"
+              value={sellerDetails.userLevel === 1 ? "Seller" : "Other"}
+            />
+            <DetailCard label="Shop ID" value={sellerDetails.shopId} />
+          </div>
+        </div>
+      ) : (
+        <Skeleton count={5} height={100} />
+      )}
+
+      {/* Edit Shop Modal */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Edit Shop Details"
+      >
+        <h2 className="font-russo text-[#212529] text-2xl mb-4">
+          Edit Shop Details
+        </h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-2">
+              Shop Keeper Photo URL:
+            </label>
             <input
               type="text"
-              placeholder="Add new notification"
-              className="input input-bordered rounded-md flex-1 mr-2"
-              onChange={(e) =>
-                handleNotificationsChange("notification", e.target.value)
-              }
+              name="shopKeeperPhoto"
+              value={updatedShop.shopKeeperPhoto}
+              onChange={handleChange}
+              className="border border-gray-300 rounded p-2 w-full"
+              required
             />
-            <button className="btn btn-primary btn-xs">
-              <HiOutlinePlusCircle />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-2">
+              Description:
+            </label>
+            <textarea
+              name="description"
+              value={updatedShop.description}
+              onChange={handleChange}
+              className="border border-gray-300 rounded p-2 w-full"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-2">
+              Contact Info:
+            </label>
+            <input
+              type="text"
+              name="contactInfo"
+              value={updatedShop.contactInfo}
+              onChange={handleChange}
+              className="border border-gray-300 rounded p-2 w-full"
+              required
+            />
+          </div>
+          <div className="flex justify-between">
+            <button
+              type="button"
+              onClick={closeModal}
+              className="py-2 px-4 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="py-2 px-4 bg-[#E76F51] text-white rounded-lg hover:bg-[#d65b4f] transition"
+            >
+              Save
             </button>
           </div>
-        </div>
-      </div>
+        </form>
+      </Modal>
     </div>
   );
 };
+
+// Helper component for displaying details
+const DetailCard = ({ label, value, icon }) => (
+  <div className="flex items-center justify-between border-b py-2">
+    <span className="font-semibold text-gray-700">{label}:</span>
+    <span className="text-gray-500 flex items-center gap-2">
+      {icon} {value}
+    </span>
+  </div>
+);
+
+export default SellerProfile;

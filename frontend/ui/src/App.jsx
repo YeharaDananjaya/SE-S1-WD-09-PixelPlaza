@@ -68,7 +68,7 @@ function App() {
           }
         />
         <Route
-          path="/sellerprofile"
+          path="/sellerProfile"
           element={
             <SellerLayout>
               <SellerProfile />
