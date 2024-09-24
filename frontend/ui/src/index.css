@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .shoppanel-custom-style {
+    @apply bg-secondary text-white; /* Example of using Tailwind's utility classes */
+  }
+
+  .shoppanel-container {
+    /* Specific styles for the Shoppanel component wrapper */
+    @apply p-4; /* Add padding or other styles as needed */
+    @apply flex-1; /* Make the container take up all available space */
+  }
+}

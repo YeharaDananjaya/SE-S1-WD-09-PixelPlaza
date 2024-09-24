@@ -81,6 +81,9 @@ export const LoginRegister = () => {
 
       const { token, user: loggedInUser } = response.data;
 
+      // Check if shopId exists in the response
+      console.log(loggedInUser); // Ensure that shopId is present in the loggedInUser object
+
       // Store token
       localStorage.setItem("token", token);
 
@@ -91,7 +94,7 @@ export const LoginRegister = () => {
       if (loggedInUser.userLevel === 2) {
         window.location.href = "/adminDashboard";
       } else if (loggedInUser.userLevel === 1) {
-        window.location.href = "/seller/dashboard";
+        window.location.href = "/overview";
       } else {
         window.location.href = "/customer/dashboard";
       }
@@ -102,6 +105,7 @@ export const LoginRegister = () => {
       setError(err.response?.data?.message || "Login failed");
     }
   };
+
   return (
     <div className={styles["login-register-page"]}>
       <div

@@ -4,7 +4,7 @@ import { HiOutlinePlusCircle } from "react-icons/hi";
 
 export const Overview = () => {
   return (
-    <div className="flex-1 bg-[#F4F4F4] p-8">
+    <div className="flex-1 w-[80vw] bg-[#F4F4F4] p-8">
       <h1 className="font-russo text-[#212529] text-4xl">Overview</h1>
       <HorizontalLine />
       <div className="grid grid-cols-2 gap-8 mt-8">

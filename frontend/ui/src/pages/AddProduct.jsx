@@ -57,6 +57,9 @@ export const AddProduct = () => {
       return;
     }
 
+    // Retrieve the shopID from localStorage
+    const shopID = localStorage.getItem("shopId");
+
     // Directly use colors, sizes, and images as arrays
     const productData = {
       name,
@@ -66,9 +69,10 @@ export const AddProduct = () => {
       category,
       description,
       manufacturedDate: manufacturedDate
-        ? validateDate(manufacturedDate)
+        ? manufacturedDate.toISOString()
         : null,
       images: images.filter((item) => item !== ""), // Remove empty values if necessary
+      shopID, // Include shopID in the product data
     };
 
     try {
@@ -105,7 +109,7 @@ export const AddProduct = () => {
   };
 
   return (
-    <div className="flex-1 bg-[#F4F4F4] p-8">
+    <div className="flex-1 w-[80vw] bg-[#F4F4F4] p-8">
       <h1 className="font-russo text-[#212529] text-4xl mb-4">
         Add New Product
       </h1>
@@ -245,7 +249,6 @@ export const AddProduct = () => {
             <DatePicker
               selected={manufacturedDate}
               onChange={(date) => setManufacturedDate(date)}
-              dateFormat="yyyy-MM-dd"
               className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-100 p-3 text-gray-800 shadow-sm focus:border-[#E76F51] focus:ring-[#E76F51] sm:text-sm"
             />
           </div>
@@ -282,22 +285,13 @@ export const AddProduct = () => {
             </button>
           </div>
 
-          {/* Buttons */}
-          <div className="flex space-x-4">
-            <button
-              type="submit"
-              className="w-full py-2 px-4 bg-[#E76F51] text-white rounded-lg shadow-md hover:bg-[#E76F51]/80 transition duration-300"
-            >
-              Add Product
-            </button>
-            <button
-              type="button"
-              onClick={resetForm}
-              className="w-full py-2 px-4 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 transition duration-300"
-            >
-              Reset
-            </button>
-          </div>
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full bg-[#E76F51] text-white rounded-md py-2 hover:bg-[#d65a44]"
+          >
+            Add Product
+          </button>
         </form>
       </motion.div>
     </div>

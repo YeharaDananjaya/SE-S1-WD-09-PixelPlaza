@@ -8,6 +8,9 @@ const promotionSchema = new mongoose.Schema({
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
   poster: { type: String, required: true }, // Optional field for promotion poster image
+  shopID: {
+    type: String,
+  },
 });
 
 const Promotion = mongoose.model("Promotion", promotionSchema);

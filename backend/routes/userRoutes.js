@@ -76,29 +76,36 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // Compare passwords directly
+    // Compare passwords directly (this should be hashed in a real application)
     if (user.password !== password) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const token = jwt.sign(
-      { id: user.id, userLevel: user.userLevel },
+      { id: user.id, userLevel: user.userLevel }, // Removed sellerId from token
       JWT_SECRET,
       {
         expiresIn: "1h",
       }
     );
 
+    let responseUser = {
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      userLevel: user.userLevel, // Include user level
+      id: user.id, // id instead of _id for frontend
+    };
+
+    // Add shopId for sellers (userLevel === 1)
+    if (user.userLevel === 1) {
+      responseUser.shopId = user.shopId;
+    }
+
     res.status(200).json({
       message: "Login successful",
       token,
-      user: {
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        userLevel: user.userLevel, // Include user level
-        id: user.id,
-      },
+      user: responseUser,
     });
   } catch (error) {
     console.error("Failed to login user:", error.message);
@@ -110,7 +117,7 @@ router.post("/login", async (req, res) => {
 
 // Admin route to add a seller
 router.post("/add-seller", verifyToken, checkUserLevel(2), async (req, res) => {
-  const { name, email, password, phone, shopId } = req.body; // Remove sellerId from the request body
+  const { name, email, password, phone, shopId } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -118,27 +125,29 @@ router.post("/add-seller", verifyToken, checkUserLevel(2), async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
+    // Create new seller object
     const seller = new User({
       name,
       email,
-      password, // Store plain text password
+      password, // Store plain text password (this should be hashed in a real application)
       phone,
-      userLevel: 1, // Set user level to seller
-      shopId,
+      userLevel: 1, // Set userLevel to 1 for seller
+      shopId, // Store shopId for the seller
     });
 
+    // Save the seller (this will automatically trigger the pre-save hook to generate the custom ID)
     await seller.save();
 
-    // Assign the created seller's ID as sellerId
-    const updatedSeller = await User.findByIdAndUpdate(
-      seller.id,
-      { sellerId: seller.id },
-      { new: true }
-    );
-
-    res
-      .status(201)
-      .json({ message: "Seller added successfully", seller: updatedSeller });
+    res.status(201).json({
+      message: "Seller added successfully",
+      seller: {
+        id: seller.id, // The generated custom ID will be stored in seller.id
+        name: seller.name,
+        email: seller.email,
+        phone: seller.phone,
+        shopId: seller.shopId,
+      },
+    });
   } catch (error) {
     console.error("Failed to add seller:", error.message);
     res

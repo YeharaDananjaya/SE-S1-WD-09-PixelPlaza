@@ -16,10 +16,19 @@ export const Inventory = () => {
   const [restockQuantity, setRestockQuantity] = useState(0);
   const [selectedPromotion, setSelectedPromotion] = useState("");
 
+  const shopID = localStorage.getItem("shopId"); // Fetch shopID from local storage
+
   useEffect(() => {
     const fetchProducts = async () => {
+      if (!shopID) {
+        console.error("shopID is null. Cannot fetch products.");
+        return; // Prevent fetching if shopID is null
+      }
+
       try {
-        const response = await axios.get("http://localhost:3000/api/products");
+        const response = await axios.get(
+          `http://localhost:3000/api/products/shop/${shopID}`
+        ); // Fetch products by shopID
         setProducts(response.data);
       } catch (error) {
         console.error("Failed to fetch products:", error);
@@ -27,19 +36,30 @@ export const Inventory = () => {
     };
 
     const fetchPromotions = async () => {
+      if (!shopID) {
+        console.error("shopID is null. Cannot fetch promotions.");
+        return; // Prevent fetching if shopID is null
+      }
+
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/promotions"
-        );
-        setPromotions(response.data);
+          `http://localhost:3000/api/promotions/shop/${shopID}`
+        ); // Fetch promotions by shopID
+        const ongoingPromotions = response.data.filter((promo) => {
+          const now = new Date();
+          return (
+            new Date(promo.startDate) <= now && new Date(promo.endDate) >= now
+          );
+        });
+        setPromotions(ongoingPromotions);
       } catch (error) {
-        console.error("Failed to fetch promotions:", error);
+        console.error("Error fetching promotions:", error);
       }
     };
 
     fetchProducts();
     fetchPromotions();
-  }, []);
+  }, [shopID]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -48,7 +68,7 @@ export const Inventory = () => {
   const handleRestock = async () => {
     try {
       await axios.put(
-        `http://localhost:3000/api/products/${selectedProduct._id}`,
+        `http://localhost:3000/api/products/${selectedProduct.id}`,
         { stock: selectedProduct.stock + restockQuantity }
       );
       setProducts(
@@ -68,27 +88,31 @@ export const Inventory = () => {
   const handleApplyPromotion = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/products/applyPromotion/${selectedProduct._id}`,
+        `http://localhost:3000/api/products/applyPromotion/${selectedProduct.id}`,
         { promotionId: selectedPromotion }
       );
 
       const updatedProduct = response.data.product;
       setProducts(
         products.map((product) =>
-          product._id === updatedProduct._id ? updatedProduct : product
+          product._id === updatedProduct.id ? updatedProduct : product
         )
       );
       setSelectedPromotion("");
       setShowPromotionModal(false);
     } catch (error) {
-      console.error("Failed to apply promotion:", error);
+      // Log the error response
+      console.error(
+        "Failed to apply promotion:",
+        error.response ? error.response.data : error.message
+      );
     }
   };
 
   const handleRemovePromotion = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/products/removePromotion/${selectedProduct._id}`
+        `http://localhost:3000/api/products/removePromotion/${selectedProduct.id}`
       );
 
       const updatedProduct = response.data.product;
@@ -115,7 +139,7 @@ export const Inventory = () => {
   };
 
   return (
-    <div className="flex-1 bg-[#F4F4F4] p-8">
+    <div className="flex-1 w-[80vw] bg-[#F4F4F4] p-8">
       <h1 className="font-russo text-[#212529] text-4xl text-center mb-4">
         Inventory
       </h1>
@@ -235,32 +259,34 @@ export const Inventory = () => {
 
       {/* Restock Modal */}
       {showRestockModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
-            <h2 className="text-2xl font-semibold mb-4">Restock Product</h2>
-            <p className="mb-4">Product: {selectedProduct?.name}</p>
-            <label className="block mb-2">
-              Quantity:
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="modal modal-open">
+            <div className="modal-box relative">
+              <h2 className="font-russo text-2xl mb-4">Restock Product</h2>
+              <p className="mb-2">
+                Restock quantity for <strong>{selectedProduct?.name}</strong>
+              </p>
               <input
                 type="number"
                 value={restockQuantity}
                 onChange={(e) => setRestockQuantity(Number(e.target.value))}
-                className="input input-bordered rounded-md w-full mt-1"
+                className="input input-bordered mb-4 w-full"
+                placeholder="Enter quantity"
               />
-            </label>
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={() => setShowRestockModal(false)}
-                className="btn bg-gray-400 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-500 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleRestock}
-                className="btn bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition-colors ml-2"
-              >
-                Restock
-              </button>
+              <div className="flex justify-end">
+                <button
+                  className="btn bg-red-500 text-white mr-2"
+                  onClick={() => setShowRestockModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="btn bg-green-500 text-white"
+                  onClick={handleRestock}
+                >
+                  Restock
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -268,63 +294,64 @@ export const Inventory = () => {
 
       {/* Promotion Modal */}
       {showPromotionModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
-            <h2 className="text-2xl font-semibold mb-4">
-              {selectedProduct?.promotionApplied
-                ? "Remove Promotion"
-                : "Apply Promotion"}
-            </h2>
-            <p className="mb-4">Product: {selectedProduct?.name}</p>
-            {!selectedProduct?.promotionApplied && (
-              <>
-                <label className="block mb-2">
-                  Select Promotion:
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="modal modal-open">
+            <div className="modal-box relative">
+              <h2 className="font-russo text-2xl mb-4">
+                {selectedProduct.promotionApplied
+                  ? "Remove Promotion"
+                  : "Apply Promotion"}
+              </h2>
+              {selectedProduct.promotionApplied ? (
+                <p>
+                  Are you sure you want to remove the promotion from{" "}
+                  <strong>{selectedProduct.name}</strong>?
+                </p>
+              ) : (
+                <div>
+                  <p>
+                    Select a promotion to apply to{" "}
+                    <strong>{selectedProduct.name}</strong>:
+                  </p>
                   <select
                     value={selectedPromotion}
                     onChange={(e) => setSelectedPromotion(e.target.value)}
-                    className="input input-bordered rounded-md w-full mt-1"
+                    className="select select-bordered w-full mb-4"
                   >
-                    <option value="">Select a promotion</option>
-                    {promotions.map((promo) => (
-                      <option key={promo._id} value={promo._id}>
-                        {promo.name} - {promo.discount}%
+                    <option value="">Select Promotion</option>
+                    {promotions.map((promotion) => (
+                      <option key={promotion._id} value={promotion._id}>
+                        {promotion.name} - {promotion.discount}%
                       </option>
                     ))}
                   </select>
-                </label>
-                <div className="flex justify-end mt-4">
-                  <button
-                    onClick={() => setShowPromotionModal(false)}
-                    className="btn bg-gray-400 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-500 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleApplyPromotion}
-                    className="btn bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 transition-colors ml-2"
-                  >
-                    Apply Promotion
-                  </button>
                 </div>
-              </>
-            )}
-            {selectedProduct?.promotionApplied && (
-              <div className="flex justify-end mt-4">
+              )}
+              <div className="flex justify-end">
                 <button
-                  onClick={handleRemovePromotion}
-                  className="btn bg-red-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-red-600 transition-colors"
-                >
-                  Remove Promotion
-                </button>
-                <button
+                  className="btn bg-red-500 text-white mr-2"
                   onClick={() => setShowPromotionModal(false)}
-                  className="btn bg-gray-400 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-500 transition-colors ml-2"
                 >
                   Cancel
                 </button>
+                {selectedProduct.promotionApplied ? (
+                  <button
+                    className="btn bg-green-500 text-white"
+                    onClick={handleRemovePromotion}
+                  >
+                    Remove Promotion
+                  </button>
+                ) : (
+                  <button
+                    className="btn bg-green-500 text-white"
+                    onClick={handleApplyPromotion}
+                    disabled={!selectedPromotion}
+                  >
+                    Apply Promotion
+                  </button>
+                )}
               </div>
-            )}
+            </div>
           </div>
         </div>
       )}

@@ -32,6 +32,29 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get promotions by shopID
+router.get("/shop/:shopID", async (req, res) => {
+  try {
+    const { shopID } = req.params;
+
+    // Find promotions with the specified shopID
+    const promotions = await Promotion.find({ shopID: shopID });
+
+    if (promotions.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No promotions found for this shopID" });
+    }
+
+    res.status(200).json(promotions);
+  } catch (error) {
+    console.error("Failed to fetch promotions by shopID:", error.message);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch promotions", error: error.message });
+  }
+});
+
 // Delete a promotion by ID
 router.delete("/:id", async (req, res) => {
   try {

@@ -8,11 +8,13 @@ import {
 } from "react-icons/hi";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
+import { useUserSession } from "./UserSession"; // Use the custom hook
 import Logo from "../assets/PixelPlaza.svg";
 
-export const Sidebar = () => {
+export const Sidebar = ({ setUser }) => {
   const [selected, setSelected] = useState("Overview");
   const [dropdownOpen, setDropdownOpen] = useState(null);
+  const { clearUserSession } = useUserSession(); // Use the hook to access clear function
   const location = useLocation(); // Get the current location
 
   const handleItemClick = (label) => {
@@ -24,10 +26,13 @@ export const Sidebar = () => {
     }
   };
 
+  const handleLogout = () => {
+    clearUserSession(); // Clear user data from local storage
+    window.location.href = "/"; // Redirect to homepage or login page
+  };
+
   return (
     <div className="fixed top-0 left-0 flex flex-col bg-dark text-light w-64 h-screen p-4 z-50">
-      {" "}
-      {/* Add z-50 for higher stacking context */}
       <div className="flex justify-center mb-8">
         <img src={Logo} alt="Logo" className="h-20" />
       </div>
@@ -35,7 +40,7 @@ export const Sidebar = () => {
         <SidebarItem
           Icon={HiOutlineHome}
           label="Overview"
-          link="/overview" // Ensure the link prop is passed correctly
+          link="/overview"
           isActive={location.pathname === "/overview"}
           handleItemClick={handleItemClick}
           selected={selected}
@@ -55,25 +60,28 @@ export const Sidebar = () => {
           Icon={HiOutlineCube}
           label="Promotions"
           selected={selected}
-          link="/promotions" // Add link prop for single link item
+          link="/promotions"
           handleItemClick={handleItemClick}
         />
         <SidebarItem
           Icon={HiOutlineUserCircle}
           label="Inventory"
           selected={selected}
-          link="/inventory" // Add link prop for single link item
+          link="/inventory"
           handleItemClick={handleItemClick}
         />
         <SidebarItem
           Icon={HiOutlineLogout}
           label="Profile"
           selected={selected}
-          link="/profile" // Add link prop for single link item
+          link="/profile"
           handleItemClick={handleItemClick}
         />
       </nav>
-      <button className="mt-auto bg-primary text-light rounded-full py-2 px-4 hover:bg-opacity-80 font-russo">
+      <button
+        onClick={handleLogout}
+        className="mt-auto bg-primary text-light rounded-full py-2 px-4 hover:bg-opacity-80 font-russo"
+      >
         Log Out
       </button>
     </div>
@@ -83,7 +91,7 @@ export const Sidebar = () => {
 const SidebarItem = ({
   Icon,
   label,
-  link, // Accept link as a prop
+  link,
   selected,
   dropdownItems,
   dropdownOpen,
@@ -143,14 +151,13 @@ const SidebarItem = ({
       {/* Dropdown Menu */}
       {dropdownItems && isDropdownOpen && (
         <div className="absolute left-full ml-2 bg-dark shadow-lg rounded-lg w-48 z-50">
-          {/* Add z-50 to make sure dropdown appears above other content */}
           <ul className="py-2 space-y-2">
             {dropdownItems.map((item) => (
               <li
                 key={item.label}
                 className="px-4 py-2 hover:bg-primary hover:text-light rounded-lg"
               >
-                <Link to={item.link}>{item.label}</Link> {/* Use Link here */}
+                <Link to={item.link}>{item.label}</Link>
               </li>
             ))}
           </ul>

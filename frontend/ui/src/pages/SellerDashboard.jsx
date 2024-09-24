@@ -17,7 +17,7 @@ const SellerDashboard = ({
 
       {/* Main Content Area */}
       <div
-        className="flex-1 bg-white border-l-4 border-sidebar-color overflow-hidden" // Prevent scrollbars
+        className="flex-1 w-[80vw] bg-white border-l-4 border-sidebar-color overflow-hidden" // Prevent scrollbars
         style={{ width: "calc(100vw - 16rem)", height: "100vh" }} // Ensure it fits correctly
       >
         <main className="p-8 h-full overflow-hidden">

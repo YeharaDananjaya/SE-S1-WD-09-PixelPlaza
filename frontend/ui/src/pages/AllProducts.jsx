@@ -6,22 +6,25 @@ import { HorizontalLine } from "../components/HorizontalLine";
 import { motion } from "framer-motion";
 import { Dialog } from "@headlessui/react";
 import ImageCarousel from "../components/ImageCarousel"; // Adjust import path as needed
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import { useNavigate } from "react-router-dom";
 
 export const AllProducts = () => {
+  const shopID = localStorage.getItem("shopId"); // Get shopID from localStorage
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
-  const [showDetailModal, setShowDetailModal] = useState(false); // Added state for detail modal
-  const navigate = useNavigate(); // Initialize navigate
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/products");
+        const response = await axios.get(
+          `http://localhost:3000/api/products/shop/${shopID}`
+        );
         setProducts(response.data);
       } catch (error) {
         console.error("Failed to fetch products:", error);
@@ -29,7 +32,7 @@ export const AllProducts = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [shopID]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -40,8 +43,8 @@ export const AllProducts = () => {
       await axios.delete(
         `http://localhost:3000/api/products/${productToDelete}`
       );
-      setProducts(
-        products.filter((product) => product._id !== productToDelete)
+      setProducts((prevProducts) =>
+        prevProducts.filter((product) => product.id !== productToDelete)
       );
       setShowConfirmModal(false);
     } catch (error) {
@@ -56,13 +59,15 @@ export const AllProducts = () => {
 
   const handleUpdateProduct = async () => {
     try {
-      await axios.put(
-        `http://localhost:3000/api/products/${selectedProduct._id}`,
+      const response = await axios.put(
+        `http://localhost:3000/api/products/${selectedProduct.id}`, // Ensure correct ID is used
         selectedProduct
       );
-      setProducts(
-        products.map((product) =>
-          product._id === selectedProduct._id ? selectedProduct : product
+      const updatedProduct = response.data.product; // Assuming your API returns the updated product
+
+      setProducts((prevProducts) =>
+        prevProducts.map((product) =>
+          product._id === updatedProduct._id ? updatedProduct : product
         )
       );
       setShowEditModal(false);
@@ -81,7 +86,7 @@ export const AllProducts = () => {
   );
 
   return (
-    <div className="flex-1 bg-[#F4F4F4] p-8">
+    <div className="flex-1 w-[80vw] bg-[#F4F4F4] p-8">
       <h1 className="font-russo text-[#212529] text-4xl text-center mb-4">
         Products
       </h1>
@@ -170,7 +175,6 @@ export const AllProducts = () => {
         className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50"
       >
         <Dialog.Panel className="bg-white border-4 border-[#E76F51] p-6 rounded-lg shadow-lg w-full max-w-2xl font-sans relative overflow-hidden">
-          {/* Stylish Close Button */}
           <button
             onClick={() => setShowDetailModal(false)}
             className="absolute top-2 right-2 p-2 bg-[#E76F51] text-white rounded-full shadow-lg hover:bg-[#D64F3D] transition-colors"
@@ -179,7 +183,6 @@ export const AllProducts = () => {
           </button>
 
           <div className="flex flex-col sm:flex-row items-center">
-            {/* Image Section */}
             <div className="flex-shrink-0 w-full sm:w-1/2 mb-4 sm:mb-0">
               {selectedProduct?.images && selectedProduct.images.length > 0 ? (
                 <ImageCarousel images={selectedProduct.images} />
@@ -190,7 +193,6 @@ export const AllProducts = () => {
               )}
             </div>
 
-            {/* Details Section */}
             <div className="flex-1 sm:pl-6">
               <Dialog.Title className="text-3xl font-bold text-[#212529] mb-4">
                 {selectedProduct?.name}
@@ -200,72 +202,20 @@ export const AllProducts = () => {
                   <span className="bg-[#E76F51] text-white rounded-md px-2 py-1 mr-2 text-sm">
                     Price:
                   </span>
-                  <span className="text-xl font-medium text-[#E76F51]">
+                  <span className="text-lg font-semibold text-[#E76F51]">
                     Rs. {selectedProduct?.price}
                   </span>
                 </div>
                 <div>
-                  <span className="bg-[#E76F51] text-white rounded-md px-2 py-1 mr-2 text-sm">
-                    Description:
-                  </span>
-                  <p className="text-lg text-gray-700 leading-relaxed">
-                    {selectedProduct?.description}
+                  <span className="font-semibold">Description:</span>
+                  <p>
+                    {selectedProduct?.description ||
+                      "No description available."}
                   </p>
                 </div>
-                <div className="flex items-center">
-                  <span className="bg-[#E76F51] text-white rounded-md px-2 py-1 mr-2 text-sm">
-                    Category:
-                  </span>
-                  <span className="text-lg text-gray-700">
-                    {selectedProduct?.category}
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <span className="bg-[#E76F51] text-white rounded-md px-2 py-1 mr-2 text-sm">
-                    Colors:
-                  </span>
-                  <div className="flex space-x-2">
-                    {selectedProduct?.colors.map((color, index) => (
-                      <span
-                        key={index}
-                        className="inline-block w-6 h-6 rounded-full border border-gray-300"
-                        style={{ backgroundColor: color }}
-                      />
-                    ))}
-                  </div>
-                </div>
+                {/* Add more details as necessary */}
               </div>
             </div>
-          </div>
-        </Dialog.Panel>
-      </Dialog>
-
-      {/* Confirm Delete Modal */}
-      <Dialog
-        open={showConfirmModal}
-        onClose={() => setShowConfirmModal(false)}
-        className="fixed inset-0 flex items-center justify-center p-4"
-      >
-        <Dialog.Panel className="w-full max-w-md bg-white rounded-lg p-6 border-4 border-[#E76F51] shadow-lg">
-          <Dialog.Title className="text-lg font-bold text-center mb-4">
-            Confirm Delete
-          </Dialog.Title>
-          <p className="text-center text-gray-700 mb-6">
-            Are you sure you want to delete this product?
-          </p>
-          <div className="flex justify-center space-x-4">
-            <button
-              onClick={handleDelete}
-              className="btn bg-red-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-red-600 transition-colors"
-            >
-              Delete
-            </button>
-            <button
-              onClick={() => setShowConfirmModal(false)}
-              className="btn bg-gray-200 text-black px-4 py-2 rounded-md shadow-md hover:bg-gray-300 transition-colors"
-            >
-              Cancel
-            </button>
           </div>
         </Dialog.Panel>
       </Dialog>
@@ -274,69 +224,92 @@ export const AllProducts = () => {
       <Dialog
         open={showEditModal}
         onClose={() => setShowEditModal(false)}
-        className="fixed inset-0 flex items-center justify-center p-4"
+        className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50"
       >
-        <Dialog.Panel className="w-full max-w-md bg-white rounded-lg p-6 border-4 border-[#E76F51] shadow-lg">
-          <Dialog.Title className="text-lg font-bold text-center mb-4">
+        <Dialog.Panel className="bg-white border-4 border-[#E76F51] p-6 rounded-lg shadow-lg w-full max-w-md">
+          <Dialog.Title className="text-xl font-bold text-[#212529] mb-4">
             Edit Product
           </Dialog.Title>
-          {selectedProduct && (
-            <div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleUpdateProduct();
+            }}
+          >
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-semibold text-[#212529]">
+                Product Name
+              </label>
               <input
                 type="text"
-                value={selectedProduct.name}
+                value={selectedProduct?.name || ""}
                 onChange={(e) =>
-                  setSelectedProduct({
-                    ...selectedProduct,
+                  setSelectedProduct((prev) => ({
+                    ...prev,
                     name: e.target.value,
-                  })
+                  }))
                 }
-                placeholder="Product Name"
-                className="input input-bordered w-full mb-4"
+                required
+                className="input input-bordered w-full"
               />
-              <input
-                type="text"
-                value={selectedProduct.price}
-                onChange={(e) =>
-                  setSelectedProduct({
-                    ...selectedProduct,
-                    price: e.target.value,
-                  })
-                }
-                placeholder="Product Price"
-                className="input input-bordered w-full mb-4"
-              />
-              <textarea
-                value={selectedProduct.description}
-                onChange={(e) =>
-                  setSelectedProduct({
-                    ...selectedProduct,
-                    description: e.target.value,
-                  })
-                }
-                placeholder="Product Description"
-                className="textarea textarea-bordered w-full mb-4"
-              ></textarea>
-              <div className="flex justify-end space-x-4">
-                <button
-                  onClick={handleUpdateProduct}
-                  className="btn bg-[#E76F51] text-white px-4 py-2 rounded-md shadow-md hover:bg-[#D64F3D] transition-colors"
-                >
-                  Update
-                </button>
-                <button
-                  onClick={() => setShowEditModal(false)}
-                  className="btn bg-gray-200 text-black px-4 py-2 rounded-md shadow-md hover:bg-gray-300 transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
             </div>
-          )}
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-semibold text-[#212529]">
+                Price
+              </label>
+              <input
+                type="number"
+                value={selectedProduct?.price || ""}
+                onChange={(e) =>
+                  setSelectedProduct((prev) => ({
+                    ...prev,
+                    price: e.target.value,
+                  }))
+                }
+                required
+                className="input input-bordered w-full"
+              />
+            </div>
+            {/* Add more fields as needed */}
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="btn bg-[#E76F51] text-white px-4 py-2 rounded-md shadow-md hover:bg-[#D64F3D] transition-colors"
+              >
+                Update Product
+              </button>
+            </div>
+          </form>
+        </Dialog.Panel>
+      </Dialog>
+
+      {/* Confirm Delete Modal */}
+      <Dialog
+        open={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50"
+      >
+        <Dialog.Panel className="bg-white border-4 border-[#E76F51] p-6 rounded-lg shadow-lg w-full max-w-md text-center">
+          <Dialog.Title className="text-lg font-bold text-[#212529] mb-4">
+            Confirm Deletion
+          </Dialog.Title>
+          <p>Are you sure you want to delete this product?</p>
+          <div className="flex justify-around mt-4">
+            <button
+              onClick={() => setShowConfirmModal(false)}
+              className="btn bg-gray-300 text-black px-4 py-2 rounded-md"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDelete}
+              className="btn bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+            >
+              Delete
+            </button>
+          </div>
         </Dialog.Panel>
       </Dialog>
     </div>
   );
 };
-
-export default AllProducts;
