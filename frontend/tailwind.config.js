@@ -3,10 +3,21 @@ module.exports = {
   content: ["./src/**/*.{html,js}"],
   theme: {
     extend: {
+
+      textShadow: {
+        'none': 'none',
+        'sm': '1px 1px 0 rgba(0, 0, 0, 0.1)',
+        'DEFAULT': '2px 2px 0 rgba(0, 0, 0, 0.2)',
+        'md': '3px 3px 0 rgba(0, 0, 0, 0.3)',
+        'lg': '4px 4px 0 rgba(0, 0, 0, 0.4)',
+        'xl': '5px 5px 0 rgba(0, 0, 0, 0.5)',
+      },     
+
       colors: { // adding colors to the platform
         primary: "#FFFFFF",
         secondary: "#000000",
         baseextra2: "#E76F51",
+        baseextra6: "#cf401d",
         baseextra3: "#212529",
         baseextra4: "#02203c",
         baseextra5: "#171614"
@@ -31,6 +42,8 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwindcss-textshadow'),
+  ],
 }
 
