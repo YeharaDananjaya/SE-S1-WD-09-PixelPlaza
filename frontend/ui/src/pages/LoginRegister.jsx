@@ -96,7 +96,7 @@ export const LoginRegister = () => {
       } else if (loggedInUser.userLevel === 1) {
         window.location.href = "/overview";
       } else {
-        window.location.href = "/customer/dashboard";
+        window.location.href = "/home";
       }
 
       setSuccess("Login successful!");
