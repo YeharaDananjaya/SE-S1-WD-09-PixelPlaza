@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 // MongoDB Connection
 const mongoURI =
   process.env.MONGO_URI ||
-  "mongodb+srv://osanda:osa623@cluster0.kplpa.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+  "mongodb+srv://Yehara:S123@cluster0.y694y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 mongoose
   .connect(mongoURI)
   .then(() => console.log("MongoDB connected"))
