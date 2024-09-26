@@ -41,6 +41,15 @@ app.use("/api/users", userRoutes); // Use the userRoutes for the /api/users endp
 const salesRoutes = require("./routes/shops");
 app.use("/api/shops", salesRoutes);
 
+const cartproductRoutes = require("./routes/cartproductRoutes");
+app.use("/api/cartProduct", cartproductRoutes);
+
+const previousOrderRoutes = require("./routes/previousOrderRoutes");
+app.use("/api/previousOrders", previousOrderRoutes);
+
+const wishlistRoutes = require("./routes/wishlistRoutes");
+app.use("/api/wishlist", wishlistRoutes);
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

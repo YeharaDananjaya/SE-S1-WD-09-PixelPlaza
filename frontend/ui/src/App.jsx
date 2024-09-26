@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SellerLayout from "./layouts/SellerLayout"; // Import SellerLayout
 import AdminLayout from "./layouts/AdminLayout"; // Import AdminLayout
+import ClientLayout from "./layouts/ClientLayout";
 import { Overview } from "./pages/Overview";
 import { LoginRegister } from "./pages/LoginRegister";
 import { AddProduct } from "./pages/AddProduct"; // Import the AddProduct component
@@ -14,6 +15,14 @@ import { CreateSeller } from "./pages/CreateSeller";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import Shoppanel from "./pages/Shoppanel";
 import Mapmodel from "./pages/Mapmodel";
+import IndexPage from "./pages/IndesxPage";
+import ItemList from "./pages/ItemList";
+import CartPage from "./pages/CartPage";
+import PurchasingPage from "./pages/PurchasingPage";
+import Wishlist from "./pages/Wishlist";
+import Profile from "./pages/Profile";
+import ScrollToTop from "./pages/ScrollToTop";
+import EditCartItem from "./pages/EditCartItem";
 
 const toggleTheme = () => {
   document.documentElement.classList.toggle("friend-theme");
@@ -115,6 +124,70 @@ function App() {
             <AdminLayout>
               <Shoppanel />
             </AdminLayout>
+          }
+        />
+
+        {/* Client Routes */}
+        <Route
+          path="/home"
+          element={
+            <ClientLayout>
+              <IndexPage />
+            </ClientLayout>
+          }
+        />
+
+        <Route
+          path="/cart"
+          element={
+            <ClientLayout>
+              <CartPage />
+            </ClientLayout>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ClientLayout>
+              <Profile />
+            </ClientLayout>
+          }
+        />
+
+        <Route
+          path="/wishlist"
+          element={
+            <ClientLayout>
+              <Wishlist />
+            </ClientLayout>
+          }
+        />
+
+        <Route
+          path="/itemlist"
+          element={
+            <ClientLayout>
+              <ItemList />
+            </ClientLayout>
+          }
+        />
+
+        <Route
+          path="/purchase/:id"
+          element={
+            <ClientLayout>
+              <PurchasingPage />
+            </ClientLayout>
+          }
+        />
+
+        <Route
+          path="/editcartitem/:id"
+          element={
+            <ClientLayout>
+              <EditCartItem />
+            </ClientLayout>
           }
         />
       </Routes>
