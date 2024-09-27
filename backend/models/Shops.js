@@ -1,29 +1,35 @@
 const mongoose = require("mongoose");
 
 const shopSchema = new mongoose.Schema({
-
-  floorID: { 
-    type: String, 
+  floorID: {
+    type: String,
     unique: true,
     required: true,
   },
-  shopKeeperPhoto: { 
-    type: String
+  shopID: {
+    type: String,
+    unique: true,
   },
-  shopKeeperName: { 
-    type: String
+  shopKeeperPhoto: {
+    type: String,
   },
-  shopName: { 
-    type: String
+  shopKeeperName: {
+    type: String,
   },
-  assignDate: { 
-    type: Date
+  shopName: {
+    type: String,
   },
-  Value: { 
-    type: Number 
+  assignDate: {
+    type: Date,
   },
-  description: { 
-    type: String 
+  Value: {
+    type: Number,
+  },
+  contactInfo: {
+    type: String,
+  },
+  description: {
+    type: String,
   },
 });
 

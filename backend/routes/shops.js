@@ -10,7 +10,9 @@ router.post("/addFloorID", async (req, res) => {
     // Check if a shop with this floorID already exists
     const existingShop = await Shops.findOne({ floorID: newFloorID });
     if (existingShop) {
-      return res.status(400).json({ message: "Shop with this floorID already exists" });
+      return res
+        .status(400)
+        .json({ message: "Shop with this floorID already exists" });
     }
 
     const newShop = new Shops({
@@ -38,6 +40,7 @@ router.put("/updateDetails/:floorID", async (req, res) => {
 
     // Update other details
     shop.shopKeeperName = req.body.shopKeeperName;
+    shop.shopID = req.body.shopID;
     shop.shopName = req.body.shopName;
     shop.assignDate = req.body.assignDate;
     shop.Value = req.body.Value;
@@ -45,13 +48,14 @@ router.put("/updateDetails/:floorID", async (req, res) => {
 
     await shop.save();
 
-    res.status(200).json({ message: "Shop details updated successfully", shop });
+    res
+      .status(200)
+      .json({ message: "Shop details updated successfully", shop });
   } catch (error) {
     console.error("Error updating shop details:", error);
     res.status(500).json({ message: "Failed to update shop details", error });
   }
 });
-
 
 // Route to add or update shopkeeper image and description
 router.put("/updateShopkeeper/:floorID", async (req, res) => {
@@ -70,13 +74,16 @@ router.put("/updateShopkeeper/:floorID", async (req, res) => {
 
     await shop.save();
 
-    res.status(200).json({ message: "Shopkeeper details updated successfully", shop });
+    res
+      .status(200)
+      .json({ message: "Shopkeeper details updated successfully", shop });
   } catch (error) {
     console.error("Error updating shopkeeper details:", error);
-    res.status(500).json({ message: "Failed to update shopkeeper details", error });
+    res
+      .status(500)
+      .json({ message: "Failed to update shopkeeper details", error });
   }
 });
-
 
 // Route to add a new shop
 router.post("/add", async (req, res) => {
@@ -85,6 +92,7 @@ router.post("/add", async (req, res) => {
 
     const newShop = new Shops({
       floorID: newFloorID, // Use provided floor ID
+      shopID: req.body.shopID,
       shopKeeperPhoto: req.body.shopKeeperPhoto,
       shopKeeperName: req.body.shopKeeperName,
       shopName: req.body.shopName,
@@ -101,6 +109,38 @@ router.post("/add", async (req, res) => {
   }
 });
 
+// Route to bulk insert shops
+router.post("/bulkAdd", async (req, res) => {
+  try {
+    const shopsData = req.body; // Get the array of shop data from the request body
+
+    // Validate that the request body is an array
+    if (!Array.isArray(shopsData)) {
+      return res.status(400).json({ message: "Request body must be an array" });
+    }
+
+    // Create an array of shop documents to be inserted
+    const newShops = shopsData.map((shop) => ({
+      floorID: shop.floorID,
+      shopID: shop.shopID,
+      shopKeeperPhoto: shop.shopKeeperPhoto,
+      shopKeeperName: shop.shopKeeperName,
+      shopName: shop.shopName,
+      assignDate: shop.assignDate,
+      Value: shop.Value,
+      description: shop.description,
+    }));
+
+    // Insert the array of shops into the database
+    const result = await Shops.insertMany(newShops);
+
+    res.status(201).json({ message: "Shops added successfully", result });
+  } catch (error) {
+    console.error("Error bulk inserting shops:", error);
+    res.status(500).json({ message: "Failed to bulk insert shops", error });
+  }
+});
+
 // Route to get all shops
 router.get("/get", async (req, res) => {
   try {
@@ -109,6 +149,32 @@ router.get("/get", async (req, res) => {
   } catch (error) {
     console.error("Error fetching shops:", error);
     res.status(500).json({ message: "Failed to fetch shops", error });
+  }
+});
+
+// Route to get all shops that have a shop name
+router.get("/getShopsWithName", async (req, res) => {
+  try {
+    const shops = await Shops.find({ shopName: { $exists: true, $ne: "" } }); // Only return shops with shopName
+    res.status(200).json(shops);
+  } catch (error) {
+    console.error("Error fetching shops:", error);
+    res.status(500).json({ message: "Failed to fetch shops", error });
+  }
+});
+
+// Route to get a single shop by shopID
+router.get("/getByShopID/:shopID", async (req, res) => {
+  try {
+    const { shopID } = req.params; // Extract shopID from the request params
+    const shop = await Shops.findOne({ shopID: shopID }); // Find the shop by shopID
+    if (!shop) {
+      return res.status(404).json({ message: "Shop not found" }); // If no shop is found, return 404
+    }
+    res.status(200).json(shop); // Return the found shop
+  } catch (error) {
+    console.error("Error fetching shop by shopID:", error);
+    res.status(500).json({ message: "Failed to fetch shop", error }); // Handle errors
   }
 });
 
@@ -143,6 +209,37 @@ router.put("/update/:floorID", async (req, res) => {
   } catch (error) {
     console.error("Error updating shop:", error);
     res.status(500).json({ message: "Failed to update shop", error });
+  }
+});
+
+// Route to update shop details by shopID
+router.put("/updateByShopID/:shopID", async (req, res) => {
+  try {
+    const { shopID } = req.params; // Get the shopID from the request params
+
+    // Check if the shop with this shopID exists
+    const shop = await Shops.findOne({ shopID: shopID });
+    if (!shop) {
+      return res.status(404).json({ message: "Shop not found" });
+    }
+
+    // Update shop details
+    shop.floorID = req.body.floorID || shop.floorID; // Update only if new value is provided
+    shop.shopKeeperName = req.body.shopKeeperName || shop.shopKeeperName;
+    shop.shopName = req.body.shopName || shop.shopName;
+    shop.assignDate = req.body.assignDate || shop.assignDate;
+    shop.Value = req.body.Value || shop.Value;
+    shop.description = req.body.description || shop.description;
+    shop.shopKeeperPhoto = req.body.shopKeeperPhoto || shop.shopKeeperPhoto; // Update shopKeeperPhoto if new value is provided
+
+    await shop.save();
+
+    res
+      .status(200)
+      .json({ message: "Shop details updated successfully", shop });
+  } catch (error) {
+    console.error("Error updating shop details by shopID:", error);
+    res.status(500).json({ message: "Failed to update shop details", error });
   }
 });
 

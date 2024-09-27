@@ -20,7 +20,8 @@ module.exports = {
         baseextra6: "#cf401d",
         baseextra3: "#212529",
         baseextra4: "#02203c",
-        baseextra5: "#171614"
+        baseextra5: "#171614",
+        colorButton1 : "#000039"
       },
       fontFamily: {
         poppins: ['Poppins', 'sans-serif'],
