@@ -3,7 +3,6 @@ module.exports = {
   content: ["./src/**/*.{html,js}"],
   theme: {
     extend: {
-
       textShadow: {
         'none': 'none',
         'sm': '1px 1px 0 rgba(0, 0, 0, 0.1)',
@@ -45,6 +44,7 @@ module.exports = {
   },
   plugins: [
     require('tailwindcss-textshadow'),
+    require('tailwind-scrollbar'),
   ],
 }
 
