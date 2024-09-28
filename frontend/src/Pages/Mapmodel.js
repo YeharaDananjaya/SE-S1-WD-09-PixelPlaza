@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState , useRef} from 'react';
 import Aos from 'aos';
+import { getBotResponse } from '../Utils/botResponses.js';
 import 'aos/dist/aos.css'; 
 
 
@@ -13,6 +14,7 @@ import bot from '../Assests/Graident Ai Robot.png';
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDoubleLeft, faAngleDoubleRight,  faBuildingCircleArrowRight, faCaretDown, faListSquares,  faRobot, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faMessage } from '@fortawesome/free-regular-svg-icons';
 
 
 
@@ -23,11 +25,23 @@ const Mapmodel = () => {
   const [showMain02, setShowMain02] = useState(false);
   const [showChatBot, setShowChatBot] = useState(false);
   const [currentFloor, setCurrentFloor] = useState('floor1');
-  const [message, setMessage] = useState([]);
+  const [input, setInput] = useState('');
+  const [chatMessages, setChatMessages] = useState([]);
   const floor1Ref = useRef(null);
   const floor2Ref = useRef(null);
   const floor3Ref = useRef(null);
   const floor4Ref = useRef(null);
+
+  const handleSendMessage = () => {
+    if (input.trim()) {
+      setChatMessages([...chatMessages, { sender: 'user', text: input }]);
+      setInput('');
+
+      // Get bot response based on user input
+      const botResponse = getBotResponse(input);
+      setChatMessages(prevMessages => [...prevMessages, { sender: 'bot', text: botResponse }]);
+    }
+  };
 
 
   const scrollToFloor = (floor) => {
@@ -67,7 +81,9 @@ const Mapmodel = () => {
     <div className="relative h-auto flex w-auto">
       {/* Sidebar */}
 
-      <div className="fixed flex-col h-[100vh] justify-center flex items-center w-[25vw] border-r-2 bg-baseextra6 left-0 top-0 z-40">
+      <div className="fixed flex-col h-[100vh] justify-center flex items-center w-[25vw] bg-baseextra6 left-0 top-0 z-40" style={{
+        boxShadow:' 4px 1px 10px rgba(0, 0, 0, 0.8)'
+      }}>
       
           {/* Welocoming Section for the Map Model*/}
 
@@ -352,65 +368,169 @@ const Mapmodel = () => {
                           </div>
                           
                         
-                              <h2 className='w-[20vw] h-auto mt-2 text-center text-shadow-md font-russoone text-4xl text-primary'style={{
-                                    textShadow: 'inset 0 1px 1px 2px rgba(0, 0, 0, 0.7), -1px -1px 10px rgba(0, 0, 0, 0.7)' 
-                              }}>
-                                Plaza ChatBot
-                              </h2>
+                            <div className='flex w-auto h-auto items-center justify-center'>
 
-                              <div className='flex flex-col w-[24vw] mt-6 h-[60vh] items-center justify-center p-2 space-y-5'>
+                                 <div className='flex flex-col h-auto w-auto items-center justify-center'>
+                                      <h2 className='mt-2 text-center items-center text-shadow-md font-russoone text-4xl text-primary'style={{
+                                            textShadow: 'inset 0 1px 1px 2px rgba(0, 0, 0, 0.7), -1px -1px 10px rgba(0, 0, 0, 0.7)' 
+                                      }}>
+                                        Ask Me
+                                      </h2>
+                                      <h2 className='text-center items-center font-ibmplexsans text-primary'style={{
+                                        fontSize:'9px'
+                                      }}>
+                                        Pixel PLaza ChatBot Experience
+                                      </h2>
+
+                                </div>
+
+                                <img src={bot} alt='' className='h-16'/>
+
+                            </div>
+
+
+                              <div className='flex flex-col w-[24vw] h-[60vh] items-center justify-center p-2 space-y-5'>
 
                               <div className='flex flex-col w-[24vw] h-[50vh] overflow-y-auto bg-white p-4 rounded-xl shadow-inner space-y-2 scrollbar-none' style={{
                                               boxShadow:'inset 0 3px 10px rgba(0, 0, 0, 0.8)'
                                             }}>
-                                                  {/* Example message from user */}
-                                                  <div className='self-end bg-blue-500 text-white p-2 rounded-lg shadow'>
-                                                    Hi, chatbot!
-                                                  </div>
-                                                  
                                                   {/* Example message from chatbot */}
                                                   <div className='self-start bg-transparent flex w-[20vw] h-auto text-black rounded-lg'>
                                                       <div className='flex bg-transparent w-[5vw] h-[12vh]'>
-                                                          <img src={bot} alt='' className='max-h-18' style={{
+                                                          <img src={bot} alt='' className='max-h-18 w-auto' style={{
   
                                                           }}/>
                                                       </div>
-                                                      <div className='flex bg-primary  rounded-2xl w-[15vw] h-96' style={{
+                                                      <div className='flex flex-col bg-primary  rounded-2xl w-[14vw] h-[45vh]' style={{
                                                         boxShadow : 'inset 0 1px 5px rgba(0, 0, 0, 0.8)'
-                                                      }}></div>
+                                                      }}>
+
+                                                          <div className='flex flex-col w-[14vw] h-[40vh] rounded-2xl items-start p-2 justify-start'>
+
+                                                                <h2 className='flex flex-col font-ibmplexsans text-xs text-secondary' style={{
+                                                                  fontWeight:'200'
+                                                                }}>
+                                                                    Welcome to {''}<span className='flex flex-col font-russoone text-lg text-baseextra6 text-shadow-DEFAULT'>
+                                                                      PixelPlaza
+                                                                </span>
+                                                                </h2>
+
+                                                                
+                                                                <div className='bg-baseextra2 w-[8vw] mt-1 rounded-full' style={{
+                                                                  height:'0.1rem'
+                                                                }}/>
+
+                                                                <p className='font-ibmplexsans w-[12vw] mt-1 text-secondary' style={{
+                                                                  fontSize:'10px'
+                                                                }}>
+                                                                {''}<span className='text-colorButton1' style={{fontSize:'15px', fontWeight:'300'}}>E</span>xplore our shopping complex with a variety of stores, tasty dining options, and fun activities. I’m here to help you find great deals and make your shopping experience enjoyable. Happy shopping!
+                                                                </p>
+
+                                                                <div className='bg-baseextra2 w-[8vw] mt-2 rounded-full' style={{
+                                                                  height:'0.1rem'
+                                                                }}/>
+
+                                                                <h2 className='flex flex-col mt-2 font-ibmplexsans text-xs text-secondary' style={{
+                                                                    fontWeight:'400'
+                                                                  }}>
+                                                                      Here are the Floor Sections
+                                                                </h2>
+
+                                                                <div className='grid grid-cols-2 w-auto bg-transparent gap-4 items-center justify-center' style={{
+                                                                }}>
+
+                                                                      <button onClick={()=> {setCurrentFloor('floor1'); scrollToFloor('floor1');}} className='flex h-[1.8rem] w-[5vw]  bg-secondary items-center justify-center rounded-full drop-shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out' style={{
+                                                                          boxShadow: 'inset 0 3px 10px rgba(0, 255, 255, 0.8), 1px 2px 10px rgba(0, 0, 0, 0.3), 5px 2px 10px rgba(0, 0, 0, 0.2)'
+
+                                                                      }}>
+                                                                        <h2 className='flex font-ibmplexsans text-primary' style={{
+                                                                          fontWeight:'300',
+                                                                          fontSize:'10px'
+                                                                        }}>Floor 1</h2><FontAwesomeIcon icon={faBuildingCircleArrowRight} className='mx-2 h-3 text-primary'/>
+                                                                      </button>
+
+
+                                                                      <button onClick={()=> { setCurrentFloor('floor2'); scrollToFloor('floor2');}} className='flex h-[1.8rem] w-[5vw]  bg-secondary items-center justify-center rounded-full drop-shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out' style={{
+                                                                          boxShadow: 'inset 0 3px 10px rgba(0, 255, 255, 0.8), 1px 2px 10px rgba(0, 0, 0, 0.3), 5px 2px 10px rgba(0, 0, 0, 0.2)'
+
+                                                                      }}>
+                                                                        <h2 className='flex font-ibmplexsans text-primary' style={{
+                                                                          fontWeight:'300',
+                                                                          fontSize:'10px'
+                                                                        }}>Floor 2</h2><FontAwesomeIcon icon={faBuildingCircleArrowRight} className='mx-2 h-3 text-primary'/>
+                                                                      </button>
+
+                                                                      
+                                                                      <button onClick={()=> {setCurrentFloor('floor3'); scrollToFloor('floor3');}} className='flex h-[1.8rem] w-[5vw]  bg-secondary items-center justify-center rounded-full drop-shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out' style={{
+                                                                          boxShadow: 'inset 0 3px 10px rgba(0, 255, 255, 0.8), 1px 2px 10px rgba(0, 0, 0, 0.3), 5px 2px 10px rgba(0, 0, 0, 0.2)'
+
+                                                                      }}>
+                                                                        <h2 className='flex font-ibmplexsans text-primary' style={{
+                                                                          fontWeight:'300',
+                                                                          fontSize:'10px'
+                                                                        }}>Floor 3</h2><FontAwesomeIcon icon={faBuildingCircleArrowRight} className='mx-2 h-3 text-primary'/>
+                                                                      </button>
+
+
+                                                                      <button onClick={()=> {setCurrentFloor('floor4'); scrollToFloor('floor4');}} className='flex h-[1.8rem] w-[5vw]  bg-secondary items-center justify-center rounded-full drop-shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out' style={{
+                                                                          boxShadow: 'inset 0 3px 10px rgba(0, 255, 255, 0.8), 1px 2px 10px rgba(0, 0, 0, 0.3), 5px 2px 10px rgba(0, 0, 0, 0.2)'
+
+                                                                      }}>
+                                                                        <h2 className='flex font-ibmplexsans text-primary' style={{
+                                                                          fontWeight:'300',
+                                                                          fontSize:'10px'
+                                                                        }}>Floor 4</h2><FontAwesomeIcon icon={faBuildingCircleArrowRight} className='mx-2 h-3 text-primary'/>
+                                                                      </button>
+
+                                                                </div>  
+
+                                                          </div>
+
+                                                      </div>  
                                                   </div>
                                                  
                                                   
                                                   {/* Render dynamic messages here */}
-                                                  {message.map((msg, index) => (
-                                                    <div
-                                                      key={index}
-                                                      className={`${
-                                                        msg.sender === 'user'
-                                                          ? 'self-end bg-blue-500 text-white'
-                                                          : 'self-start bg-gray-300 text-black'
-                                                      } p-2 rounded-lg shadow`}
-                                                    >
-                                                      {msg.text}
-                                                    </div>
-                                                  ))}
+                                                  {chatMessages.map((msg, index) => (
+                                                        <div
+                                                          key={index}
+                                                          className={`${
+                                                            msg.sender === 'user'
+                                                              ? 'self-end bg-blue-500 text-white'
+                                                              : 'self-start bg-transparent flex w-[20vw] h-auto text-black rounded-lg'
+                                                          } p-2 rounded-lg shadow`}
+                                                        >
+                                                          {msg.sender === 'bot' && (
+                                                            <div className='flex bg-transparent w-[5vw] h-[12vh]'>
+                                                              <img src={bot} alt='' className='max-h-18' />
+                                                            </div>
+                                                          )}
+                                                          <div className={msg.sender === 'bot' ? 'flex bg-primary rounded-2xl w-[15vw] h-auto' : ''}>
+                                                            {msg.text}
+                                                          </div>
+                                                        </div>
+                                                      ))}
                                                 </div>
 
                                                 {/* Chat Input */}
-                                                <div className='flex w-[24vw]'>
-                                                  <input
-                                                    type='text'
-                                                    value={'input'}
-                                                    className='w-[80%] p-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500'
-                                                    placeholder='Type a message...'
-                                                  />
-                                                  <button
-                                                    onClick={'handleSendMessage'}
-                                                    className='w-[20%] p-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition duration-300'
-                                                  >
-                                                    Send
-                                                  </button>
-                               </div>
+                                                <div className='flex w-[24vw] space-x-2'>
+                                                              <input
+                                                                type='text'
+                                                                value={input}
+                                                                onChange={e => setInput(e.target.value)}
+                                                                className='w-[80%] p-2 border rounded-xl shadow focus:outline-none focus:ring-2 focus:ring-blue-500'
+                                                                placeholder='Type a message...'
+                                                              />
+                                                              <button
+                                                                onClick={handleSendMessage}
+                                                                className='w-[15%] p-2 bg-secondary text-white rounded-lg shadow hover:bg-blue-900 transition duration-300'
+                                                                style={{
+                                                                  boxShadow: 'inset 0 3px 8px rgba(0, 255, 255, 0.8)',
+                                                                }}
+                                                              >
+                                                                <FontAwesomeIcon icon={faMessage} className='text-primary' />
+                                                              </button>
+                                                            </div>
 
 
 
@@ -469,7 +589,7 @@ const Mapmodel = () => {
                         <div className='flex flex-col bg-transparent h-[5vh] w-[75vw]'/>
 
 
-                                    <div ref={floor1Ref} className='flex flex-col w-auto items-center justify-center' data-aos='fade-up'>
+                                    <div ref={floor1Ref} className='flex flex-col w-auto items-center justify-center' data-aos='fade-right' data-aos-delay='500'>
 
                                       <div className='flex flex-col w-[60vw] h-[10vh] items-center justify-center'>
                                       <h2
@@ -651,7 +771,7 @@ const Mapmodel = () => {
                           <div className='flex bg-transparent h-[5vh] w-[75vw]'/>
                             {currentFloor === 'floor2' && (
 
-                                <div ref={floor2Ref} className='flex flex-col w-auto h-auto items-center justify-center' data-aos='fade-up'>
+                                <div ref={floor2Ref} className='flex flex-col w-auto h-auto items-center justify-center' data-aos='fade-right' data-aos-delay='500'>
 
                                     <div className='flex flex-col w-[60vw] h-[10vh] items-center justify-center'>
                                         <h2
@@ -829,7 +949,7 @@ const Mapmodel = () => {
                     <div className=' flex flex-col h-auto w-[75vw] items-center justify-center'>
                             {currentFloor === 'floor3' && (
 
-                                <div ref={floor3Ref} className='flex flex-col w-auto h-auto items-center justify-center' data-aos='fade-up'>
+                                <div ref={floor3Ref} className='flex flex-col w-auto h-auto items-center justify-center' data-aos='fade-right' data-aos-delay='500'>
 
                                     <div className='flex flex-col w-[60vw] h-[10vh] items-center justify-center'>
                                         <h2
@@ -1007,7 +1127,7 @@ const Mapmodel = () => {
                     <div className=' flex flex-col h-auto w-[75vw] items-center justify-center'>
                                   {currentFloor === 'floor4' && (
 
-                                      <div ref={floor4Ref} className='flex flex-col w-auto h-auto items-center justify-center' data-aos='fade-up'>
+                                      <div ref={floor4Ref} className='flex flex-col w-auto h-auto items-center justify-center' data-aos='fade-right' data-aos-delay='500'>
 
                                           <div className='flex flex-col w-[60vw] h-[10vh] items-center justify-center'>
                                               <h2
