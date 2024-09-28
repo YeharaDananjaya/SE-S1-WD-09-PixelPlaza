@@ -18,8 +18,6 @@ import { faAngleDoubleLeft, faAngleDoubleRight,  faBuildingCircleArrowRight, faC
 import { faMessage } from '@fortawesome/free-regular-svg-icons';
 
 
-
-
 const Mapmodel = () => {
 
   const [shops, setShops] = useState([]);
@@ -87,23 +85,20 @@ const Mapmodel = () => {
   //Fetching Shop Details Logic
 
   const handleClickShopView = async (shopID) => {
-    console.log('Shop ID:', shopID); // Check if this logs the correct ID
     try {
       const shopResponse = await axios.get(`http://localhost:5000/api/shops/getByShopID/${shopID}`);
+      console.log('Shop Response:', shopResponse.data); 
       setSelectedShop(shopResponse.data);
-
+  
       const productsResponse = await axios.get(`http://localhost:5000/api/products/shop/${shopID}`);
+      console.log('Products Response:', productsResponse.data);  
       setFetchProducts(productsResponse.data);
-
       setIsModVisible(true);
-
-
-      
     } catch (error) {
-      console.error('Error Fetching Shop Details', error);
+      console.error('Error Fetching Shop Details:', error);
     }
   };
-
+  
   const closeModal = () => {
 
     setIsModVisible(false);
@@ -653,7 +648,7 @@ const Mapmodel = () => {
                                           {shops.slice(0, 5).map((shop, index) => (
                                             <div
                                               key={index}
-                                              onClick={()=> handleClickShopView(shop.shopID)}
+                                              onClick={()=> handleClickShopView(shop?.shopID)}
                                               className="flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
                                               style={{
                                                 boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5)'
@@ -1864,23 +1859,35 @@ const Mapmodel = () => {
                             <div className='flex flex-col items-center justify-center w-[75vw] h-auto'>
 
                                       {/* Shop Detail Modal */}
-                                          {isModVisible && selectedShop && fetchProducts && (
-                                              <div className="bg-white rounded-lg p-5 w-[70vw] h-[75vh] mt-16 relative">
-                                                <button
-                                                  className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full"
-                                                  onClick={closeModal}
-                                                >
-                                                  X
-                                                </button>
+                                      {isModVisible && selectedShop && fetchProducts && (
+                                            <div className="bg-white rounded-lg p-5 w-[70vw] h-[75vh] mt-16 relative">
+                                              <button
+                                                className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full"
+                                                onClick={closeModal}
+                                              >
+                                                X
+                                              </button>
 
+                                              <h2 className="text-xl font-bold">{selectedShop.shopName}</h2>
+                                              <p>Shop ID: {selectedShop.shopID}</p>
+
+                                              {/* Display product details */}
+                                              <ul>
                                                 {fetchProducts.map((product) => (
-                                                  <li key={product._id}>{product.name}</li>
+                                                  <li key={product._id} className="mb-2">
+                                                    <h3 className="font-semibold">{product.name}</h3>
+                                                    {/* Check if images exist before trying to access them */}
+                                                    {product.images && product.images.length > 0 && (
+                                                      <img src={product.images[0]} alt={product.name} className="w-12 h-12" />
+                                                    )}
+                                                  </li>
                                                 ))}
-                                                <h2 className="text-xl font-bold">{selectedShop.shopName}</h2>
-                                                <p>Shop ID: {selectedShop.shopID}</p>
-                                                {/* Add more details here based on your API response */}
+                                              </ul>
+
+                                              {/* Add more details here based on your API response */}
                                             </div>
                                           )}
+
 
 
                             </div>
