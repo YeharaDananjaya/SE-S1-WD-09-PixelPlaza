@@ -92,10 +92,13 @@ const Mapmodel = () => {
       const shopResponse = await axios.get(`http://localhost:5000/api/shops/getByShopID/${shopID}`);
       setSelectedShop(shopResponse.data);
 
+      const productsResponse = await axios.get(`http://localhost:5000/api/products/shop/${shopID}`);
+      setFetchProducts(productsResponse.data);
+
       setIsModVisible(true);
 
 
-
+      
     } catch (error) {
       console.error('Error Fetching Shop Details', error);
     }
