@@ -405,7 +405,7 @@ const Mapmodel = () => {
                                                         boxShadow : 'inset 0 1px 5px rgba(0, 0, 0, 0.8)'
                                                       }}>
 
-                                                          <div className='flex flex-col w-[14vw] h-[40vh] rounded-2xl items-start p-2 justify-start'>
+                                                          <div className='flex flex-col w-[14vw] h-auto rounded-2xl items-start p-2 justify-start'>
 
                                                                 <h2 className='flex flex-col font-ibmplexsans text-xs text-secondary' style={{
                                                                   fontWeight:'200'
@@ -436,7 +436,7 @@ const Mapmodel = () => {
                                                                       Here are the Floor Sections
                                                                 </h2>
 
-                                                                <div className='grid grid-cols-2 w-auto bg-transparent gap-4 items-center justify-center' style={{
+                                                                <div className='grid grid-cols-2 w-auto mt-2 bg-transparent gap-3 items-center justify-center' style={{
                                                                 }}>
 
                                                                       <button onClick={()=> {setCurrentFloor('floor1'); scrollToFloor('floor1');}} className='flex h-[1.8rem] w-[5vw]  bg-secondary items-center justify-center rounded-full drop-shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out' style={{
@@ -483,6 +483,10 @@ const Mapmodel = () => {
                                                                       </button>
 
                                                                 </div>  
+
+                                                                <div className='bg-baseextra2 w-[8vw] mt-3 rounded-full' style={{
+                                                                  height:'0.1rem'
+                                                                }}/>
 
                                                           </div>
 
@@ -643,7 +647,7 @@ const Mapmodel = () => {
                                                     </div>                          
                                                     
                                                     <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                    boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)'
+                                                    boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
                                                     }}>
                                                         <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
                                                           fontWeight:'200'
@@ -656,8 +660,9 @@ const Mapmodel = () => {
                           
                                                 </div>
                           
-                                                <div className='flex w-[5vw] h-[8vh] items-center justify-center bg-primary rounded-t-2xl' style={{
-                                                  boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)'
+                                                <div className='flex w-[5vw] h-[8vh] items-center justify-center rounded-t-2xl' style={{
+                                                  boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
+                                                  backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
                                                 }}/>
                                             </div>
                                           ))}
@@ -748,8 +753,9 @@ const Mapmodel = () => {
                           
                                                   </div>
                           
-                                                  <div className='flex w-[5vw] h-[8vh] items-center justify-center bg-primary rounded-t-2xl' style={{
-                                                    boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)'
+                                                  <div className='flex w-[5vw] h-[8vh] items-center justify-center rounded-t-2xl' style={{
+                                                    boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
+                                                    backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
                                                   }}/>
                                               </div>
                                               ))}
@@ -838,8 +844,9 @@ const Mapmodel = () => {
 
                                               </div>
 
-                                              <div className='flex w-[5vw] h-[8vh] items-center justify-center bg-primary rounded-t-2xl' style={{
-                                                boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)'
+                                              <div className='flex w-[5vw] h-[8vh] items-center justify-center rounded-t-2xl' style={{
+                                                boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
+                                                backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
                                               }}/>
                                           </div>
                                       ))}
@@ -929,8 +936,9 @@ const Mapmodel = () => {
 
                                             </div>
 
-                                            <div className='flex w-[5vw] h-[8vh] items-center justify-center bg-primary rounded-t-2xl' style={{
-                                              boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)'
+                                            <div className='flex w-[5vw] h-[8vh] items-center justify-center rounded-t-2xl' style={{
+                                              boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
+                                              backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
                                             }}/>
                                         </div>
                                       ))}
@@ -1016,8 +1024,9 @@ const Mapmodel = () => {
 
                                               </div>
 
-                                              <div className='flex w-[5vw] h-[8vh] items-center justify-center bg-primary rounded-t-2xl' style={{
-                                                boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)'
+                                              <div className='flex w-[5vw] h-[8vh] items-center justify-center rounded-t-2xl' style={{
+                                                boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
+                                                backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
                                               }}/>
                                           </div>
                                       ))}
@@ -1107,8 +1116,9 @@ const Mapmodel = () => {
 
                                             </div>
 
-                                            <div className='flex w-[5vw] h-[8vh] items-center justify-center bg-primary rounded-t-2xl' style={{
-                                              boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)'
+                                            <div className='flex w-[5vw] h-[8vh] items-center justify-center rounded-t-2xl' style={{
+                                              boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
+                                              backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
                                             }}/>
                                         </div>
                                       ))}
