@@ -32,6 +32,9 @@ mongoose
 const salesRoutes = require("./routes/shops.js");
 app.use("/api/shops", salesRoutes);
 
+const productRoutes = require("./routes/product.js");
+app.use("/api/products", productRoutes);
+
 // Test route
 app.get("/test", (req, res) => {
   res.send("Server is working");
