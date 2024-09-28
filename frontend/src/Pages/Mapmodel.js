@@ -14,7 +14,7 @@ import hood from '../Assests/shopHood.jpg';
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDoubleLeft, faAngleDoubleRight,  faBuildingCircleArrowRight, faCaretDown, faListSquares,  faRobot, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDoubleLeft, faAngleDoubleRight,  faBuildingCircleArrowRight, faCaretDown, faClose, faListSquares,  faRobot, faUndo } from '@fortawesome/free-solid-svg-icons';
 import { faMessage } from '@fortawesome/free-regular-svg-icons';
 
 
@@ -847,15 +847,21 @@ const Mapmodel = () => {
                                                       </div>                          
                                                       
                                                       <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                      boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)'
-                                                      }}>
-                                                          <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
-                                                            fontWeight:'200'
-                                                          }}>
-                                                              {shop?.shopName}
-                                                          </h2>
+                                                    boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
+                                                    }}>
+                                                        <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
+                                                          fontWeight:'200'
+                                                        }}>
+                                                            {shop?.shopName ? (
+                                                              shop.shopName
+                                                            ) :(
+                                                              <span style={{
+                                                                fontSize:'0.8rem'
+                                                              }}>Temporarily Unavailable</span>
+                                                            )}
+                                                        </h2>
                           
-                                                      </div>
+                                                    </div>
                           
                           
                                                   </div>
@@ -991,14 +997,22 @@ const Mapmodel = () => {
 
                                                   </div> 
                                                   
-                                                  <div className='flex w-[5vw] h-auto justify-center items-center bg-primary rounded-2xl mt-2 overflow-hidden'>
-                                                      <h2 className='font-ibmplexsans text-xs text-center text-secondary' style={{
-                                                        fontWeight:'500'
-                                                      }}>
-                                                          {shop?.shopID}
-                                                      </h2>
-
-                                                  </div>                          
+                                                    <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
+                                                    boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
+                                                    }}>
+                                                        <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
+                                                          fontWeight:'200'
+                                                        }}>
+                                                            {shop?.shopName ? (
+                                                              shop.shopName
+                                                            ) :(
+                                                              <span style={{
+                                                                fontSize:'0.8rem'
+                                                              }}>Temporarily Unavailable</span>
+                                                            )}
+                                                        </h2>
+                          
+                                                    </div>                        
                                                   
                                                   <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
                                                   boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)'
@@ -1153,15 +1167,21 @@ const Mapmodel = () => {
                                                 </div>                          
                                                 
                                                 <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)'
-                                                }}>
-                                                    <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
-                                                      fontWeight:'200'
+                                                    boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
                                                     }}>
-                                                        {shop?.shopName}
-                                                    </h2>
-
-                                                </div>
+                                                        <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
+                                                          fontWeight:'200'
+                                                        }}>
+                                                            {shop?.shopName ? (
+                                                              shop.shopName
+                                                            ) :(
+                                                              <span style={{
+                                                                fontSize:'0.8rem'
+                                                              }}>Temporarily Unavailable</span>
+                                                            )}
+                                                        </h2>
+                          
+                                                    </div>
 
 
                                             </div>
@@ -1212,7 +1232,7 @@ const Mapmodel = () => {
 
                                                                 <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
                                                                               width:'0.6rem'
-                                                                            }}/>
+                                                                 }}/>
 
 
 
@@ -1301,15 +1321,21 @@ const Mapmodel = () => {
                                                   </div>                          
                                                   
                                                   <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                  boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)'
-                                                  }}>
-                                                      <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
-                                                        fontWeight:'200'
-                                                      }}>
-                                                          {shop?.shopName}
-                                                      </h2>
-
-                                                  </div>
+                                                    boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
+                                                    }}>
+                                                        <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
+                                                          fontWeight:'200'
+                                                        }}>
+                                                            {shop?.shopName ? (
+                                                              shop.shopName
+                                                            ) :(
+                                                              <span style={{
+                                                                fontSize:'0.8rem'
+                                                              }}>Temporarily Unavailable</span>
+                                                            )}
+                                                        </h2>
+                          
+                                                    </div>
 
 
                                               </div>
@@ -1453,15 +1479,21 @@ const Mapmodel = () => {
                                                 </div>                          
                                                 
                                                 <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)'
-                                                }}>
-                                                    <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
-                                                      fontWeight:'200'
+                                                    boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
                                                     }}>
-                                                        {shop?.shopName}
-                                                    </h2>
-
-                                                </div>
+                                                        <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
+                                                          fontWeight:'200'
+                                                        }}>
+                                                            {shop?.shopName ? (
+                                                              shop.shopName
+                                                            ) :(
+                                                              <span style={{
+                                                                fontSize:'0.8rem'
+                                                              }}>Temporarily Unavailable</span>
+                                                            )}
+                                                        </h2>
+                          
+                                                    </div>
 
 
                                             </div>
@@ -1601,15 +1633,21 @@ const Mapmodel = () => {
                                                         </div>                          
                                                         
                                                         <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                        boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)'
-                                                        }}>
-                                                            <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
-                                                              fontWeight:'200'
-                                                            }}>
-                                                                {shop?.shopName}
-                                                            </h2>
-
-                                                        </div>
+                                                          boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
+                                                          }}>
+                                                              <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
+                                                                fontWeight:'200'
+                                                              }}>
+                                                                  {shop?.shopName ? (
+                                                                    shop.shopName
+                                                                  ) :(
+                                                                    <span style={{
+                                                                      fontSize:'0.8rem'
+                                                                    }}>Temporarily Unavailable</span>
+                                                                  )}
+                                                              </h2>
+                          
+                                                    </div>
 
 
                                                     </div>
@@ -1753,15 +1791,21 @@ const Mapmodel = () => {
                                                       </div>                          
                                                       
                                                       <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                      boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)'
-                                                      }}>
-                                                          <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
-                                                            fontWeight:'200'
-                                                          }}>
-                                                              {shop?.shopName}
-                                                          </h2>
-
-                                                      </div>
+                                                    boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
+                                                    }}>
+                                                        <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
+                                                          fontWeight:'200'
+                                                        }}>
+                                                            {shop?.shopName ? (
+                                                              shop.shopName
+                                                            ) :(
+                                                              <span style={{
+                                                                fontSize:'0.8rem'
+                                                              }}>Temporarily Unavailable</span>
+                                                            )}
+                                                        </h2>
+                          
+                                                    </div>
 
 
                                                   </div>
@@ -1845,11 +1889,7 @@ const Mapmodel = () => {
         </div>
 
 
-
-
-
-
-                    {/* Shop Detail Modal */}
+                   {/* Shop Detail Modal */}
                       {isModVisible && selectedShop && fetchProducts &&(
                         <div className="fixed inset-0 bg-black bg-opacity-50 flex w-[100vw] items-center justify-center">
 
@@ -1860,29 +1900,30 @@ const Mapmodel = () => {
 
                                       {/* Shop Detail Modal */}
                                       {isModVisible && selectedShop && fetchProducts && (
-                                            <div className="bg-white rounded-lg p-5 w-[70vw] h-[75vh] mt-16 relative">
+                                            <div className="bg-white flex rounded-3xl p-5 w-[70vw] h-[75vh] mt-16 relative" style={{
+                                               boxShadow:'inset 0 15px 17px rgba(0, 0, 0, 0.2)',
+                                            }}>
                                               <button
-                                                className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full"
+                                                className="absolute top-3 right-3 bg-red-500 text-white h-10 w-10 items-center justify-center rounded-full" style={{
+                                                  boxShadow:'inset 0 5px 3px rgba(0, 0, 0, 0.2),  0 2px 4px 5px rgba(0, 0, 0, 0.2) ',
+                                                  
+                                                }}
                                                 onClick={closeModal}
                                               >
-                                                X
+                                                <FontAwesomeIcon icon={faClose} alt ='' className='h-5' />
                                               </button>
 
-                                              <h2 className="text-xl font-bold">{selectedShop.shopName}</h2>
-                                              <p>Shop ID: {selectedShop.shopID}</p>
+                                                 <div className='flex bg-baseextra2 w-[65vw] rounded-3xl h-[70vh]'>
 
-                                              {/* Display product details */}
-                                              <ul>
-                                                {fetchProducts.map((product) => (
-                                                  <li key={product._id} className="mb-2">
-                                                    <h3 className="font-semibold">{product.name}</h3>
-                                                    {/* Check if images exist before trying to access them */}
-                                                    {product.images && product.images.length > 0 && (
-                                                      <img src={product.images[0]} alt={product.name} className="w-12 h-12" />
-                                                    )}
-                                                  </li>
-                                                ))}
-                                              </ul>
+                                                          <div className='flex flex-col bg-black w-[25vw] h-[70vh]'>
+
+                                                          </div> 
+
+                                                          <div className='flex flex-col bg-baseextra4 w-[45vw] h-[70vh]'>
+
+                                                          </div> 
+
+                                                  </div> 
 
                                               {/* Add more details here based on your API response */}
                                             </div>
