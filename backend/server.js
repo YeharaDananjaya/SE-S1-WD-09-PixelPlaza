@@ -9,7 +9,7 @@ const port = 5000;
 // Configure CORS
 app.use(
   cors({
-    origin: "http://localhost:3000", // Replace with the URL of your frontend
+    origin: "http://localhost:3001", // Replace with the URL of your frontend
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
