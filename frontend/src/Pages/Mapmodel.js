@@ -14,7 +14,7 @@ import hood from '../Assests/shopHood.jpg';
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDoubleLeft, faAngleDoubleRight,  faBuildingCircleArrowRight, faCaretDown, faClose, faContactBook, faGlobe, faListSquares,  faMailBulk,  faMailForward,  faMousePointer,  faPhone,  faRobot, faUndo, faVoicemail, faWebAwesome } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDoubleLeft, faAngleDoubleRight,  faBuildingCircleArrowRight, faCaretDown, faClose, faGlobe, faListSquares,  faMailForward,   faPhone,  faRobot, faUndo} from '@fortawesome/free-solid-svg-icons';
 import { faMessage } from '@fortawesome/free-regular-svg-icons';
 
 
@@ -33,6 +33,31 @@ const Mapmodel = () => {
   const floor2Ref = useRef(null);
   const floor3Ref = useRef(null);
   const floor4Ref = useRef(null);
+
+  //Temporary array of items
+  const items = [
+    {
+      name: "Dell Inspiron i5",
+      url: "https://www.luluhypermarket.com/cdn-cgi/image/f=auto/medias/1729318-12.jpg-1200Wx1200H?context=bWFzdGVyfGltYWdlc3wxNzk0NzJ8aW1hZ2UvanBlZ3xhREU1TDJnd01TODVOelEzTlRjeE5qY3hNRGN3THpFM01qa3pNVGd0TVRJdWFuQm5YekV5TURCWGVERXlNREJJfDRkZjIwMzAyNzAwMWEzODgwOTE2YzVmNTlmMTBlNzYzZTQyYzgxYTU1NjY0OTA5ZjA4MjNjY2YxMzVhNzUxM2Y"
+    },
+    {
+      name: "Msi Katana i5 G751",
+      url: "https://c1.neweggimages.com/ProductImage/34-297-735-02.jpg"
+    },
+    {
+      name: "DELL Laptop XPS 13 i7",
+      url: "https://c1.neweggimages.com/ProductImage/34-297-735-02.jpg"
+    },
+    {
+      name: "NVIDIA GeForce RTX 4070",
+      url: "https://www.notebookcheck.com/fileadmin/Notebooks/Asus/TUF_Gaming_GeForce_RTX_4070_Ti/TUF_Gaming_GeForce_RTX_4070_Ti_5.jpg"
+    },
+    {
+      name: "NVIDIA GeForce RTX 4090",
+      url: "https://www.notebookcheck.com/fileadmin/Notebooks/Asus/TUF_Gaming_GeForce_RTX_4070_Ti/TUF_Gaming_GeForce_RTX_4070_Ti_5.jpg"
+    }
+  ];
+  
 
   const handleSendMessage = () => {
     if (input.trim()) {
@@ -1903,7 +1928,7 @@ const Mapmodel = () => {
                               
 
                                       {/* Shop Detail Modal */}
-                                      {isModVisible && selectedShop && (
+                                      {isModVisible && selectedShop && fetchProducts && (
                                             <div className="bg-white flex rounded-3xl items-center justify-center mt-16  w-[70vw] h-[75vh] relative" style={{
                                                boxShadow:'inset 0 15px 17px rgba(0, 0, 0, 0.2)',
                                             }}>
@@ -2144,15 +2169,68 @@ const Mapmodel = () => {
                                                           {/* Section for preview shop products, promotions and others */}
                                                           <div className='flex bg-transparent w-[45vw] items-center justify-center h-[70vh]'>
 
+                 
+                                                             {/* Divider */}    
                                                             <div className='flex bg-gray-300 h-[60vh] rounded-t-full rounded-b-full' style={{width:'0.3rem'}}/>
 
 
-                                                            
-                                                            <div className='flex flex-col w-[44vw] h-[70vh] bg-transparent'>
+                                                              {/* shop products, promotions and others */}                                    
+                                                            <div className='flex flex-col w-[45vw] items-start justify-start h-[70vh] bg-transparent p-3 space-y-4'>
+
+                                                                    <h2 className='flex items-center text-center font-ibmplexsans text-lg text-secondary' style={{
+                                                                      fontWeight:'300'
+                                                                    }}>About {selectedShop.shopName}{''}<div className='bg-slate-900 w-[5vw] mx-2' style={{
+                                                                      height:'0.1rem'
+                                                                    }}/></h2>
+
+                                                                    <p className='font-ibmplexsans w-[35vw] text-secondary text-start' style={{fontSize:'0.8rem'}}>
+                                                                    DHI Computer Shop is a popular destination for computers and computer parts. Known for its excellent product selection and service, DHI has established a strong reputation. The store's branch in Pixel Plaza shopping mall provides convenient access to a variety of high-quality tech products and expert assistance
+                                                                    </p>
+
+                                                                    {/* Top Selling row */}
+                                                                    <div className='flex justify-between items-center w-[42vw]'>
+
+                                                                        <h2 className='flex items-center text-center font-ibmplexsans text-lg text-secondary' style={{
+                                                                          fontWeight:'400'
+                                                                        }}>Top Selling Products From Us {''}<div className='bg-slate-900 w-[5vw] mx-2' style={{
+                                                                          height:'0.1rem'
+                                                                        }}/></h2>
+
+                                                                        <button className='flex bg-baseextra4 text-xs items-center justify-center text-primary font-ibmplexsans w-[8vw] h-[2rem] rounded-full hover:scale-110 transition-transform duration-300 ease-in-out' style={{boxShadow:'inset 0 2px 5px rgba(0, 255, 255, 0.8),   1px 3px 10px rgba(0, 0, 0, 0.3) '}}>
+                                                                          More Products
+                                                                        </button>
+
+                                                                    </div>
+
+
+
+                                                                    {/* Top Selling Product */}
+                                                                    <div className='grid grid-cols-5 gap-4'>
+                                                                        {items.map((item, index) => (
+                                                                         
+                                                                         <div
+                                                                           key={index}
+                                                                          className='flex flex-col bg-transparent h-32 rounded-xl items-center justify-start cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out' style={{boxShadow:'inset 0 5px 6px rgba(0, 0, 0, 0.2),  2px 4px 10px rgba(0, 0, 0, 0.2)' ,width:'116px'}}>
+
+                                                                            {/* item image componenet */}
+                                                                            <div className='flex  h-20 rounded-t-xl items-center justify-center overflow-hidden' style={{width:'116px'}}>
+                                                                              <img src={item.url} alt={item.name} style={{width:'120px'}}/>
+
+                                                                            </div>  
+
+                                                                            <h2 className='flex h-8 font-ibmplexsans text-secondary items-center text-center justify-center overflow-hidden' style={{width:'100px', fontSize:'0.6rem'}}>
+                                                                                {item.name}
+                                                                            </h2>  
+
+                                                                        </div>
+                                                                        ))}
+
+                                                                    </div> 
 
 
 
                                                             </div>
+
                                                           </div> 
 
                                                   </div> 
