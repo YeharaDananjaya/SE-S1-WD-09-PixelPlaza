@@ -1,50 +1,51 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../styles/EditCartItem.css"; // Ensure this file has the necessary styles
 
 const EditCartItem = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [cartItem, setCartItem] = useState(null);
+  const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [mainImage, setMainImage] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
 
+  // Fetch Cart Item and Product Details
   useEffect(() => {
-    const fetchCartItem = async () => {
+    const fetchCartItemAndProduct = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:3000/api/cartProduct/${id}`
-        );
-        setCartItem(res.data);
-        setMainImage(
-          res.data.images && res.data.images.length > 0
-            ? res.data.images[0]
-            : "/default-image.png"
-        );
-        setQuantity(res.data.count || 1);
-        setSelectedColor(res.data.color); // Set initial color
-        setSelectedSize(res.data.sizes); // Set initial size
+        // Fetch the cart item details
+        const cartRes = await axios.get(`http://localhost:3000/api/cartProduct/${id}`);
+        setCartItem(cartRes.data);
+
+        // Fetch the associated product details using the productId from the cart item
+        const productRes = await axios.get(`http://localhost:3000/api/products/${cartRes.data.productId}`);
+        setProduct(productRes.data);
+
+        // Set initial values
+        setMainImage(cartRes.data.images?.length > 0 ? cartRes.data.images[0] : "/default-image.png");
+        setQuantity(cartRes.data.count || 1);
+        setSelectedColor(cartRes.data.color);
+        setSelectedSize(cartRes.data.sizes);
       } catch (err) {
-        console.log("Error fetching cart item:", err);
+        console.log("Error fetching cart item or product:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCartItem();
+    fetchCartItemAndProduct();
   }, [id]);
 
   if (loading) return <div className="loading">Loading...</div>;
-  if (!cartItem) return <div className="error">No cart item found.</div>;
+  if (!cartItem || !product) return <div className="error">No cart item found.</div>;
 
   const handleThumbnailClick = (src) => setMainImage(src);
   const handleIncrement = () => setQuantity((prev) => prev + 1);
-  const handleDecrement = () =>
-    setQuantity((prev) => (prev > 1 ? prev - 1 : prev));
+  const handleDecrement = () => setQuantity((prev) => (prev > 1 ? prev - 1 : prev));
 
   const handleUpdateCartItem = async () => {
     try {
@@ -64,93 +65,96 @@ const EditCartItem = () => {
   const totalPrice = (cartItem.price * quantity).toFixed(2);
 
   return (
-    <div className="container edit-cart-item">
-      <div className="row">
-        <div className="col-lg-6">
-          <div className="product-images">
-            <img src={mainImage} alt="Product" className="img-fluid main-img" />
-            <div className="thumbnail-images">
-              {cartItem.images.map((image, index) => (
-                <img
-                  key={index}
-                  src={image}
-                  alt={`Thumbnail ${index + 1}`}
-                  className="img-thumbnail"
-                  onClick={() => handleThumbnailClick(image)}
-                />
-              ))}
-            </div>
+    <div className="bg-dark min-h-screen py-8 w-[99vw]">
+      <div className="flex flex-col lg:flex-row items-start gap-8 bg-white p-6 shadow-lg rounded-lg">
+        <div className="w-full lg:w-1/2">
+          <img src={mainImage} alt="Product" className="w-full h-auto rounded-lg shadow-md mb-4" />
+          <div className="flex gap-2">
+            {cartItem.images.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Thumbnail ${index + 1}`}
+                className="w-20 h-20 object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-[#ff5733]"
+                onClick={() => handleThumbnailClick(image)}
+              />
+            ))}
           </div>
         </div>
-        <div className="col-lg-6">
-          <div className="product-details">
-            <h2 className="product-title">{cartItem.name}</h2>
-            <p className="product-price">
-              Rs. {cartItem.price}
-              {cartItem.originalPrice && (
-                <span className="discount"> Rs. {cartItem.originalPrice}</span>
-              )}
-            </p>
-            <p className="product-description">{cartItem.description}</p>
 
-            {/* Color Selection */}
-            <div className="selected-color">
-              <strong>Selected Color:</strong>
-              <select
-                value={selectedColor}
-                onChange={(e) => setSelectedColor(e.target.value)}
-              >
-                <option value="Red">Red</option>
-                <option value="Blue">Blue</option>
-                <option value="Green">Green</option>
-                {/* Add more color options as needed */}
-              </select>
-            </div>
+        <div className="w-full lg:w-1/2">
+          <h2 className="text-5xl font-bold text-[#555353] mb-4">{cartItem.name}</h2>
+          <p className="text-2xl font-semibold text-[#ff5733] mb-2">Rs. {cartItem.price}</p>
+          {cartItem.originalPrice && (
+            <p className="text-sm text-gray-500 line-through mb-4">Rs. {cartItem.originalPrice}</p>
+          )}
+          <p className="text-m text-gray-700 mb-4">{cartItem.description}</p>
 
-            {/* Size Selection */}
-            <div className="selected-size">
-              <strong>Selected Size:</strong>
-              <select
-                value={selectedSize}
-                onChange={(e) => setSelectedSize(e.target.value)}
-              >
-                <option value="S">Small</option>
-                <option value="M">Medium</option>
-                <option value="L">Large</option>
-                {/* Add more size options as needed */}
-              </select>
+          {/* Color Selection */}
+          {product.colors && product.colors.length > 0 && (
+            <div className="mb-4">
+              <label className="text-sm font-semibold text-gray-600 mb-2">Select Color:</label>
+              <div className="flex gap-2">
+                {product.colors.map((color, index) => (
+                  <div
+                    key={index}
+                    className={`w-8 h-8 rounded-full cursor-pointer ${selectedColor === color ? "ring-4 ring-gray-900" : ""}`}
+                    style={{ backgroundColor: color }}
+                    onClick={() => setSelectedColor(color)}
+                  ></div>
+                ))}
+              </div>
             </div>
+          )}
 
-            {/* Quantity Selection */}
-            <div className="quantity-selection">
-              <button className="quantity-btn" onClick={handleDecrement}>
-                -
-              </button>
-              <input
-                type="number"
-                value={quantity}
-                readOnly
-                className="quantity-input"
-              />
-              <button className="quantity-btn" onClick={handleIncrement}>
-                +
-              </button>
+          {/* Size Selection */}
+          {product.sizes && product.sizes.length > 0 && (
+            <div className="mb-4">
+              <label className="text-sm font-semibold text-gray-600 mb-2">Select Size:</label>
+              <div className="flex gap-2">
+                {product.sizes.map((size, index) => (
+                  <div
+                    key={index}
+                    className={`p-4 border rounded cursor-pointer ${selectedSize === size ? "border-gray-900 text-dark" : "border-gray-400"}`}
+                    onClick={() => setSelectedSize(size)}
+                  >
+                    {size}
+                  </div>
+                ))}
+              </div>
             </div>
+          )}
 
-            {/* Total Price */}
-            <div className="total-price">
-              <p>
-                <strong>Total Price:</strong> Rs. {totalPrice}
-              </p>
-            </div>
-
-            {/* Update Button */}
-            <div className="purchase-buttons">
-              <button className="btn-primary" onClick={handleUpdateCartItem}>
-                Update Item
-              </button>
-            </div>
+          {/* Quantity Selection */}
+          <div className="flex items-center mb-6">
+            <button className="px-4 py-2 bg-[#ff5733] text-white font-bold rounded-lg" onClick={handleDecrement}>
+              -
+            </button>
+            <input
+              type="number"
+              value={quantity}
+              readOnly
+              className="mx-4 w-16 text-center border rounded-lg p-2"
+            />
+            <button className="px-4 py-2 bg-[#ff5733] text-white font-bold rounded-lg" onClick={handleIncrement}>
+              +
+            </button>
           </div>
+
+          {/* Total Price */}
+          <div className="mb-4">
+            <p className="text-lg font-bold text-gray-700">
+              Total Price: <span className="text-[#ff5733]">Rs. {totalPrice}</span>
+            </p>
+          </div>
+
+          {/* Update Button */}
+          <button
+            className="w-full bg-[#ff5733] text-white font-bold py-2 rounded-lg shadow-lg hover:bg-[#e14e2b] transition duration-300"
+            onClick={handleUpdateCartItem}
+          >
+            Update Item
+          </button>
         </div>
       </div>
     </div>

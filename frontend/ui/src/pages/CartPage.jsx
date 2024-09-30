@@ -31,48 +31,55 @@ const CartPage = () => {
   const [checkoutConfirmed, setCheckoutConfirmed] = useState(false);
 
   useEffect(() => {
+    const userId = localStorage.getItem("userId"); // Retrieve the userId from localStorage
+  
     axios
-      .get("http://localhost:3000/api/cartProduct")
+      .get(`http://localhost:3000/api/cartProduct/user/${userId}`) // Append userId to the URL
       .then((res) => {
-        setItems(res.data);
+        setItems(res.data); // Set the cart items for the specific user
       })
       .catch(() => {
         console.log("Error while getting data");
       });
   }, []);
+  
 
   const handleCheckout = () => {
     const itemsToCheckout = items.filter((item) =>
       selectedItems.includes(item._id)
     );
-
+  
     if (itemsToCheckout.length === 0) {
       showAlert("No items selected for checkout.");
       return;
     }
-
+  
     if (selectedPaymentMethod === "") {
       showAlert("Please select a payment method.");
       return;
     }
-
+  
     if (deliveryOption === "") {
       showAlert("Please select a delivery or pickup option.");
       return;
     }
-
+  
     const confirmCheckout = window.confirm(
       "Are you sure you want to proceed with checkout?"
     );
-
+  
     if (confirmCheckout) {
-      const requestData = { items: itemsToCheckout };
-
+      const userId = localStorage.getItem("userId"); // Retrieve userId from localStorage
+      const requestData = { 
+        userId, // Include the userId in the request 
+        items: itemsToCheckout 
+      };
+  
       // Move selected items to Previous Orders
       axios
-        .post("http://localhost:3000/api/previousOrders", requestData)
+        .post("http://localhost:3000/api/previousOrders", requestData) // Pass userId along with items
         .then(() => {
-          // Delete selected items from Cart (this part was missing)
+          // Delete selected items from Cart
           return axios.delete("http://localhost:3000/api/cartProduct", {
             data: { ids: selectedItems },
           });
@@ -98,6 +105,7 @@ const CartPage = () => {
       console.log("Checkout cancelled");
     }
   };
+  
 
   // Add this function to handle the clear all functionality
   const handleClearAll = () => {
@@ -218,11 +226,9 @@ const CartPage = () => {
   };
 
   return (
+    <div className="w-[100vw] bg-dark">
     <div className="cart-page">
-      <br />
-      <br />
-      <br />
-      <br />
+     <br/>
       <div className="cart-container">
         <div className="cart-header">
           <h1>Your Cart</h1>
@@ -366,6 +372,7 @@ const CartPage = () => {
       />
       <br />
       <br />
+    </div>
     </div>
   );
 };

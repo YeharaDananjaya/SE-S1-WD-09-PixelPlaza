@@ -27,6 +27,7 @@ export const SellerProfile = () => {
     shopKeeperPhoto: "",
     description: "",
     contactInfo: "",
+    category: "",
   });
   const shopID = localStorage.getItem("shopId");
   const userID = localStorage.getItem("userId");
@@ -68,6 +69,7 @@ export const SellerProfile = () => {
       shopKeeperPhoto: shopDetails.shopKeeperPhoto || "",
       description: shopDetails.description || "",
       contactInfo: sellerDetails.phone || "",
+      category: shopDetails.category || "",
     });
     setModalIsOpen(true);
   };
@@ -237,60 +239,69 @@ export const SellerProfile = () => {
         contentLabel="Edit Shop Details"
       >
         <h2 className="font-russo text-[#212529] text-2xl mb-4">
-          Edit Shop Details
+          Edit Store Info
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-semibold mb-2">
-              Shop Keeper Photo URL:
-            </label>
-            <input
-              type="text"
-              name="shopKeeperPhoto"
-              value={updatedShop.shopKeeperPhoto}
-              onChange={handleChange}
-              className="border border-gray-300 rounded p-2 w-full"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-semibold mb-2">
-              Description:
+              Shop Description
             </label>
             <textarea
+              className="w-full p-2 border rounded-md"
               name="description"
               value={updatedShop.description}
               onChange={handleChange}
-              className="border border-gray-300 rounded p-2 w-full"
-              required
-            />
+            ></textarea>
           </div>
           <div className="mb-4">
             <label className="block text-sm font-semibold mb-2">
-              Contact Info:
+              Contact Info
             </label>
             <input
+              className="w-full p-2 border rounded-md"
               type="text"
               name="contactInfo"
               value={updatedShop.contactInfo}
               onChange={handleChange}
-              className="border border-gray-300 rounded p-2 w-full"
-              required
             />
           </div>
-          <div className="flex justify-between">
+
+          {/* Category Dropdown */}
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-2">Category</label>
+            <select
+              name="category"
+              value={updatedShop.category}
+              onChange={handleChange}
+              className="w-full p-2 border rounded-md"
+            >
+              <option value="">Select Category</option>
+              <option value="Fashion">Fashion</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Home & Garden">Home & Garden</option>
+              <option value="Health & Beauty">Health & Beauty</option>
+              <option value="Sport & Outdoor">Sport & Outdoor</option>
+              <option value="Groceries">Groceries</option>
+              <option value="Gaming & Entertainment">
+                Gaming & Entertainment
+              </option>
+              <option value="Toys">Toys</option>
+            </select>
+          </div>
+
+          <div className="flex justify-end gap-4">
             <button
               type="button"
+              className="bg-gray-300 py-2 px-4 rounded-lg"
               onClick={closeModal}
-              className="py-2 px-4 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="py-2 px-4 bg-[#E76F51] text-white rounded-lg hover:bg-[#d65b4f] transition"
+              className="bg-[#E76F51] text-white py-2 px-4 rounded-lg"
             >
-              Save
+              Save Changes
             </button>
           </div>
         </form>

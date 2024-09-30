@@ -50,6 +50,9 @@ app.use("/api/previousOrders", previousOrderRoutes);
 const wishlistRoutes = require("./routes/wishlistRoutes");
 app.use("/api/wishlist", wishlistRoutes);
 
+const feedback = require("./routes/feedback");
+app.use("/api/feedback", feedback);
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

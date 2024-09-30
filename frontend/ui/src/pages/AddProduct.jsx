@@ -218,13 +218,25 @@ export const AddProduct = () => {
             <label className="block text-sm font-medium text-gray-700">
               Category:
             </label>
-            <input
-              type="text"
+            <select
+              name="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-100 p-3 text-gray-800 shadow-sm focus:border-[#E76F51] focus:ring-[#E76F51] sm:text-sm"
               required
-            />
+            >
+              <option value="">Select Category</option>
+              <option value="Fashion">Fashion</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Home & Garden">Home & Garden</option>
+              <option value="Health & Beauty">Health & Beauty</option>
+              <option value="Sport & Outdoor">Sport & Outdoor</option>
+              <option value="Groceries">Groceries</option>
+              <option value="Gaming & Entertainment">
+                Gaming & Entertainment
+              </option>
+              <option value="Toys">Toys</option>
+            </select>
           </div>
 
           {/* Description */}

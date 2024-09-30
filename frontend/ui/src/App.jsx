@@ -23,6 +23,8 @@ import Wishlist from "./pages/Wishlist";
 import Profile from "./pages/Profile";
 import ScrollToTop from "./pages/ScrollToTop";
 import EditCartItem from "./pages/EditCartItem";
+import InsertFeedback from "./pages/InsertFeedback";
+import FeedbackList from "./pages/FeedbackList";
 
 const toggleTheme = () => {
   document.documentElement.classList.toggle("friend-theme");
@@ -190,6 +192,26 @@ function App() {
             </ClientLayout>
           }
         />
+        
+        <Route
+          path="/insertfeedback/:id"
+          element={
+            <ClientLayout>
+              <InsertFeedback />
+            </ClientLayout>
+          }
+        />
+
+        <Route
+          path="/feedbacklist"
+          element={
+            <ClientLayout>
+              <FeedbackList />
+            </ClientLayout>
+          }
+        />
+
+        
       </Routes>
     </Router>
   );

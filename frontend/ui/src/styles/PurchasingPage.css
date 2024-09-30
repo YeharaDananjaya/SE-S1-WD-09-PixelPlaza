@@ -1,5 +1,11 @@
 /* General Page Styling */
+.body {
+    background-color: white;
+   
+}
+
 .purchasing-page {
+    background-color: white;
     padding: 40px 0;
 }
 
