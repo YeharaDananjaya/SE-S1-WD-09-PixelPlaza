@@ -29,6 +29,8 @@ const Mapmodel = () => {
   const [isModVisible, setIsModVisible] = useState(false);
   const [input, setInput] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
+
+  //floor references
   const floor1Ref = useRef(null);
   const floor2Ref = useRef(null);
   const floor3Ref = useRef(null);
@@ -1932,6 +1934,8 @@ const Mapmodel = () => {
                                             <div className="bg-white flex rounded-3xl items-center justify-center mt-16  w-[70vw] h-[75vh] relative" style={{
                                                boxShadow:'inset 0 15px 17px rgba(0, 0, 0, 0.2)',
                                             }}>
+
+                                              {/* Button for close the menu */}
                                               <button
                                                 className="absolute top-3 right-3 bg-red-500 text-white h-10 w-10 items-center justify-center rounded-full hover:scale-105 transition-transform duration-300 ease-in-out" style={{
                                                   boxShadow:'inset 0 5px 3px rgba(0, 0, 0, 0.2),  0 2px 4px 5px rgba(0, 0, 0, 0.2) ',
@@ -1940,6 +1944,18 @@ const Mapmodel = () => {
                                                 onClick={closeModal}
                                               >
                                                 <FontAwesomeIcon icon={faClose} alt ='' className='h-5' />
+                                              </button>
+
+                                              
+                                              {/* Button for Visit to the shop */}
+                                              <button
+                                                className="absolute top-3 right-16 bg-red-500 text-white h-10 w-32 items-center justify-center rounded-full hover:scale-105 transition-transform duration-300 ease-in-out" style={{
+                                                  boxShadow:'inset 0 5px 3px rgba(0, 0, 0, 0.2),  0 2px 4px 5px rgba(0, 0, 0, 0.2) ',
+                                                  
+                                                }}
+                                                onClick={closeModal}
+                                              >
+                                                Visit Shop
                                               </button>
 
                                                  <div className='flex bg-transparent w-[70vw] rounded-3xl h-[70vh] overflow-hidden'>
@@ -2224,6 +2240,53 @@ const Mapmodel = () => {
 
                                                                         </div>
                                                                         ))}
+
+                                                                    </div> 
+
+
+                                                                    {/* Top Selling row */}
+                                                                    <div className='flex justify-between items-center w-[42vw]'>
+
+
+
+                                                                            {/* Row for top selling product */}
+                                                                            <h2 className='flex items-center text-center font-ibmplexsans text-lg text-secondary' style={{
+                                                                              fontWeight:'400'
+                                                                            }}>Top Selling Products with Promotions {''}<div className='bg-slate-900 w-[5vw] mx-2' style={{
+                                                                              height:'0.1rem'
+                                                                            }}/></h2>
+
+                                                                              <h2 className='flex items-center text-center font-ibmplexsans text-secondary' style={{
+                                                                              fontWeight:'400',
+                                                                              fontSize: '0.5rem'
+                                                                            }}>*These promotions are valid only in certain period of time</h2>
+
+                                                                   
+
+                                                                     </div>
+
+
+
+                                                                    {/* Top Selling Product with Promotions */}
+                                                                    <div className='grid grid-cols-5 gap-4'>
+                                                                    {items.map((item, index) => (
+                                                                    
+                                                                    <div
+                                                                      key={index}
+                                                                      className='flex flex-col bg-transparent h-32 rounded-xl items-center justify-start cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out' style={{boxShadow:'inset 0 5px 6px rgba(0, 0, 0, 0.2),  2px 4px 10px rgba(0, 0, 0, 0.2)' ,width:'116px'}}>
+
+                                                                        {/* item image componenet */}
+                                                                        <div className='flex  h-20 rounded-t-xl items-center justify-center overflow-hidden' style={{width:'116px'}}>
+                                                                          <img src={item.url} alt={item.name} style={{width:'120px'}}/>
+
+                                                                        </div>  
+
+                                                                        <h2 className='flex h-8 font-ibmplexsans text-secondary items-center text-center justify-center overflow-hidden' style={{width:'100px', fontSize:'0.6rem'}}>
+                                                                            {item.name}
+                                                                        </h2>  
+
+                                                                    </div>
+                                                                    ))}
 
                                                                     </div> 
 
