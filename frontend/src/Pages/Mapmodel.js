@@ -336,18 +336,20 @@ const handleCategory = (category) => {
                                             boxShadow: 'inset 0 2px 8px rgba(0, 0, 0, 1)'
                                         }}>
                                             <div className='relative'>
-                                              <button onClick={toggleDropDown} className='text-gray-500 hover:text-gray-700 focus:outline-none'>
+                                              <button onClick={toggleDropDown} className='text-gray-500 hover:text-gray-700 focus:outline-double'>
                                                 <FontAwesomeIcon icon={faCaretDown} /><span className='mx-4 font-ibmplexsans'>DropDown Categories</span>
                                               </button>
                                               {/* Dropdown menu */}
                                               {dropDownOpen && (
-                                                <div className='absolute -left-2 mt-2 w-[20vw] bg-white border rounded-md shadow-lg z-10'>
-                                                  <ul className='py-1'>
+                                                <div className='absolute -left-4 mt-2 w-[20vw] bg-white rounded-md shadow-lg z-10' style={{
+                                                  boxShadow: 'inset 0 2px 8px rgba(0, 0, 0, 1)'
+                                                }}>
+                                                  <ul className='py-1 font-ibmplexsans text-md text-secondary'>
                                                   <li className='px-4 py-2 hover:bg-gray-200 cursor-pointer' onClick={() => handleCategory('')}>
                                                     All Categories
                                                   </li>
                                                     {['Fashion', 'Electronics', 'Home & Garden', 'Health & Beauty', 'Sport & Outdoor', 'Groceries', 'Gaming & Entertainment'].map((category) => (
-                                                      <li key={category} className='px-4 py-2 hover:bg-gray-200 cursor-pointer' onClick={() => handleCategory(category)}>
+                                                      <li key={category} className='px-4 py-2 hover:bg-orange-500 cursor-pointer' onClick={() => handleCategory(category)}>
                                                         {category}
                                                       </li>
                                                     ))}
