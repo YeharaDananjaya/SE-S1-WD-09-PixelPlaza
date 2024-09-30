@@ -678,7 +678,7 @@ const Mapmodel = () => {
                                               onClick={()=> handleClickShopView(shop?.shopID)}
                                               className="flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
                                               style={{
-                                                boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5)'
+                                                boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 0px 18px 25px rgba(0, 0, 0, 0.8)'
                                               }}>
                                                 <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
                           
@@ -845,7 +845,7 @@ const Mapmodel = () => {
                                                 onClick={()=> handleClickShopView(shop?.shopID)}
                                                 className="flex flex-col w-[14vw] h-[26vh] items-center justify-end border-t-8 border-t-cyan-700 bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
                                                 style={{
-                                                  boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5)'
+                                                  boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 0px 18px 25px rgba(0, 0, 0, 0.8)'
                                                 }}>
                                                   <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
                           
@@ -1005,7 +1005,7 @@ const Mapmodel = () => {
                                             key={index}
                                             className="flex flex-col w-[14vw] h-[25vh] items-center justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
                                             style={{
-                                              boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5)'
+                                              boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 3px 9px 10px rgba(0, 0, 0, 0.8)'
                                             }}>
                                               <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
 
@@ -1165,7 +1165,7 @@ const Mapmodel = () => {
                                           key={index}
                                           className="flex flex-col w-[14vw] h-[25vh] items-center justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
                                           style={{
-                                            boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5)'
+                                            boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 3px 9px 10px rgba(0, 0, 0, 0.8)'
                                           }}>
                                             <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
 
@@ -1319,7 +1319,7 @@ const Mapmodel = () => {
                                             key={index}
                                             className="flex flex-col w-[14vw] h-[25vh] items-center justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
                                             style={{
-                                              boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5)'
+                                              boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 3px 9px 10px rgba(0, 0, 0, 0.8)'
                                             }}>
                                               <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
 
@@ -1477,7 +1477,7 @@ const Mapmodel = () => {
                                           key={index}
                                           className="flex flex-col w-[14vw] h-[25vh] items-center justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
                                           style={{
-                                            boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5)'
+                                            boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 3px 9px 10px rgba(0, 0, 0, 0.8)'
                                           }}>
                                             <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
 
@@ -1631,7 +1631,7 @@ const Mapmodel = () => {
                                                   key={index}
                                                   className="flex flex-col w-[14vw] h-[25vh] items-center justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
                                                   style={{
-                                                    boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5)'
+                                                    boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 3px 9px 10px rgba(0, 0, 0, 0.8)'
                                                   }}>
                                                     <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
 
@@ -1789,7 +1789,7 @@ const Mapmodel = () => {
                                                 key={index}
                                                 className="flex flex-col w-[14vw] h-[25vh] items-center justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
                                                 style={{
-                                                  boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5)'
+                                                  boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 3px 9px 10px rgba(0, 0, 0, 0.8)'
                                                 }}>
                                                   <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
 
@@ -1944,7 +1944,7 @@ const Mapmodel = () => {
 
                                                  <div className='flex bg-transparent w-[70vw] rounded-3xl h-[70vh] overflow-hidden'>
 
-                                                          {/* Section for preview shop detials -> shop name, image, related shop model */}
+                                                          {/* Section for preview shop detials -> shop name, model, related shop model */}
                                                           <div className='flex flex-col  items-center justify-center bg-transparent w-[25vw] h-[70vh]'>
 
                                                               <div className='flex flex-col w-[20vw] h-[20vh] items-start justify-start'>
