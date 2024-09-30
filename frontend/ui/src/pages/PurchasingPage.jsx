@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaHeart } from "react-icons/fa";
-import "../styles/PurchasingPage.css";
 import CheckoutPopup from "../components/CheckoutPopup"; // Import the CheckoutPopup component
 
 const PurchasingPage = () => {
@@ -13,26 +12,41 @@ const PurchasingPage = () => {
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [deliveryOption, setDeliveryOption] = useState("delivery");
   const [deliveryDates, setDeliveryDates] = useState({ start: "", end: "" });
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
+  const [shopDetails, setShopDetails] = useState(null); // State for shop details
+
   useEffect(() => {
+    // Fetch product details
     axios
       .get(`http://localhost:3000/api/products/${id}`)
       .then((res) => {
-        setProduct(res.data);
+        const productData = res.data;
+        setProduct(productData);
         setMainImage(
-          res.data.images && res.data.images.length > 0
-            ? res.data.images[0]
+          productData.images && productData.images.length > 0
+            ? productData.images[0]
             : "/default-image.png"
         );
+  
+        // Fetch the shop details using the shopID from the product
+        if (productData.shopID) {
+          axios
+            .get(`http://localhost:3000/api/shops/getByShopID/${productData.shopID}`)
+            .then((shopRes) => {
+              setShopDetails(shopRes.data);
+            })
+            .catch((err) => {
+              console.log("Error fetching shop details:", err);
+            });
+        }
       })
       .catch((err) => {
         console.log("Error fetching product:", err);
       });
   }, [id]);
-
+  
   const handleThumbnailClick = (src) => {
     setMainImage(src);
   };
@@ -66,22 +80,27 @@ const PurchasingPage = () => {
     calculateDeliveryDates();
   }, []);
 
+
   const handleAddToCart = () => {
+    const userID = localStorage.getItem("userId"); // Get the userID from localStorage
+  
     const isColorRequired = product.colors && product.colors.length > 0;
     const isSizeRequired = product.sizes && product.sizes.length > 0;
-
+  
     if (isColorRequired && !selectedColor) {
       alert("Please select a color.");
       return;
     }
-
+  
     if (isSizeRequired && !selectedSize) {
       alert("Please select a size.");
       return;
     }
-
+  
     axios
       .post("http://localhost:3000/api/cartProduct", {
+        userId: userID, // Add userID to the payload
+        productId:product._id,
         name: product.name,
         price: product.price,
         count: quantity,
@@ -99,46 +118,53 @@ const PurchasingPage = () => {
         alert("Failed to add item to cart.");
       });
   };
+  
 
   const handleBuyNow = () => {
     const isColorRequired = product.colors && product.colors.length > 0;
     const isSizeRequired = product.sizes && product.sizes.length > 0;
-
+  
     if (isColorRequired && !selectedColor) {
       alert("Please select a color.");
       return;
     }
-
+  
     if (isSizeRequired && !selectedSize) {
       alert("Please select a size.");
       return;
     }
-
+  
+    // Setting the state to open the checkout popup
     setIsCheckoutOpen(true);
   };
+  
 
-  const handleAddToWishlist = () => {
-    // Add to wishlist functionality
-    axios
-      .post("http://localhost:3000/api/wishlist", {
-        name: product.name,
-        price: product.price,
 
-        description: product.description,
-        images: product.images,
-      })
-      .then(() => {
-        alert("Item added to wishlist!");
-      })
-      .catch((err) => {
-        console.log("Error adding item to wishlist:", err);
-        alert("Failed to add item to wishlist.");
+
+  const handleAddToWishlist = async () => {
+    const userID = localStorage.getItem("userId"); 
+
+    try {
+      const response = await axios.post('http://localhost:3000/api/wishlist', {
+        productId: product._id, // Use the appropriate product ID
+        userID: userID,
       });
+  
+      if (response.status === 200) {
+        alert('Item added to wishlist!');
+      }
+    } catch (error) {
+      console.error('Error adding item to wishlist:', error);
+      alert('Failed to add item to wishlist.');
+    }
   };
-
+  
   const handleCheckoutConfirm = ({ selectedPaymentMethod, deliveryOption }) => {
+    // Retrieve the userId from localStorage or any authentication state
+    const userId = localStorage.getItem("userId"); 
+  
     const orderData = {
-      userId: "exampleUserId",
+      userId: userId || "exampleUserId", // Use the dynamically retrieved userId
       items: [
         {
           name: product.name,
@@ -150,8 +176,10 @@ const PurchasingPage = () => {
           images: product.images,
         },
       ],
+      paymentMethod: selectedPaymentMethod, // Add the selected payment method
+      deliveryOption: deliveryOption,       // Add the selected delivery option
     };
-
+  
     axios
       .post("http://localhost:3000/api/previousOrders", orderData)
       .then(() => {
@@ -172,7 +200,7 @@ const PurchasingPage = () => {
         setIsCheckoutOpen(false);
       });
   };
-
+  
   if (!product) {
     return <div>Loading...</div>;
   }
@@ -180,58 +208,61 @@ const PurchasingPage = () => {
   const totalPrice = (product.price * quantity).toFixed(2);
 
   return (
-    <div className="container purchasing-page">
-      <br />
-      <br />
-      <br />
-      <div className="row">
-        <div className="col-lg-6">
-          <div className="product-images">
-            <img src={mainImage} alt="Product" className="img-fluid main-img" />
-            <div className="thumbnail-images">
+    <div className="bg-dark min-h-screen py-8 w-[100vw]">
+      <div className="container mx-auto p-4">
+        <div className="bg-white rounded-lg shadow-lg p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div>
+            <div className="mb-4">
+              <img
+                src={mainImage}
+                alt="Product"
+                className="w-full h-auto object-cover rounded-md shadow-md"
+              />
+            </div>
+            <div className="flex gap-2">
               {product.images.map((image, index) => (
                 <img
                   key={index}
                   src={image}
                   alt={`Thumbnail ${index + 1}`}
-                  className="img-thumbnail"
+                  className="w-20 h-20 object-cover rounded-md cursor-pointer hover:ring-2 hover:ring-gray-400"
                   onClick={() => handleThumbnailClick(image)}
                 />
               ))}
             </div>
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold">Seller Details</h3>
+              <p>
+                <strong>Seller Name:</strong>{" "}
+                {shopDetails?.shopName || "N/A" }
+              </p>
+              <p>
+                <strong>Description:</strong>{" "}
+                {shopDetails?.description|| "N/A"}
+              </p>
+            </div>
           </div>
-          <div className="seller-details">
-            <h3>Seller Details</h3>
-            <p>
-              <strong>Seller Name:</strong>{" "}
-              {product.sellerInfo?.name || "Unknown Seller"}
-            </p>
-            <p>
-              <strong>Address:</strong>{" "}
-              {product.sellerInfo?.address || "Unknown Address"}
-            </p>
-          </div>
-        </div>
-        <div className="col-lg-6">
-          <div className="product-details">
-            <h2 className="product-title">{product.name}</h2>
-            <p className="product-price">
+          <div>
+            <h2 className="text-6xl text-gray-700 font-bold mb-7">{product.name}</h2>
+            <p className="text-4xl text-gray-600 mb-6">
               Rs. {product.price}
               {product.originalPrice && (
-                <span className="discount"> Rs. {product.originalPrice}</span>
+                <span className="line-through text-2xl text-red-500 ml-2">
+                  Rs. {product.originalPrice}
+                </span>
               )}
             </p>
-            <p className="product-description">{product.description}</p>
+            <p className="text-gray-600 mt-2">{product.description}</p>
 
             {product.colors && product.colors.length > 0 && (
-              <div className="color-selection">
-                <label>Select Color:</label>
-                <div className="color-options">
+              <div className="mt-4">
+                <label className="block mb-2 text-dark font-semibold">Select Color:</label>
+                <div className="flex gap-2">
                   {product.colors.map((color, index) => (
                     <div
                       key={index}
-                      className={`color-option ${
-                        selectedColor === color ? "selected" : ""
+                      className={`w-8 h-8 rounded-full cursor-pointer ${
+                        selectedColor === color ? "ring-4 ring-gray-700" : ""
                       }`}
                       style={{ backgroundColor: color }}
                       onClick={() => setSelectedColor(color)}
@@ -242,14 +273,16 @@ const PurchasingPage = () => {
             )}
 
             {product.sizes && product.sizes.length > 0 && (
-              <div className="size-selection">
-                <label>Select Size:</label>
-                <div className="size-options">
+              <div className="mt-4">
+                <label className="block mb-2 text-dark font-semibold">Select Size:</label>
+                <div className="flex gap-2 text-gray-600">
                   {product.sizes.map((size, index) => (
                     <div
                       key={index}
-                      className={`size-option ${
-                        selectedSize === size ? "selected" : ""
+                      className={`p-4 border rounded cursor-pointer ${
+                        selectedSize === size
+                          ? "border-gray-900"
+                          : "border-gray-500"
                       }`}
                       onClick={() => setSelectedSize(size)}
                     >
@@ -260,43 +293,69 @@ const PurchasingPage = () => {
               </div>
             )}
 
-            <div className="quantity-selection">
-              <button onClick={handleDecrement}>-</button>
-              <input type="number" value={quantity} readOnly />
-              <button onClick={handleIncrement}>+</button>
+            <div className="mt-4">
+              <label className="block mb-2  text-dark font-semibold">Quantity:</label>
+              <div className="flex items-center">
+                <button
+                  onClick={handleDecrement}
+                  className="px-3 py-1 border rounded-l bg-gray-800 hover:bg-gray-600"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  value={quantity}
+                  readOnly
+                  className="w-12 h-9 text-center bg-white text-dark border-t border-b"
+                />
+                <button
+                  onClick={handleIncrement}
+                  className="px-3 py-1 border rounded-r bg-gray-800 hover:bg-gray-600"
+                >
+                  +
+                </button>
+              </div>
             </div>
 
-            <div className="total-price">
-              <p>
-                <strong>Total Price:</strong> Rs. {totalPrice}
-              </p>
-            </div>
+            <p className="mt-4 text-3xl text-gray-500 font-semibold">
+              Total Price: Rs. {totalPrice}
+            </p>
+            <p className="mt-1 text-sm text-gray-500 font-semibold">
+              Delivery between {deliveryDates.start} and {deliveryDates.end}
+            </p>
+          
 
-            <div className="purchase-buttons">
-              <button className="btn-primary" onClick={handleAddToCart}>
-                Add to Cart
-              </button>
-              <button className="btn-primary" onClick={handleBuyNow}>
-                Buy Now
-              </button>
-              <button
-                className="btn btn-wishlist"
-                onClick={handleAddToWishlist}
-              >
-                <FaHeart />
-              </button>
-            </div>
+          <div className="flex items-center mt-10 space-x-2">
+            <button
+              onClick={handleAddToCart}
+              className="px-6 py-4 bg-orange-600 text-white rounded-md hover:bg-orange-700"
+            >
+              Add to Cart
+            </button>
+            <button
+              onClick={handleBuyNow}
+              className="px-6 py-4 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+            >
+              Buy Now
+            </button>
+            <button
+              onClick={handleAddToWishlist}
+              className="px-6 py-4 bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center"
+            >
+              <FaHeart className="mr-2" />
+              Add to Wishlist
+            </button>
           </div>
         </div>
+        </div>
       </div>
-
-      {/* Checkout Popup */}
-      <CheckoutPopup
-        isOpen={isCheckoutOpen}
-        onClose={() => setIsCheckoutOpen(false)}
-        onConfirm={handleCheckoutConfirm}
-        totalAmount={parseFloat(totalPrice)}
-      />
+      {isCheckoutOpen && (
+        <CheckoutPopup
+          product={product}
+          onClose={() => setIsCheckoutOpen(false)}
+          onConfirm={handleCheckoutConfirm}
+        />
+      )}
     </div>
   );
 };

@@ -1,52 +1,62 @@
 // src/components/Footer.jsx
 import React from "react";
-import "../styles/Footer.css"; // Ensure this path is correct
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="footer">
-      <div className="footer-content">
-        <div className="footer-section about">
-          <h3>About Us</h3>
-          <p>
+    <footer className="bg-[#212529] text-white">
+      <div className="container mx-auto py-8 px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="footer-section">
+          <h3 className="text-xl font-bold text-[#ff9800] mb-4">About Us</h3>
+          <p className="text-sm leading-relaxed">
             Shopping Eye is your one-stop shop for the best deals and exclusive
             offers. Explore our wide range of products and enjoy shopping like
             never before.
           </p>
         </div>
-        <div className="footer-section links">
-          <h3>Quick Links</h3>
-          <ul>
+        <div className="footer-section">
+          <h3 className="text-xl font-bold text-[#ff9800] mb-4">Quick Links</h3>
+          <ul className="space-y-2">
             <li>
-              <a href="#home">Home</a>
+              <a href="#home" className="hover:text-[#ff9800] transition">
+                Home
+              </a>
             </li>
             <li>
-              <a href="#categories">Categories</a>
+              <a href="#categories" className="hover:text-[#ff9800] transition">
+                Categories
+              </a>
             </li>
             <li>
-              <a href="#offers">Offers</a>
+              <a href="#offers" className="hover:text-[#ff9800] transition">
+                Offers
+              </a>
             </li>
             <li>
-              <a href="#shops">Shops</a>
+              <a href="#shops" className="hover:text-[#ff9800] transition">
+                Shops
+              </a>
             </li>
             <li>
-              <a href="#contact">Contact</a>
+              <a href="#contact" className="hover:text-[#ff9800] transition">
+                Contact
+              </a>
             </li>
           </ul>
         </div>
-        <div className="footer-section contact">
-          <h3>Contact Us</h3>
-          <p>Email: support@shoppingeye.com</p>
-          <p>Phone: +123 456 7890</p>
+        <div className="footer-section">
+          <h3 className="text-xl font-bold text-[#ff9800] mb-4">Contact Us</h3>
+          <p className="text-sm leading-relaxed">Email: support@shoppingeye.com</p>
+          <p className="text-sm leading-relaxed">Phone: +123 456 7890</p>
         </div>
-        <div className="footer-section social">
-          <h3>Follow Us</h3>
-          <div className="social-icons">
+        <div className="footer-section">
+          <h3 className="text-xl font-bold text-[#ff9800] mb-4">Follow Us</h3>
+          <div className="flex space-x-4 text-2xl">
             <a
               href="https://facebook.com"
               target="_blank"
               rel="noopener noreferrer"
+              className="hover:text-[#ff9800] transition"
             >
               <FaFacebook />
             </a>
@@ -54,6 +64,7 @@ const Footer = () => {
               href="https://twitter.com"
               target="_blank"
               rel="noopener noreferrer"
+              className="hover:text-[#ff9800] transition"
             >
               <FaTwitter />
             </a>
@@ -61,6 +72,7 @@ const Footer = () => {
               href="https://instagram.com"
               target="_blank"
               rel="noopener noreferrer"
+              className="hover:text-[#ff9800] transition"
             >
               <FaInstagram />
             </a>
@@ -68,14 +80,17 @@ const Footer = () => {
               href="https://linkedin.com"
               target="_blank"
               rel="noopener noreferrer"
+              className="hover:text-[#ff9800] transition"
             >
               <FaLinkedin />
             </a>
           </div>
         </div>
       </div>
-      <div className="footer-bottom">
-        <p>&copy; 2024 Shopping Eye. All rights reserved.</p>
+      <div className="bg-black py-4">
+        <div className="container mx-auto text-center">
+          <p className="text-sm text-[#ff9800]">&copy; 2024 Shopping Eye. All rights reserved.</p>
+        </div>
       </div>
     </footer>
   );

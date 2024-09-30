@@ -27,10 +27,13 @@ const NavBar = () => {
           <Link to="/home">Home</Link>
         </li>
         <li>
-          <a href="#categories">Categories</a>
+          <a href="/home#categories">Categories</a>
         </li>
         <li>
           <Link to="#contact">Contact</Link>
+        </li>
+        <li>
+          <Link to="/feedbacklist">Feedbacks</Link>
         </li>
       </ul>
       <form className="search-form" onSubmit={(e) => e.preventDefault()}>

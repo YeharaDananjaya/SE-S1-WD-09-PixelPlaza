@@ -3,24 +3,24 @@ const router = express.Router();
 const Wishlist = require('../models/Wishlist');
 
 // Add item to wishlist
+// In your wishlistRoutes.js
 router.post('/', async (req, res) => {
-  const { productId } = req.body;
+  const { productId, userID } = req.body;
+
+  if (!productId || !userID) {
+    return res.status(400).json({ message: 'Product ID and User ID are required.' });
+  }
 
   try {
-    // Check if the product is already in the wishlist
-    const existingWishlistItem = await Wishlist.findOne({ productId });
-    
-    if (existingWishlistItem) {
-      return res.status(400).json({ message: 'Product is already in wishlist' });
-    }
-
-    const wishlistItem = new Wishlist({ productId });
-    await wishlistItem.save();
-    res.status(201).json(wishlistItem);
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to add product to wishlist', error: err });
+    const newWishlistItem = new Wishlist({ productId, userID });
+    await newWishlistItem.save();
+    res.status(200).json(newWishlistItem);
+  } catch (error) {
+    console.error('Error saving wishlist item:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
 
 // Get all wishlist items
 router.get('/wishlist', async (req, res) => {
@@ -32,16 +32,37 @@ router.get('/wishlist', async (req, res) => {
   }
 });
 
-// Remove item from wishlist
-router.delete('/wishlist/:id', async (req, res) => {
-  const { id } = req.params;
+router.get('/:userID', async (req, res) => {
+  const { userID } = req.params; // Get userID from the URL parameter
 
   try {
-    await Wishlist.findByIdAndDelete(id);
-    res.status(200).json({ message: 'Item removed from wishlist' });
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to remove item from wishlist', error: err });
+    const wishlistItems = await Wishlist.find({ userID }).populate('productId'); // Populate product details
+    res.status(200).json(wishlistItems);
+  } catch (error) {
+    console.error('Error retrieving wishlist items:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+// Remove item from wishlist
+// Remove item from wishlist
+router.delete('/:id', async (req, res) => { // Change the route to match /:id
+  const { id } = req.params; // This will now correspond to the _id of the wishlist item
+
+  try {
+    const deletedItem = await Wishlist.findByIdAndDelete(id); // Use findByIdAndDelete instead
+
+    if (!deletedItem) {
+      return res.status(404).json({ message: 'Item not found in wishlist' });
+    }
+
+    res.status(200).json({ message: 'Item removed from wishlist', deletedItem });
+  } catch (error) {
+    console.error('Error deleting wishlist item:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 
 module.exports = router;

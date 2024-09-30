@@ -48,9 +48,8 @@ const ItemList = () => {
         ));
 
   return (
-    <div>
-      <br></br>
-      <br></br>
+    <div className="w-[100vw]"> 
+    
       <div className="item-list">{itemlist}</div>
     </div>
   );

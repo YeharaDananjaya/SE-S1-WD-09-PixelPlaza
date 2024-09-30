@@ -6,7 +6,7 @@ const ClientLayout = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <div className="flex-1 mt-20">{children}</div>
+      <div className="flex-1 mt-16 ">{children}</div>
       <Footer />
     </div>
   );
