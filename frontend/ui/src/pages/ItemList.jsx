@@ -26,18 +26,27 @@ const ItemList = () => {
   }, [location.search, items]);
 
   const filterItems = (items, searchQuery) => {
-    const query = new URLSearchParams(searchQuery).get("search") || "";
+    const queryParams = new URLSearchParams(searchQuery);
+    const searchQueryParam = queryParams.get("search") || "";
+    const categoryQueryParam = queryParams.get("category") || "";
 
-    if (query.trim()) {
-      const filtered = items.filter(
+    let filtered = items;
+
+    // Filter by search query
+    if (searchQueryParam.trim()) {
+      filtered = filtered.filter(
         (item) =>
-          item.name.toLowerCase().includes(query.toLowerCase()) ||
-          item.description.toLowerCase().includes(query.toLowerCase())
+          item.name.toLowerCase().includes(searchQueryParam.toLowerCase()) ||
+          item.description.toLowerCase().includes(searchQueryParam.toLowerCase())
       );
-      setFilteredItems(filtered);
-    } else {
-      setFilteredItems(items);
     }
+
+    // Filter by category
+    if (categoryQueryParam.trim()) {
+      filtered = filtered.filter((item) => item.category === categoryQueryParam);
+    }
+
+    setFilteredItems(filtered);
   };
 
   const itemlist =
@@ -49,7 +58,6 @@ const ItemList = () => {
 
   return (
     <div className="w-[100vw]"> 
-    
       <div className="item-list">{itemlist}</div>
     </div>
   );

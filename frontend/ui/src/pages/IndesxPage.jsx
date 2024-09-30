@@ -19,7 +19,8 @@ const IndexPage = () => {
   };
   return (
     <div className="homepage">
-      <section id="offers" className="section offers">
+    <section id="offers" className="section offers flex">
+      <div className="offer-slider-container">
         <Slider {...sliderSettings} className="offer-slider">
           <div>
             <img
@@ -27,6 +28,9 @@ const IndexPage = () => {
               alt="50% off on Electronics"
               className="offer-image"
             />
+            <div className="slider-overlay">
+              <div className="offer-title">50% Off on Electronics</div>
+            </div>
           </div>
           <div>
             <img
@@ -34,9 +38,23 @@ const IndexPage = () => {
               alt="Buy 1 Get 1 Free on Fashion"
               className="offer-image"
             />
+            <div className="slider-overlay">
+              <div className="offer-title">Buy 1 Get 1 Free on Fashion</div>
+            </div>
           </div>
         </Slider>
-      </section>
+      </div>
+      <div className="map-button-container">
+        <Link to="/map" className="map-button">
+          <img
+            src="https://img.icons8.com/ios-filled/100/ffffff/map-marker.png" // Replace with your button image
+            alt="View on Map"
+            className="map-button-image"
+          />
+          <span className="map-button-text">View on Map</span>
+        </Link>
+      </div>
+    </section>
 
       <section id="categories" className="section categories">
         <h2>Shop by Categories</h2>

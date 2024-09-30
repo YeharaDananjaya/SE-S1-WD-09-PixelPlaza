@@ -212,6 +212,8 @@ body {
 .offer-slider {
     max-width: 800px;
     margin: 0 auto;
+    margin-left: 50px;
+    margin-right: 10px;
   }
   
   .offer-image {
@@ -221,4 +223,54 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
- 
+ /* src/styles/indexpage.css */
+
+/* Existing styles... */
+
+.offers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.offer-slider-container {
+  flex: 1;
+}
+
+.map-button-container {
+  margin-bottom: 40px;
+  margin-right: 50px;
+  flex: 0 0 250px; /* Fixed width for the button container */
+  text-align: center; /* Center the button content */
+}
+
+.map-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff9800; /* Button background color */
+  color: white;
+  height: 460px;
+  padding: 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.map-button:hover {
+  background-color: #e68a00; /* Darker shade on hover */
+}
+
+.map-button-image {
+  width: 100px; /* Adjust size as needed */
+  height: auto;
+  margin-bottom: 10px; /* Space between image and text */
+}
+
+.map-button-text {
+  font-size: 1.2rem; /* Adjust font size */
+  font-weight: bold;
+}
+
+/* Other existing styles... */
