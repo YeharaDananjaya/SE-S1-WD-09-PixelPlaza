@@ -178,6 +178,30 @@ router.get("/getByShopID/:shopID", async (req, res) => {
   }
 });
 
+// Route to get shops by category
+router.get("/getByCategory/:category", async (req, res) => {
+  try {
+    const { category } = req.params; // Extract the category from request params
+
+    // Find all shops with the given category
+    const shops = await Shops.find({ category: category });
+
+    // Check if any shops are found
+    if (shops.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No shops found for this category" });
+    }
+
+    res.status(200).json(shops); // Return the list of shops for the category
+  } catch (error) {
+    console.error("Error fetching shops by category:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch shops by category", error });
+  }
+});
+
 // Route to get a single shop by floorID
 router.get("/get/:floorID", async (req, res) => {
   try {
@@ -223,20 +247,29 @@ router.put("/updateByShopID/:shopID", async (req, res) => {
       return res.status(404).json({ message: "Shop not found" });
     }
 
-    // Update shop details
-    shop.floorID = req.body.floorID || shop.floorID; // Update only if new value is provided
+    // Update shop details with new state fields
+    shop.shopKeeperPhoto = req.body.shopKeeperPhoto || shop.shopKeeperPhoto; // Update if new value is provided
+    shop.description = req.body.description || shop.description;
+    shop.contactInfo = req.body.contactInfo || shop.contactInfo; // Update contactInfo
+    shop.category = req.body.category || shop.category; // Update category
+    shop.floorID = req.body.floorID || shop.floorID; // Update floorID if new value is provided
     shop.shopKeeperName = req.body.shopKeeperName || shop.shopKeeperName;
     shop.shopName = req.body.shopName || shop.shopName;
     shop.assignDate = req.body.assignDate || shop.assignDate;
     shop.Value = req.body.Value || shop.Value;
-    shop.description = req.body.description || shop.description;
-    shop.shopKeeperPhoto = req.body.shopKeeperPhoto || shop.shopKeeperPhoto; // Update shopKeeperPhoto if new value is provided
 
     await shop.save();
 
-    res
-      .status(200)
-      .json({ message: "Shop details updated successfully", shop });
+    // Send response back to the client
+    res.status(200).json({
+      message: "Shop details updated successfully",
+      updatedShop: {
+        shopKeeperPhoto: shop.shopKeeperPhoto,
+        description: shop.description,
+        contactInfo: shop.contactInfo,
+        category: shop.category,
+      },
+    });
   } catch (error) {
     console.error("Error updating shop details by shopID:", error);
     res.status(500).json({ message: "Failed to update shop details", error });
