@@ -4,6 +4,7 @@ import "../styles/Profile.css";
 import axios from "axios";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { useUserSession } from "../components/UserSession"; // Use the custom hook
 
 const Profile = () => {
   const [activeCategory, setActiveCategory] = useState("personalDetails");
@@ -22,6 +23,15 @@ const Profile = () => {
     email: "",
     phone: "",
   });
+
+
+  const { user, clearUserSession } = useUserSession(); // Use the hook to access user and clear function
+
+
+  const handleLogout = () => {
+    clearUserSession(); // Clear user data from local storage
+    window.location.href = "/"; // Redirect to homepage or login page
+  };
 
   const userId = localStorage.getItem("userId");
 
@@ -263,17 +273,7 @@ useEffect(() => {
     navigate(`/insertfeedback/${itemId}`, { state: { itemName } });
   };
   
-  const handleLogout = () => {
-    // Clear user session data
-    localStorage.removeItem("userToken"); // Adjust based on your app
-    localStorage.removeItem("userInfo"); // Remove any other user-related data
   
-    // Optionally, you can also clear state if using context or global state
-    // e.g., setUser(null); (if you have a user state managed)
-  
-    // Redirect to the LoginRegister page
-    navigate("/"); // Change to your desired route
-  };
   
   
 

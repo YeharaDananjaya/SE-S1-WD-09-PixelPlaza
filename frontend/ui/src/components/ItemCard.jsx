@@ -3,6 +3,12 @@ import { Link } from "react-router-dom";
 import "../styles/ItemCard.css";
 
 const ItemCard = ({ item }) => {
+  // Function to truncate the description
+  const truncateDescription = (description, maxLength) => {
+    if (description.length <= maxLength) return description;
+    return description.slice(0, maxLength) + "..."; // Truncate and add "..."
+  };
+
   return (
     <Link to={`/purchase/${item._id}`} className="item-card-link">
       {" "}
@@ -19,7 +25,10 @@ const ItemCard = ({ item }) => {
         />
         <div className="item-details">
           <h3 className="item-name">{item.name}</h3>
-          <span className="discount">{item.description}</span>
+          {/* Truncated description */}
+          <span className="discount">
+            {truncateDescription(item.description, 100)} {/* Adjust max length */}
+          </span>
           <br />
           <span className="category">{item.category}</span>
 

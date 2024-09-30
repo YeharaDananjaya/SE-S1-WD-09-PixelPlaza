@@ -1,8 +1,8 @@
 import React from "react";
-import { FaEdit, FaTrash } from "react-icons/fa"; // Import icons
+import { FaEdit, FaTrash, FaPlus, FaMinus } from "react-icons/fa"; // Import icons
 import { Link } from "react-router-dom";
 
-const CartItem = ({ item, onUpdate, onDelete, onSelect, isSelected }) => {
+const CartItem = ({ item, onUpdate, onDelete, onSelect, isSelected, onQuantityChange }) => {
   const handleUpdate = () => {
     if (onUpdate) {
       onUpdate(item);
@@ -19,6 +19,24 @@ const CartItem = ({ item, onUpdate, onDelete, onSelect, isSelected }) => {
     if (onSelect) {
       onSelect(item._id, e.target.checked);
     }
+  };
+
+  const handleIncreaseQuantity = () => {
+    if (onQuantityChange) {
+      onQuantityChange(item._id, item.count + 1);
+    }
+  };
+
+  const handleDecreaseQuantity = () => {
+    if (onQuantityChange && item.count > 1) {
+      onQuantityChange(item._id, item.count - 1);
+    }
+  };
+
+  // Function to truncate the description
+  const truncateDescription = (description, maxLength) => {
+    if (description.length <= maxLength) return description;
+    return description.slice(0, maxLength) + "..."; // Truncate and add "..."
   };
 
   const firstImage = item.images.length > 0 ? item.images[0] : "";
@@ -56,24 +74,33 @@ const CartItem = ({ item, onUpdate, onDelete, onSelect, isSelected }) => {
             </button>
           </div>
         </div>
+
         <p className="text-gray-600">Price: Rs.{item.price}</p>
-        <p className="text-gray-500">{item.description}</p>
+
+        {/* Truncated description */}
+        <p className="text-gray-500">
+          {truncateDescription(item.description, 100)} {/* Adjust maxLength if needed */}
+        </p>
+
         <div className="flex justify-between mt-2">
-          <div className="flex items-center">
           {item.color ? ( // Conditionally render the color section
-    <div className="flex items-center">
-      <label className="mr-2">Color:</label>
-      <div
-        className="w-6 h-6 rounded-full"
-        style={{ backgroundColor: item.color }}
-      />
-    </div>
-  ) : null}
-            
-          </div>
-          
+            <div className="flex items-center">
+              <label className="mr-2">Color:</label>
+              <div
+                className="w-6 h-6 rounded-full"
+                style={{ backgroundColor: item.color }}
+              />
+            </div>
+          ) : null}
+
           <div className="flex items-center">
             <label className="mr-2">Quantity:</label>
+            <button
+              onClick={handleDecreaseQuantity}
+              className="bg-gray-300 p-2 rounded-md mr-2"
+            >
+              <FaMinus />
+            </button>
             <input
               type="number"
               min="1"
@@ -81,11 +108,17 @@ const CartItem = ({ item, onUpdate, onDelete, onSelect, isSelected }) => {
               readOnly
               className="w-12 border border-gray-300 rounded-md p-1 text-center bg-white"
             />
+            <button
+              onClick={handleIncreaseQuantity}
+              className="bg-gray-300 p-2 rounded-md ml-2"
+            >
+              <FaPlus />
+            </button>
           </div>
         </div>
+
         <p className="text-red-600">Total Price: Rs.{item.price * item.count}</p>
       </div>
-      
     </div>
   );
 };
