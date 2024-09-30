@@ -26,6 +26,9 @@ const Mapmodel = () => {
   const [currentFloor, setCurrentFloor] = useState('floor1');
   const [selectedShop, setSelectedShop] = useState(null);
   const [fetchProducts , setFetchProducts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredShops, setFilteredShops] = useState([]);
+  const [isOpen ,setIsOpen] = useState();
   const [isModVisible, setIsModVisible] = useState(false);
   const [input, setInput] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
@@ -35,6 +38,7 @@ const Mapmodel = () => {
   const floor2Ref = useRef(null);
   const floor3Ref = useRef(null);
   const floor4Ref = useRef(null);
+
 
   //Temporary array of items
   const items = [
@@ -61,6 +65,8 @@ const Mapmodel = () => {
   ];
   
 
+
+//Chat Bot Feature for handle messages
   const handleSendMessage = () => {
     if (input.trim()) {
       setChatMessages([...chatMessages, { sender: 'user', text: input }]);
@@ -84,6 +90,25 @@ const Mapmodel = () => {
       floor4Ref.current.scrollIntoView({ behavior: 'smooth' })
     }
   };
+
+
+
+
+  // Search Function
+  const handleSearch = (query) => {
+    setSearchQuery(query); 
+
+    if (query) {
+      
+      const filtered = shops.filter((shop) =>
+        shop.shopName && shop.shopName.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredShops(filtered.map((shop) => shop.shopID)); 
+    } else {
+      setFilteredShops([]); 
+    }
+  };
+  
 
   useEffect(()=>{
     Aos.init({
@@ -216,7 +241,7 @@ const Mapmodel = () => {
                               </div>
 
                               <div className='flex flex-col w-[20vw] mt-6 h-[20vh] items-center justify-center p-2 space-y-2'>
-
+                                            
 
                               </div>
 
@@ -257,14 +282,17 @@ const Mapmodel = () => {
                                       }}>
                                         <input 
                                           type='text' 
+                                          value={searchQuery}
                                           placeholder='Search...' 
+                                          onChange={(e) => handleSearch(e.target.value)}
                                           className='flex-grow outline-none bg-transparent text-sm pr-3'
                                         />
-                                        <button className='flex text-gray-500 items-center h-[2rem] justify-center bg-black w-[6vw] rounded-full hover:scale-105 transition-transform duration-300 ease-in-o' style={{
+                                        <button
+                                        onClick={()=> handleSearch('')} className='flex text-gray-500 items-center h-[2rem] justify-center bg-black w-[6vw] rounded-full hover:scale-105 transition-transform duration-300 ease-in-o' style={{
                                             boxShadow: 'inset 0 2px 8px rgba(0, 255, 255, 1)'
                                         }}>
                                               <h2 className='flex text-sm font-ibmplexsans text-primary'>
-                                                Search
+                                                Refresh
                                               </h2>
                                         </button>
                                       </div>  
@@ -283,13 +311,17 @@ const Mapmodel = () => {
                                                 <FontAwesomeIcon icon={faCaretDown} /><span className='mx-4 font-ibmplexsans'>DropDown Categories</span>
                                               </button>
                                               {/* Dropdown menu */}
-                                            {/* <div className='absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-10'>
+                                            <div className='absolute right-0 mt-2 w-[20vw] bg-white border rounded-md shadow-lg z-10'>
                                                 <ul className='py-1'>
-                                                  <li className='px-4 py-2 hover:bg-gray-200 cursor-pointer'>Option 1</li>
-                                                  <li className='px-4 py-2 hover:bg-gray-200 cursor-pointer'>Option 2</li>
-                                                  <li className='px-4 py-2 hover:bg-gray-200 cursor-pointer'>Option 3</li>
+                                                  <li className='px-4 py-2 hover:bg-gray-200 cursor-pointer'>Fashion</li>
+                                                  <li className='px-4 py-2 hover:bg-gray-200 cursor-pointer'>Electronics</li>
+                                                  <li className='px-4 py-2 hover:bg-gray-200 cursor-pointer'>Home & Garden</li>
+                                                  <li className='px-4 py-2 hover:bg-gray-200 cursor-pointer'>Health & Beauty</li>
+                                                  <li className='px-4 py-2 hover:bg-gray-200 cursor-pointer'>Sport & Outdoor</li>
+                                                  <li className='px-4 py-2 hover:bg-gray-200 cursor-pointer'>Groceries</li>
+                                                  <li className='px-4 py-2 hover:bg-gray-200 cursor-pointer'>Gaming & Entertainment</li>
                                                 </ul>
-                                              </div> */}
+                                              </div>
                                             </div>
                                         </div>  
 
@@ -299,7 +331,7 @@ const Mapmodel = () => {
                                           }}/>
                                             <h2 className='flex w-[20vw] text-center font-ibmplexsans justify-center  items-center text-xl text-primary' style={{
                                             fontWeight:'200'
-                                          }}>Shops Categories
+                                          }}>Available Promotions
                                         </h2></div>
 
                                         <div className='flex items-center bg-white rounded-full pr-1 h-12 w-[20vw] px-4 space-x-1' style={{
@@ -674,11 +706,18 @@ const Mapmodel = () => {
                                         boxShadow:'inset 0 3px 17px rgba(0, 0, 0, 0.9)'
                                       }}>
                                         <div className="flex w-[75vw] h-[30vh] bg-transparent items-center justify-center rounded-t-xl space-x-2">
-                                          {shops.slice(0, 5).map((shop, index) => (
+                                          {shops.slice(0, 5).map((shop, index) => {
+
+                                            const isFiltered = filteredShops.includes(shop.shopID);
+
+                                            return (
                                             <div
                                               key={index}
                                               onClick={()=> handleClickShopView(shop?.shopID)}
-                                              className="flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
+                                              className={`flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out ${
+                                                isFiltered || filteredShops.length === 0 ? 'opacity-100 scale-100' : 'opacity-35 scale-90'
+                                                
+                                              }`}
                                               style={{
                                                 boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 0px 18px 25px rgba(0, 0, 0, 0.8)'
                                               }}>
@@ -801,7 +840,8 @@ const Mapmodel = () => {
 
 
                                             </div>
-                                          ))}
+                                          );
+                                          })}
                                         </div>
                           
                                         <div className="flex w-[75vw] h-[15vh] bg-gray-600 bg-opacity-70 items-center justify-center">
@@ -841,130 +881,132 @@ const Mapmodel = () => {
                           
                                         <div className="flex w-[75vw] h-[30vh] bg-transparent items-center justify-center rounded-t-xl space-x-2 p-0">
                                             
-                                              {shops.slice(5, 10).map((shop, index) => (
-                                                <div
-                                                key={index}
-                                                onClick={()=> handleClickShopView(shop?.shopID)}
-                                                className="flex flex-col w-[14vw] h-[26vh] items-center justify-end border-t-8 border-t-cyan-700 bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
-                                                style={{
-                                                  boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 0px 18px 25px rgba(0, 0, 0, 0.8)'
-                                                }}>
-                                                  <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
-                          
-                                                      <div className='flex w-[5vw] h-auto justify-center items-center mt-3 space-x-2'>
-                                                        <div
-                                                              className='flex h-2 w-2 rounded-full'
-                                                              style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                          />
-                                                        <div
-                                                              className='flex h-2 w-2 rounded-full'
-                                                              style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                          />
-                                                        <div
-                                                              className='flex h-2 w-2 rounded-full'
-                                                              style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                          />
-                          
-                                                      </div> 
+                                              {shops.slice(5, 10).map((shop, index) => {
+
+                                                  const isFiltered = filteredShops.includes(shop.shopID);
+
+                                                  return (
+                                                  <div
+                                                    key={index}
+                                                    onClick={()=> handleClickShopView(shop?.shopID)}
+                                                    className={`flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out ${
+                                                      isFiltered || filteredShops.length === 0 ? 'opacity-100 scale-100' : 'opacity-35 scale-75'
                                                       
-                                                      <div className='flex w-[5vw] h-auto justify-center items-center bg-primary rounded-2xl mt-2 overflow-hidden'>
-                                                          <h2 className='font-ibmplexsans text-xs text-center text-secondary' style={{
-                                                            fontWeight:'500'
+                                                    }`}
+                                                    style={{
+                                                      boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 0px 18px 25px rgba(0, 0, 0, 0.8)'
+                                                    }}>
+                                                      <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
+
+                                                          <div className='flex w-[5vw] h-auto justify-center items-center mt-3 space-x-2'>
+                                                            <div
+                                                                  className='flex h-2 w-2 rounded-full'
+                                                                  style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                              />
+                                                            <div
+                                                                  className='flex h-2 w-2 rounded-full'
+                                                                  style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                              />
+                                                            <div
+                                                                  className='flex h-2 w-2 rounded-full'
+                                                                  style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                              />
+
+                                                          </div> 
+                                                          
+                                                          <div className='flex w-[5vw] h-auto justify-center items-center bg-primary rounded-2xl mt-2 overflow-hidden'>
+                                                              <h2 className='font-ibmplexsans text-xs text-center text-secondary' style={{
+                                                                fontWeight:'500'
+                                                              }}>
+                                                                  {shop?.shopID}
+                                                              </h2>
+
+                                                          </div>                          
+                                                          
+                                                          <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
+                                                          boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
                                                           }}>
-                                                              {shop?.shopID}
-                                                          </h2>
-                          
-                                                      </div>                          
-                                                      
-                                                      <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                    boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
-                                                    }}>
-                                                        <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
-                                                          fontWeight:'200'
-                                                        }}>
-                                                            {shop?.shopName ? (
-                                                              shop.shopName
-                                                            ) :(
-                                                              <span style={{
-                                                                fontSize:'0.8rem'
-                                                              }}>Temporarily Unavailable</span>
-                                                            )}
-                                                        </h2>
-                          
-                                                    </div>
-                          
-                          
-                                                  </div>
-                          
-                                                  <div className='flex flex-col w-[14vw] h-[13vh] items-center justify-end bg-transparent overflow-hidden opacity-100'>
+                                                              <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
+                                                                fontWeight:'200'
+                                                              }}>
+                                                                  {shop?.shopName ? (
+                                                                    shop.shopName
+                                                                  ) :(
+                                                                    <span style={{
+                                                                      fontSize:'0.8rem'
+                                                                    }}>Temporarily Unavailable</span>
+                                                                  )}
+                                                              </h2>
 
-                                                  <div className='flex flex-col w-[10vw] items-center justify-end bg-transparent h-[12vh]'>
-                                                    
-                                                    {/*Hood of the Shop */}
-                                                    <div className='flex bg-transparent overflow-hidden w-[10vw] rounded-t-full h-[2vh]' style={{
-                                                      
-                                                    }}>
-                                                      
-                                                      <img src={hood} alt='' style={{width:'200px' }}/>
-
-                                                    </div>
-
-                                                    {/*Under Hood of the Shop */}
-                                                      <div className='flex w-[10vw] items-center justify-end bg-transparent h-[10vh]'>
-
-                                                              {/*Side Bars of the Shops */}
-                                                              <div className='flex flex-col w-[1vw] items-end justify-center bg-transparent h-[10vh]'>
-
-                                                                          <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
-                                                                            width:'0.6rem'
-                                                                          }}/>
-
-                                                              </div>
-
-                                                                {/*center section of the Shops */}
-                                                              <div className='flex flex-col w-[8vw] items-center justify-end bg-transparent h-[10vh]'>
-
-                                                                    <div className='flex w-[5vw] h-[8vh] items-center border-t-8 border-t-primary justify-start rounded-t-2xl' style={{
-                                                                            boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
-                                                                            backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
-                                                                        }}>
-
-                                                                            <div className='flex items-center ml-2 justify-start bg-secondary h-2 w-2 rounded-full'/>
-
-                                                                    </div>  
-
-
-                                                              </div>
-
-
-                                                              {/*Side BArs of the Shops */}
-                                                              <div className='flex flex-col w-[1vw] items-start justify-center bg-transparent h-[10vh]'>
-
-                                                                  <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
-                                                                                width:'0.6rem'
-                                                                              }}/>
-
-
-
-                                                              </div>
-
+                                                          </div>
 
 
                                                       </div>
 
+                                                      <div className='flex flex-col w-[14vw] h-[13vh] items-center justify-end bg-transparent overflow-hidden opacity-100'>
+
+                                                              <div className='flex flex-col w-[10vw] items-center justify-end bg-transparent h-[12vh]'>
+                                                                
+                                                                {/*Hood of the Shop */}
+                                                                <div className='flex bg-transparent overflow-hidden w-[10vw] rounded-t-full h-[2vh]' style={{
+                                                                  
+                                                                }}>
+                                                                  
+                                                                  <img src={hood} alt='' style={{width:'200px' }}/>
+
+                                                                </div>
+
+                                                                {/*Under Hood of the Shop */}
+                                                                  <div className='flex w-[10vw] items-center justify-end bg-transparent h-[10vh]'>
+                                                                    
+
+                                                                          {/*Side Bars of the Shops */}
+                                                                          <div className='flex flex-col w-[1vw] items-end justify-center bg-transparent h-[10vh]'>
+
+                                                                                      <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
+                                                                                        width:'0.6rem'
+                                                                                      }}/>
+
+                                                                          </div>
+
+
+
+                                                                            {/*center section of the Shops */}
+                                                                          <div className='flex flex-col w-[8vw] items-center justify-end bg-transparent h-[10vh]'>
+
+                                                                                <div className='flex w-[5vw] h-[8vh] items-center border-t-8 border-t-primary justify-start rounded-t-2xl' style={{
+                                                                                        boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
+                                                                                        backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
+                                                                                    }}>
+
+                                                                                        <div className='flex items-center ml-2 justify-start bg-secondary h-2 w-2 rounded-full'/>
+
+                                                                                </div>  
+
+
+                                                                          </div>
+
+
+                                                                          {/*Side BArs of the Shops */}
+                                                                          <div className='flex flex-col w-[1vw] items-start justify-center bg-transparent h-[10vh]'>
+
+                                                                              <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
+                                                                                            width:'0.6rem'
+                                                                                          }}/>
+
+
+
+                                                                          </div>
+                                                                  </div>
+                                                              </div>                                     
+                                                        </div>
+
+                                                      <div className='flex w-[14vw] h-[1vh] bg-gradient-to-t from-slate-500 to-cyan-600'/>
 
 
                                                   </div>
-
-
-
-
-                                                  </div>
-
-                                                  <div className='flex w-[14vw] h-[1vh] bg-gradient-to-t from-slate-500 to-cyan-600'/>
-
-                                              </div>
-                                              ))}
+                                                  );
+                                                  })}
                                         </div>
                                       </div> 
 
@@ -1005,12 +1047,13 @@ const Mapmodel = () => {
                                       {shops.slice(10, 15).map((shop, index) => (
                                             <div
                                             key={index}
-                                            className="flex flex-col w-[14vw] h-[25vh] items-center justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
+                                            onClick={()=> handleClickShopView(shop?.shopID)}
+                                            className="flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
                                             style={{
-                                              boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 3px 9px 10px rgba(0, 0, 0, 0.8)'
+                                              boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 0px 18px 25px rgba(0, 0, 0, 0.8)'
                                             }}>
                                               <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
-
+                        
                                                   <div className='flex w-[5vw] h-auto justify-center items-center mt-3 space-x-2'>
                                                     <div
                                                           className='flex h-2 w-2 rounded-full'
@@ -1024,104 +1067,109 @@ const Mapmodel = () => {
                                                           className='flex h-2 w-2 rounded-full'
                                                           style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
                                                       />
-
+                        
                                                   </div> 
                                                   
-                                                    <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                    boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
-                                                    }}>
-                                                        <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
-                                                          fontWeight:'200'
-                                                        }}>
-                                                            {shop?.shopName ? (
-                                                              shop.shopName
-                                                            ) :(
-                                                              <span style={{
-                                                                fontSize:'0.8rem'
-                                                              }}>Temporarily Unavailable</span>
-                                                            )}
-                                                        </h2>
-                          
-                                                    </div>                        
+                                                  <div className='flex w-[5vw] h-auto justify-center items-center bg-primary rounded-2xl mt-2 overflow-hidden'>
+                                                      <h2 className='font-ibmplexsans text-xs text-center text-secondary' style={{
+                                                        fontWeight:'500'
+                                                      }}>
+                                                          {shop?.shopID}
+                                                      </h2>
+                        
+                                                  </div>                          
                                                   
                                                   <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                  boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)'
+                                                  boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
                                                   }}>
                                                       <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
                                                         fontWeight:'200'
                                                       }}>
-                                                          {shop?.shopName}
+                                                          {shop?.shopName ? (
+                                                            shop.shopName
+                                                          ) :(
+                                                            <span style={{
+                                                              fontSize:'0.8rem'
+                                                            }}>Temporarily Unavailable</span>
+                                                          )}
                                                       </h2>
-
+                        
                                                   </div>
-
-
+                        
+                        
                                               </div>
+                        
+                                               <div className='flex flex-col w-[14vw] h-[13vh] items-center justify-end bg-transparent overflow-hidden opacity-100'>
 
-                                              <div className='flex flex-col w-[14vw] h-[13vh] items-center justify-end bg-transparent overflow-hidden opacity-100'>
-
-                                                        <div className='flex flex-col w-[10vw] items-center justify-end bg-transparent h-[12vh]'>
+                                                      <div className='flex flex-col w-[10vw] items-center justify-end bg-transparent h-[12vh]'>
+                                                        
+                                                        {/*Hood of the Shop */}
+                                                         <div className='flex bg-transparent overflow-hidden w-[10vw] rounded-t-full h-[2vh]' style={{
                                                           
-                                                          {/*Hood of the Shop */}
-                                                          <div className='flex bg-transparent overflow-hidden w-[10vw] rounded-t-full h-[2vh]' style={{
+                                                         }}>
+                                                          
+                                                          <img src={hood} alt='' style={{width:'200px' }}/>
+
+                                                         </div>
+
+                                                        {/*Under Hood of the Shop */}
+                                                          <div className='flex w-[10vw] items-center justify-end bg-transparent h-[10vh]'>
                                                             
-                                                          }}>
-                                                            
-                                                            <img src={hood} alt='' style={{width:'200px' }}/>
+
+                                                                  {/*Side Bars of the Shops */}
+                                                                  <div className='flex flex-col w-[1vw] items-end justify-center bg-transparent h-[10vh]'>
+
+                                                                              <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
+                                                                                width:'0.6rem'
+                                                                              }}/>
+
+                                                                  </div>
+
+
+
+                                                                    {/*center section of the Shops */}
+                                                                  <div className='flex flex-col w-[8vw] items-center justify-end bg-transparent h-[10vh]'>
+
+                                                                        <div className='flex w-[5vw] h-[8vh] items-center border-t-8 border-t-primary justify-start rounded-t-2xl' style={{
+                                                                                boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
+                                                                                backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
+                                                                            }}>
+
+                                                                                <div className='flex items-center ml-2 justify-start bg-secondary h-2 w-2 rounded-full'/>
+
+                                                                        </div>  
+
+
+                                                                  </div>
+
+
+                                                                  {/*Side BArs of the Shops */}
+                                                                  <div className='flex flex-col w-[1vw] items-start justify-center bg-transparent h-[10vh]'>
+
+                                                                      <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
+                                                                                    width:'0.6rem'
+                                                                                  }}/>
+
+
+
+                                                                  </div>
+
+
 
                                                           </div>
 
-                                                          {/*Under Hood of the Shop */}
-                                                            <div className='flex w-[10vw] items-center justify-end bg-transparent h-[10vh]'>
-
-                                                                    {/*Side Bars of the Shops */}
-                                                                    <div className='flex flex-col w-[2vw] items-end justify-center bg-transparent h-[10vh]'>
-
-                                                                                <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
-                                                                                  width:'0.6rem'
-                                                                                }}/>
-
-                                                                    </div>
-
-                                                                      {/*center section of the Shops */}
-                                                                    <div className='flex flex-col w-[8vw] items-center justify-end bg-transparent h-[10vh]'>
-
-                                                                          <div className='flex w-[5vw] h-[8vh] items-center border-t-8 border-t-primary justify-start rounded-t-2xl' style={{
-                                                                                  boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
-                                                                                  backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
-                                                                              }}>
-
-                                                                                  <div className='flex items-center ml-2 justify-start bg-secondary h-2 w-2 rounded-full'/>
-
-                                                                          </div>  
 
 
-                                                                    </div>
+                                                      </div>
+                                              
+                                                  
+                                                  
+                                                  
+                                               </div>
+
+                                               <div className='flex w-[14vw] h-[1vh] bg-gradient-to-t from-slate-500 to-cyan-600'/>
 
 
-                                                                    {/*Side BArs of the Shops */}
-                                                                    <div className='flex flex-col w-[2vw] items-start justify-center bg-transparent h-[10vh]'>
-
-                                                                        <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
-                                                                                      width:'0.6rem'
-                                                                                    }}/>
-
-
-
-                                                                    </div>
-
-
-
-                                                            </div>
-
-
-
-                                                        </div>
-
-
-
-
-                                              </div>
                                           </div>
                                       ))}
                                     </div>
@@ -1163,124 +1211,132 @@ const Mapmodel = () => {
 
                                     <div className="flex w-[75vw] h-[30vh] bg-transparent items-center justify-center rounded-b-xl space-x-2">
                                       {shops.slice(15, 20).map((shop, index) => (
-                                          <div
-                                          key={index}
-                                          className="flex flex-col w-[14vw] h-[25vh] items-center justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
-                                          style={{
-                                            boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 3px 9px 10px rgba(0, 0, 0, 0.8)'
-                                          }}>
-                                            <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
-
-                                                <div className='flex w-[5vw] h-auto justify-center items-center mt-3 space-x-2'>
-                                                  <div
-                                                        className='flex h-2 w-2 rounded-full'
-                                                        style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                    />
-                                                  <div
-                                                        className='flex h-2 w-2 rounded-full'
-                                                        style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                    />
-                                                  <div
-                                                        className='flex h-2 w-2 rounded-full'
-                                                        style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                    />
-
-                                                </div> 
-                                                
-                                                <div className='flex w-[5vw] h-auto justify-center items-center bg-primary rounded-2xl mt-2 overflow-hidden'>
-                                                    <h2 className='font-ibmplexsans text-xs text-center text-secondary' style={{
-                                                      fontWeight:'500'
-                                                    }}>
-                                                        {shop?.shopID}
-                                                    </h2>
-
-                                                </div>                          
-                                                
-                                                <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                    boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
-                                                    }}>
-                                                        <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
-                                                          fontWeight:'200'
-                                                        }}>
-                                                            {shop?.shopName ? (
-                                                              shop.shopName
-                                                            ) :(
-                                                              <span style={{
-                                                                fontSize:'0.8rem'
-                                                              }}>Temporarily Unavailable</span>
-                                                            )}
-                                                        </h2>
-                          
-                                                    </div>
-
-
-                                            </div>
-
-                                            <div className='flex flex-col w-[14vw] h-[13vh] items-center justify-end bg-transparent overflow-hidden opacity-100'>
-
-                                                <div className='flex flex-col w-[10vw] items-center justify-end bg-transparent h-[12vh]'>
+                                            <div
+                                            key={index}
+                                            onClick={()=> handleClickShopView(shop?.shopID)}
+                                            className="flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
+                                            style={{
+                                              boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 0px 18px 25px rgba(0, 0, 0, 0.8)'
+                                            }}>
+                                              <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
+                        
+                                                  <div className='flex w-[5vw] h-auto justify-center items-center mt-3 space-x-2'>
+                                                    <div
+                                                          className='flex h-2 w-2 rounded-full'
+                                                          style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                      />
+                                                    <div
+                                                          className='flex h-2 w-2 rounded-full'
+                                                          style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                      />
+                                                    <div
+                                                          className='flex h-2 w-2 rounded-full'
+                                                          style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                      />
+                        
+                                                  </div> 
                                                   
-                                                  {/*Hood of the Shop */}
-                                                  <div className='flex bg-transparent overflow-hidden w-[10vw] rounded-t-full h-[2vh]' style={{
-                                                    
+                                                  <div className='flex w-[5vw] h-auto justify-center items-center bg-primary rounded-2xl mt-2 overflow-hidden'>
+                                                      <h2 className='font-ibmplexsans text-xs text-center text-secondary' style={{
+                                                        fontWeight:'500'
+                                                      }}>
+                                                          {shop?.shopID}
+                                                      </h2>
+                        
+                                                  </div>                          
+                                                  
+                                                  <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
+                                                  boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
                                                   }}>
-                                                    
-                                                    <img src={hood} alt='' style={{width:'200px' }}/>
-
+                                                      <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
+                                                        fontWeight:'200'
+                                                      }}>
+                                                          {shop?.shopName ? (
+                                                            shop.shopName
+                                                          ) :(
+                                                            <span style={{
+                                                              fontSize:'0.8rem'
+                                                            }}>Temporarily Unavailable</span>
+                                                          )}
+                                                      </h2>
+                        
                                                   </div>
+                        
+                        
+                                              </div>
+                        
+                                               <div className='flex flex-col w-[14vw] h-[13vh] items-center justify-end bg-transparent overflow-hidden opacity-100'>
 
-                                                  {/*Under Hood of the Shop */}
-                                                    <div className='flex w-[10vw] items-center justify-end bg-transparent h-[10vh]'>
+                                                      <div className='flex flex-col w-[10vw] items-center justify-end bg-transparent h-[12vh]'>
+                                                        
+                                                        {/*Hood of the Shop */}
+                                                         <div className='flex bg-transparent overflow-hidden w-[10vw] rounded-t-full h-[2vh]' style={{
+                                                          
+                                                         }}>
+                                                          
+                                                          <img src={hood} alt='' style={{width:'200px' }}/>
 
-                                                            {/*Side Bars of the Shops */}
-                                                            <div className='flex flex-col w-[2vw] items-end justify-center bg-transparent h-[10vh]'>
+                                                         </div>
 
-                                                                        <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
-                                                                          width:'0.6rem'
-                                                                        }}/>
+                                                        {/*Under Hood of the Shop */}
+                                                          <div className='flex w-[10vw] items-center justify-end bg-transparent h-[10vh]'>
+                                                            
 
-                                                            </div>
+                                                                  {/*Side Bars of the Shops */}
+                                                                  <div className='flex flex-col w-[1vw] items-end justify-center bg-transparent h-[10vh]'>
 
-                                                              {/*center section of the Shops */}
-                                                            <div className='flex flex-col w-[8vw] items-center justify-end bg-transparent h-[10vh]'>
+                                                                              <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
+                                                                                width:'0.6rem'
+                                                                              }}/>
 
-                                                                  <div className='flex w-[5vw] h-[8vh] items-center border-t-8 border-t-primary justify-start rounded-t-2xl' style={{
-                                                                          boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
-                                                                          backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
-                                                                      }}>
-
-                                                                          <div className='flex items-center ml-2 justify-start bg-secondary h-2 w-2 rounded-full'/>
-
-                                                                  </div>  
-
-
-                                                            </div>
-
-
-                                                            {/*Side BArs of the Shops */}
-                                                            <div className='flex flex-col w-[2vw] items-start justify-center bg-transparent h-[10vh]'>
-
-                                                                <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
-                                                                              width:'0.6rem'
-                                                                 }}/>
+                                                                  </div>
 
 
 
-                                                            </div>
+                                                                    {/*center section of the Shops */}
+                                                                  <div className='flex flex-col w-[8vw] items-center justify-end bg-transparent h-[10vh]'>
+
+                                                                        <div className='flex w-[5vw] h-[8vh] items-center border-t-8 border-t-primary justify-start rounded-t-2xl' style={{
+                                                                                boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
+                                                                                backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
+                                                                            }}>
+
+                                                                                <div className='flex items-center ml-2 justify-start bg-secondary h-2 w-2 rounded-full'/>
+
+                                                                        </div>  
+
+
+                                                                  </div>
+
+
+                                                                  {/*Side BArs of the Shops */}
+                                                                  <div className='flex flex-col w-[1vw] items-start justify-center bg-transparent h-[10vh]'>
+
+                                                                      <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
+                                                                                    width:'0.6rem'
+                                                                                  }}/>
 
 
 
-                                                    </div>
+                                                                  </div>
 
 
 
-                                                </div>
+                                                          </div>
 
 
 
+                                                      </div>
+                                              
+                                                  
+                                                  
+                                                  
+                                               </div>
 
-                                                </div>
-                                        </div>
+                                               <div className='flex w-[14vw] h-[1vh] bg-gradient-to-t from-slate-500 to-cyan-600'/>
+
+
+                                          </div>
                                       ))}
                                     </div>
                                   </div>
@@ -1319,12 +1375,13 @@ const Mapmodel = () => {
                                       {shops.slice(20, 25).map((shop, index) => (
                                             <div
                                             key={index}
-                                            className="flex flex-col w-[14vw] h-[25vh] items-center justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
+                                            onClick={()=> handleClickShopView(shop?.shopID)}
+                                            className="flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
                                             style={{
-                                              boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 3px 9px 10px rgba(0, 0, 0, 0.8)'
+                                              boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 0px 18px 25px rgba(0, 0, 0, 0.8)'
                                             }}>
                                               <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
-
+                        
                                                   <div className='flex w-[5vw] h-auto justify-center items-center mt-3 space-x-2'>
                                                     <div
                                                           className='flex h-2 w-2 rounded-full'
@@ -1338,7 +1395,7 @@ const Mapmodel = () => {
                                                           className='flex h-2 w-2 rounded-full'
                                                           style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
                                                       />
-
+                        
                                                   </div> 
                                                   
                                                   <div className='flex w-[5vw] h-auto justify-center items-center bg-primary rounded-2xl mt-2 overflow-hidden'>
@@ -1347,93 +1404,100 @@ const Mapmodel = () => {
                                                       }}>
                                                           {shop?.shopID}
                                                       </h2>
-
+                        
                                                   </div>                          
                                                   
                                                   <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                    boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
-                                                    }}>
-                                                        <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
-                                                          fontWeight:'200'
-                                                        }}>
-                                                            {shop?.shopName ? (
-                                                              shop.shopName
-                                                            ) :(
-                                                              <span style={{
-                                                                fontSize:'0.8rem'
-                                                              }}>Temporarily Unavailable</span>
-                                                            )}
-                                                        </h2>
-                          
-                                                    </div>
-
-
+                                                  boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
+                                                  }}>
+                                                      <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
+                                                        fontWeight:'200'
+                                                      }}>
+                                                          {shop?.shopName ? (
+                                                            shop.shopName
+                                                          ) :(
+                                                            <span style={{
+                                                              fontSize:'0.8rem'
+                                                            }}>Temporarily Unavailable</span>
+                                                          )}
+                                                      </h2>
+                        
+                                                  </div>
+                        
+                        
                                               </div>
+                        
+                                               <div className='flex flex-col w-[14vw] h-[13vh] items-center justify-end bg-transparent overflow-hidden opacity-100'>
 
-                                              <div className='flex flex-col w-[14vw] h-[13vh] items-center justify-end bg-transparent overflow-hidden opacity-100'>
-
-                                                        <div className='flex flex-col w-[10vw] items-center justify-end bg-transparent h-[12vh]'>
+                                                      <div className='flex flex-col w-[10vw] items-center justify-end bg-transparent h-[12vh]'>
+                                                        
+                                                        {/*Hood of the Shop */}
+                                                         <div className='flex bg-transparent overflow-hidden w-[10vw] rounded-t-full h-[2vh]' style={{
                                                           
-                                                          {/*Hood of the Shop */}
-                                                          <div className='flex bg-transparent overflow-hidden w-[10vw] rounded-t-full h-[2vh]' style={{
+                                                         }}>
+                                                          
+                                                          <img src={hood} alt='' style={{width:'200px' }}/>
+
+                                                         </div>
+
+                                                        {/*Under Hood of the Shop */}
+                                                          <div className='flex w-[10vw] items-center justify-end bg-transparent h-[10vh]'>
                                                             
-                                                          }}>
-                                                            
-                                                            <img src={hood} alt='' style={{width:'200px' }}/>
+
+                                                                  {/*Side Bars of the Shops */}
+                                                                  <div className='flex flex-col w-[1vw] items-end justify-center bg-transparent h-[10vh]'>
+
+                                                                              <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
+                                                                                width:'0.6rem'
+                                                                              }}/>
+
+                                                                  </div>
+
+
+
+                                                                    {/*center section of the Shops */}
+                                                                  <div className='flex flex-col w-[8vw] items-center justify-end bg-transparent h-[10vh]'>
+
+                                                                        <div className='flex w-[5vw] h-[8vh] items-center border-t-8 border-t-primary justify-start rounded-t-2xl' style={{
+                                                                                boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
+                                                                                backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
+                                                                            }}>
+
+                                                                                <div className='flex items-center ml-2 justify-start bg-secondary h-2 w-2 rounded-full'/>
+
+                                                                        </div>  
+
+
+                                                                  </div>
+
+
+                                                                  {/*Side BArs of the Shops */}
+                                                                  <div className='flex flex-col w-[1vw] items-start justify-center bg-transparent h-[10vh]'>
+
+                                                                      <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
+                                                                                    width:'0.6rem'
+                                                                                  }}/>
+
+
+
+                                                                  </div>
+
+
 
                                                           </div>
 
-                                                          {/*Under Hood of the Shop */}
-                                                            <div className='flex w-[10vw] items-center justify-end bg-transparent h-[10vh]'>
-
-                                                                    {/*Side Bars of the Shops */}
-                                                                    <div className='flex flex-col w-[2vw] items-end justify-center bg-transparent h-[10vh]'>
-
-                                                                                <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
-                                                                                  width:'0.6rem'
-                                                                                }}/>
-
-                                                                    </div>
-
-                                                                      {/*center section of the Shops */}
-                                                                    <div className='flex flex-col w-[8vw] items-center justify-end bg-transparent h-[10vh]'>
-
-                                                                          <div className='flex w-[5vw] h-[8vh] items-center border-t-8 border-t-primary justify-start rounded-t-2xl' style={{
-                                                                                  boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
-                                                                                  backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
-                                                                              }}>
-
-                                                                                  <div className='flex items-center ml-2 justify-start bg-secondary h-2 w-2 rounded-full'/>
-
-                                                                          </div>  
 
 
-                                                                    </div>
+                                                      </div>
+                                              
+                                                  
+                                                  
+                                                  
+                                               </div>
+
+                                               <div className='flex w-[14vw] h-[1vh] bg-gradient-to-t from-slate-500 to-cyan-600'/>
 
 
-                                                                    {/*Side BArs of the Shops */}
-                                                                    <div className='flex flex-col w-[2vw] items-start justify-center bg-transparent h-[10vh]'>
-
-                                                                        <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
-                                                                                      width:'0.6rem'
-                                                                                    }}/>
-
-
-
-                                                                    </div>
-
-
-
-                                                            </div>
-
-
-
-                                                        </div>
-
-
-
-
-                                              </div>
                                           </div>
                                       ))}
                                     </div>
@@ -1475,83 +1539,87 @@ const Mapmodel = () => {
 
                                     <div className="flex w-[75vw] h-[30vh] bg-transparent items-center justify-center rounded-b-xl space-x-2">
                                       {shops.slice(25, 30).map((shop, index) => (
-                                          <div
-                                          key={index}
-                                          className="flex flex-col w-[14vw] h-[25vh] items-center justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
-                                          style={{
-                                            boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 3px 9px 10px rgba(0, 0, 0, 0.8)'
-                                          }}>
-                                            <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
-
-                                                <div className='flex w-[5vw] h-auto justify-center items-center mt-3 space-x-2'>
-                                                  <div
-                                                        className='flex h-2 w-2 rounded-full'
-                                                        style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                    />
-                                                  <div
-                                                        className='flex h-2 w-2 rounded-full'
-                                                        style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                    />
-                                                  <div
-                                                        className='flex h-2 w-2 rounded-full'
-                                                        style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                    />
-
-                                                </div> 
-                                                
-                                                <div className='flex w-[5vw] h-auto justify-center items-center bg-primary rounded-2xl mt-2 overflow-hidden'>
-                                                    <h2 className='font-ibmplexsans text-xs text-center text-secondary' style={{
-                                                      fontWeight:'500'
-                                                    }}>
-                                                        {shop?.shopID}
-                                                    </h2>
-
-                                                </div>                          
-                                                
-                                                <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                    boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
-                                                    }}>
-                                                        <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
-                                                          fontWeight:'200'
-                                                        }}>
-                                                            {shop?.shopName ? (
-                                                              shop.shopName
-                                                            ) :(
-                                                              <span style={{
-                                                                fontSize:'0.8rem'
-                                                              }}>Temporarily Unavailable</span>
-                                                            )}
-                                                        </h2>
-                          
-                                                    </div>
-
-
-                                            </div>
-
-                                            <div className='flex flex-col w-[14vw] h-[13vh] items-center justify-end bg-transparent overflow-hidden opacity-100'>
+                                            <div
+                                            key={index}
+                                            onClick={()=> handleClickShopView(shop?.shopID)}
+                                            className="flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
+                                            style={{
+                                              boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 0px 18px 25px rgba(0, 0, 0, 0.8)'
+                                            }}>
+                                              <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
+                        
+                                                  <div className='flex w-[5vw] h-auto justify-center items-center mt-3 space-x-2'>
+                                                    <div
+                                                          className='flex h-2 w-2 rounded-full'
+                                                          style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                      />
+                                                    <div
+                                                          className='flex h-2 w-2 rounded-full'
+                                                          style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                      />
+                                                    <div
+                                                          className='flex h-2 w-2 rounded-full'
+                                                          style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                      />
+                        
+                                                  </div> 
+                                                  
+                                                  <div className='flex w-[5vw] h-auto justify-center items-center bg-primary rounded-2xl mt-2 overflow-hidden'>
+                                                      <h2 className='font-ibmplexsans text-xs text-center text-secondary' style={{
+                                                        fontWeight:'500'
+                                                      }}>
+                                                          {shop?.shopID}
+                                                      </h2>
+                        
+                                                  </div>                          
+                                                  
+                                                  <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
+                                                  boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
+                                                  }}>
+                                                      <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
+                                                        fontWeight:'200'
+                                                      }}>
+                                                          {shop?.shopName ? (
+                                                            shop.shopName
+                                                          ) :(
+                                                            <span style={{
+                                                              fontSize:'0.8rem'
+                                                            }}>Temporarily Unavailable</span>
+                                                          )}
+                                                      </h2>
+                        
+                                                  </div>
+                        
+                        
+                                              </div>
+                        
+                                               <div className='flex flex-col w-[14vw] h-[13vh] items-center justify-end bg-transparent overflow-hidden opacity-100'>
 
                                                       <div className='flex flex-col w-[10vw] items-center justify-end bg-transparent h-[12vh]'>
                                                         
                                                         {/*Hood of the Shop */}
-                                                        <div className='flex bg-transparent overflow-hidden w-[10vw] rounded-t-full h-[2vh]' style={{
+                                                         <div className='flex bg-transparent overflow-hidden w-[10vw] rounded-t-full h-[2vh]' style={{
                                                           
-                                                        }}>
+                                                         }}>
                                                           
                                                           <img src={hood} alt='' style={{width:'200px' }}/>
 
-                                                        </div>
+                                                         </div>
 
                                                         {/*Under Hood of the Shop */}
                                                           <div className='flex w-[10vw] items-center justify-end bg-transparent h-[10vh]'>
+                                                            
 
                                                                   {/*Side Bars of the Shops */}
-                                                                  <div className='flex flex-col w-[2vw] items-end justify-center bg-transparent h-[10vh]'>
+                                                                  <div className='flex flex-col w-[1vw] items-end justify-center bg-transparent h-[10vh]'>
 
                                                                               <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
                                                                                 width:'0.6rem'
                                                                               }}/>
 
                                                                   </div>
+
+
 
                                                                     {/*center section of the Shops */}
                                                                   <div className='flex flex-col w-[8vw] items-center justify-end bg-transparent h-[10vh]'>
@@ -1570,7 +1638,7 @@ const Mapmodel = () => {
 
 
                                                                   {/*Side BArs of the Shops */}
-                                                                  <div className='flex flex-col w-[2vw] items-start justify-center bg-transparent h-[10vh]'>
+                                                                  <div className='flex flex-col w-[1vw] items-start justify-center bg-transparent h-[10vh]'>
 
                                                                       <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
                                                                                     width:'0.6rem'
@@ -1587,12 +1655,16 @@ const Mapmodel = () => {
 
 
                                                       </div>
+                                              
+                                                  
+                                                  
+                                                  
+                                               </div>
+
+                                               <div className='flex w-[14vw] h-[1vh] bg-gradient-to-t from-slate-500 to-cyan-600'/>
 
 
-
-
-                                              </div>
-                                        </div>
+                                          </div>
                                       ))}
                                     </div>
                                   </div>
@@ -1629,124 +1701,132 @@ const Mapmodel = () => {
                                         }}>
                                           <div className="flex w-[75vw] h-[30vh] bg-transparent items-center justify-center rounded-t-xl space-x-2">
                                             {shops.slice(30, 35).map((shop, index) => (
-                                                  <div
-                                                  key={index}
-                                                  className="flex flex-col w-[14vw] h-[25vh] items-center justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
-                                                  style={{
-                                                    boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 3px 9px 10px rgba(0, 0, 0, 0.8)'
+                                            <div
+                                            key={index}
+                                            onClick={()=> handleClickShopView(shop?.shopID)}
+                                            className="flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
+                                            style={{
+                                              boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 0px 18px 25px rgba(0, 0, 0, 0.8)'
+                                            }}>
+                                              <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
+                        
+                                                  <div className='flex w-[5vw] h-auto justify-center items-center mt-3 space-x-2'>
+                                                    <div
+                                                          className='flex h-2 w-2 rounded-full'
+                                                          style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                      />
+                                                    <div
+                                                          className='flex h-2 w-2 rounded-full'
+                                                          style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                      />
+                                                    <div
+                                                          className='flex h-2 w-2 rounded-full'
+                                                          style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                      />
+                        
+                                                  </div> 
+                                                  
+                                                  <div className='flex w-[5vw] h-auto justify-center items-center bg-primary rounded-2xl mt-2 overflow-hidden'>
+                                                      <h2 className='font-ibmplexsans text-xs text-center text-secondary' style={{
+                                                        fontWeight:'500'
+                                                      }}>
+                                                          {shop?.shopID}
+                                                      </h2>
+                        
+                                                  </div>                          
+                                                  
+                                                  <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
+                                                  boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
                                                   }}>
-                                                    <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
+                                                      <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
+                                                        fontWeight:'200'
+                                                      }}>
+                                                          {shop?.shopName ? (
+                                                            shop.shopName
+                                                          ) :(
+                                                            <span style={{
+                                                              fontSize:'0.8rem'
+                                                            }}>Temporarily Unavailable</span>
+                                                          )}
+                                                      </h2>
+                        
+                                                  </div>
+                        
+                        
+                                              </div>
+                        
+                                               <div className='flex flex-col w-[14vw] h-[13vh] items-center justify-end bg-transparent overflow-hidden opacity-100'>
 
-                                                        <div className='flex w-[5vw] h-auto justify-center items-center mt-3 space-x-2'>
-                                                          <div
-                                                                className='flex h-2 w-2 rounded-full'
-                                                                style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                            />
-                                                          <div
-                                                                className='flex h-2 w-2 rounded-full'
-                                                                style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                            />
-                                                          <div
-                                                                className='flex h-2 w-2 rounded-full'
-                                                                style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                            />
-
-                                                        </div> 
+                                                      <div className='flex flex-col w-[10vw] items-center justify-end bg-transparent h-[12vh]'>
                                                         
-                                                        <div className='flex w-[5vw] h-auto justify-center items-center bg-primary rounded-2xl mt-2 overflow-hidden'>
-                                                            <h2 className='font-ibmplexsans text-xs text-center text-secondary' style={{
-                                                              fontWeight:'500'
-                                                            }}>
-                                                                {shop?.shopID}
-                                                            </h2>
-
-                                                        </div>                          
-                                                        
-                                                        <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                          boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
-                                                          }}>
-                                                              <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
-                                                                fontWeight:'200'
-                                                              }}>
-                                                                  {shop?.shopName ? (
-                                                                    shop.shopName
-                                                                  ) :(
-                                                                    <span style={{
-                                                                      fontSize:'0.8rem'
-                                                                    }}>Temporarily Unavailable</span>
-                                                                  )}
-                                                              </h2>
-                          
-                                                    </div>
-
-
-                                                    </div>
-
-                                                    <div className='flex flex-col w-[14vw] h-[13vh] items-center justify-end bg-transparent overflow-hidden opacity-100'>
-
-                                                        <div className='flex flex-col w-[10vw] items-center justify-end bg-transparent h-[12vh]'>
+                                                        {/*Hood of the Shop */}
+                                                         <div className='flex bg-transparent overflow-hidden w-[10vw] rounded-t-full h-[2vh]' style={{
                                                           
-                                                          {/*Hood of the Shop */}
-                                                          <div className='flex bg-transparent overflow-hidden w-[10vw] rounded-t-full h-[2vh]' style={{
+                                                         }}>
+                                                          
+                                                          <img src={hood} alt='' style={{width:'200px' }}/>
+
+                                                         </div>
+
+                                                        {/*Under Hood of the Shop */}
+                                                          <div className='flex w-[10vw] items-center justify-end bg-transparent h-[10vh]'>
                                                             
-                                                          }}>
-                                                            
-                                                            <img src={hood} alt='' style={{width:'200px' }}/>
+
+                                                                  {/*Side Bars of the Shops */}
+                                                                  <div className='flex flex-col w-[1vw] items-end justify-center bg-transparent h-[10vh]'>
+
+                                                                              <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
+                                                                                width:'0.6rem'
+                                                                              }}/>
+
+                                                                  </div>
+
+
+
+                                                                    {/*center section of the Shops */}
+                                                                  <div className='flex flex-col w-[8vw] items-center justify-end bg-transparent h-[10vh]'>
+
+                                                                        <div className='flex w-[5vw] h-[8vh] items-center border-t-8 border-t-primary justify-start rounded-t-2xl' style={{
+                                                                                boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
+                                                                                backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
+                                                                            }}>
+
+                                                                                <div className='flex items-center ml-2 justify-start bg-secondary h-2 w-2 rounded-full'/>
+
+                                                                        </div>  
+
+
+                                                                  </div>
+
+
+                                                                  {/*Side BArs of the Shops */}
+                                                                  <div className='flex flex-col w-[1vw] items-start justify-center bg-transparent h-[10vh]'>
+
+                                                                      <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
+                                                                                    width:'0.6rem'
+                                                                                  }}/>
+
+
+
+                                                                  </div>
+
+
 
                                                           </div>
 
-                                                          {/*Under Hood of the Shop */}
-                                                            <div className='flex w-[10vw] items-center justify-end bg-transparent h-[10vh]'>
-
-                                                                    {/*Side Bars of the Shops */}
-                                                                    <div className='flex flex-col w-[2vw] items-end justify-center bg-transparent h-[10vh]'>
-
-                                                                                <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
-                                                                                  width:'0.6rem'
-                                                                                }}/>
-
-                                                                    </div>
-
-                                                                      {/*center section of the Shops */}
-                                                                    <div className='flex flex-col w-[8vw] items-center justify-end bg-transparent h-[10vh]'>
-
-                                                                          <div className='flex w-[5vw] h-[8vh] items-center border-t-8 border-t-primary justify-start rounded-t-2xl' style={{
-                                                                                  boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
-                                                                                  backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
-                                                                              }}>
-
-                                                                                  <div className='flex items-center ml-2 justify-start bg-secondary h-2 w-2 rounded-full'/>
-
-                                                                          </div>  
 
 
-                                                                    </div>
+                                                      </div>
+                                              
+                                                  
+                                                  
+                                                  
+                                               </div>
+
+                                               <div className='flex w-[14vw] h-[1vh] bg-gradient-to-t from-slate-500 to-cyan-600'/>
 
 
-                                                                    {/*Side BArs of the Shops */}
-                                                                    <div className='flex flex-col w-[2vw] items-start justify-center bg-transparent h-[10vh]'>
-
-                                                                        <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
-                                                                                      width:'0.6rem'
-                                                                                    }}/>
-
-
-
-                                                                    </div>
-
-
-
-                                                            </div>
-
-
-
-                                                        </div>
-
-
-
-
-</div>
-                                                </div>
+                                          </div>
                                             ))}
                                           </div>
 
@@ -1787,114 +1867,114 @@ const Mapmodel = () => {
 
                                           <div className="flex w-[75vw] h-[30vh] bg-transparent items-center justify-center rounded-b-xl space-x-2">
                                             {shops.slice(35, 40).map((shop, index) => (
-                                                <div
-                                                key={index}
-                                                className="flex flex-col w-[14vw] h-[25vh] items-center justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
-                                                style={{
-                                                  boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 3px 9px 10px rgba(0, 0, 0, 0.8)'
-                                                }}>
-                                                  <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
-
-                                                      <div className='flex w-[5vw] h-auto justify-center items-center mt-3 space-x-2'>
-                                                        <div
-                                                              className='flex h-2 w-2 rounded-full'
-                                                              style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                          />
-                                                        <div
-                                                              className='flex h-2 w-2 rounded-full'
-                                                              style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                          />
-                                                        <div
-                                                              className='flex h-2 w-2 rounded-full'
-                                                              style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
-                                                          />
-
-                                                      </div> 
-                                                      
-                                                      <div className='flex w-[5vw] h-auto justify-center items-center bg-primary rounded-2xl mt-2 overflow-hidden'>
-                                                          <h2 className='font-ibmplexsans text-xs text-center text-secondary' style={{
-                                                            fontWeight:'500'
-                                                          }}>
-                                                              {shop?.shopID}
-                                                          </h2>
-
-                                                      </div>                          
-                                                      
-                                                      <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
-                                                    boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
-                                                    }}>
-                                                        <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
-                                                          fontWeight:'200'
-                                                        }}>
-                                                            {shop?.shopName ? (
-                                                              shop.shopName
-                                                            ) :(
-                                                              <span style={{
-                                                                fontSize:'0.8rem'
-                                                              }}>Temporarily Unavailable</span>
-                                                            )}
-                                                        </h2>
-                          
-                                                    </div>
-
-
+                                            <div
+                                            key={index}
+                                            onClick={()=> handleClickShopView(shop?.shopID)}
+                                            className="flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
+                                            style={{
+                                              boxShadow: 'inset 0 10px 20px rgba(255, 255, 255, 0.5), 0px 18px 25px rgba(0, 0, 0, 0.8)'
+                                            }}>
+                                              <div className="flex flex-col w-[14vw] h-[12vh] items-center justify-start bg-transparent overflow-hidden opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
+                        
+                                                  <div className='flex w-[5vw] h-auto justify-center items-center mt-3 space-x-2'>
+                                                    <div
+                                                          className='flex h-2 w-2 rounded-full'
+                                                          style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                      />
+                                                    <div
+                                                          className='flex h-2 w-2 rounded-full'
+                                                          style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                      />
+                                                    <div
+                                                          className='flex h-2 w-2 rounded-full'
+                                                          style={{ backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)' }}
+                                                      />
+                        
+                                                  </div> 
+                                                  
+                                                  <div className='flex w-[5vw] h-auto justify-center items-center bg-primary rounded-2xl mt-2 overflow-hidden'>
+                                                      <h2 className='font-ibmplexsans text-xs text-center text-secondary' style={{
+                                                        fontWeight:'500'
+                                                      }}>
+                                                          {shop?.shopID}
+                                                      </h2>
+                        
+                                                  </div>                          
+                                                  
+                                                  <div className='flex w-[10vw] h-auto justify-center items-center bg-rgba(0, 0, 0, 0.5) rounded-lg mt-1 overflow-hidden' style={{
+                                                  boxShadow:'inset 0 2px 6px rgba(0, 255, 255, 0.5)',
+                                                  }}>
+                                                      <h2 className='font-ibmplexsans text-lg text-center text-primary' style={{
+                                                        fontWeight:'200'
+                                                      }}>
+                                                          {shop?.shopName ? (
+                                                            shop.shopName
+                                                          ) :(
+                                                            <span style={{
+                                                              fontSize:'0.8rem'
+                                                            }}>Temporarily Unavailable</span>
+                                                          )}
+                                                      </h2>
+                        
                                                   </div>
+                        
+                        
+                                              </div>
+                        
+                                               <div className='flex flex-col w-[14vw] h-[13vh] items-center justify-end bg-transparent overflow-hidden opacity-100'>
 
-                                                  <div className='flex flex-col w-[14vw] h-[13vh] items-center justify-end bg-transparent overflow-hidden opacity-100'>
+                                                      <div className='flex flex-col w-[10vw] items-center justify-end bg-transparent h-[12vh]'>
+                                                        
+                                                        {/*Hood of the Shop */}
+                                                         <div className='flex bg-transparent overflow-hidden w-[10vw] rounded-t-full h-[2vh]' style={{
+                                                          
+                                                         }}>
+                                                          
+                                                          <img src={hood} alt='' style={{width:'200px' }}/>
 
-                                                          <div className='flex flex-col w-[10vw] items-center justify-end bg-transparent h-[12vh]'>
+                                                         </div>
+
+                                                        {/*Under Hood of the Shop */}
+                                                          <div className='flex w-[10vw] items-center justify-end bg-transparent h-[10vh]'>
                                                             
-                                                            {/*Hood of the Shop */}
-                                                            <div className='flex bg-transparent overflow-hidden w-[10vw] rounded-t-full h-[2vh]' style={{
-    
-                                                            }}>
-                                                              
-                                                              <img src={hood} alt='' style={{width:'200px' }}/>
 
-                                                            </div>
+                                                                  {/*Side Bars of the Shops */}
+                                                                  <div className='flex flex-col w-[1vw] items-end justify-center bg-transparent h-[10vh]'>
 
-                                                            {/*Under Hood of the Shop */}
-                                                              <div className='flex w-[10vw] items-center justify-end bg-transparent h-[10vh]'>
+                                                                              <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
+                                                                                width:'0.6rem'
+                                                                              }}/>
 
-                                                                      {/*Side Bars of the Shops */}
-                                                                      <div className='flex flex-col w-[2vw] items-end justify-center bg-transparent h-[10vh]'>
+                                                                  </div>
 
-                                                                                  <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
+
+
+                                                                    {/*center section of the Shops */}
+                                                                  <div className='flex flex-col w-[8vw] items-center justify-end bg-transparent h-[10vh]'>
+
+                                                                        <div className='flex w-[5vw] h-[8vh] items-center border-t-8 border-t-primary justify-start rounded-t-2xl' style={{
+                                                                                boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
+                                                                                backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
+                                                                            }}>
+
+                                                                                <div className='flex items-center ml-2 justify-start bg-secondary h-2 w-2 rounded-full'/>
+
+                                                                        </div>  
+
+
+                                                                  </div>
+
+
+                                                                  {/*Side BArs of the Shops */}
+                                                                  <div className='flex flex-col w-[1vw] items-start justify-center bg-transparent h-[10vh]'>
+
+                                                                      <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
                                                                                     width:'0.6rem'
                                                                                   }}/>
 
-                                                                      </div>
-
-                                                                        {/*center section of the Shops */}
-                                                                      <div className='flex flex-col w-[8vw] items-center justify-end bg-transparent h-[10vh]'>
-
-                                                                            <div className='flex w-[5vw] h-[8vh] items-center border-t-8 border-t-primary justify-start rounded-t-2xl' style={{
-                                                                                    boxShadow:'inset 0 10px 6px rgba(0, 0, 0, 0.2)',
-                                                                                    backgroundColor: shop.shopID ? 'rgba(0, 255, 255, 1)' : 'rgba(0, 255, 255, 0.2)'
-                                                                                }}>
-
-                                                                                    <div className='flex items-center ml-2 justify-start bg-secondary h-2 w-2 rounded-full'/>
-
-                                                                            </div>  
 
 
-                                                                      </div>
-
-
-                                                                      {/*Side BArs of the Shops */}
-                                                                      <div className='flex flex-col w-[2vw] items-start justify-center bg-transparent h-[10vh]'>
-
-                                                                          <div className='flex bg-gradient-to-t from-slate-500 to-cyan-600 h-[10vh]' style={{
-                                                                                        width:'0.6rem'
-                                                                                      }}/>
-
-
-
-                                                                      </div>
-
-
-
-                                                              </div>
+                                                                  </div>
 
 
 
@@ -1902,9 +1982,17 @@ const Mapmodel = () => {
 
 
 
+                                                      </div>
+                                              
+                                                  
+                                                  
+                                                  
+                                               </div>
 
-                                                   </div>
-                                              </div>
+                                               <div className='flex w-[14vw] h-[1vh] bg-gradient-to-t from-slate-500 to-cyan-600'/>
+
+
+                                          </div>
                                             ))}
                                           </div>
                                         </div>
@@ -1931,8 +2019,8 @@ const Mapmodel = () => {
 
                                       {/* Shop Detail Modal */}
                                       {isModVisible && selectedShop && fetchProducts && (
-                                            <div className="bg-white flex rounded-3xl items-center justify-center mt-16  w-[70vw] h-[75vh] relative" style={{
-                                               boxShadow:'inset 0 15px 17px rgba(0, 0, 0, 0.2)',
+                                            <div className="bg-white flex rounded-3xl items-center justify-center mt-16  w-[70vw] h-[80vh] relative" style={{
+                                               boxShadow:'inset 0 20px 10px rgba(0, 0, 0, 0.2)',
                                             }}>
 
                                               {/* Button for close the menu */}
@@ -2183,11 +2271,11 @@ const Mapmodel = () => {
 
 
                                                           {/* Section for preview shop products, promotions and others */}
-                                                          <div className='flex bg-transparent w-[45vw] items-center justify-center h-[70vh]'>
+                                                          <div className='flex bg-transparent w-[45vw] items-center space-x-2 justify-center h-[70vh]'>
 
                  
                                                              {/* Divider */}    
-                                                            <div className='flex bg-gray-300 h-[60vh] rounded-t-full rounded-b-full' style={{width:'0.3rem'}}/>
+                                                            <div className='flex bg-gray-300 h-[60vh] rounded-t-full rounded-b-full' style={{width:'0.2rem'}}/>
 
 
                                                               {/* shop products, promotions and others */}                                    
@@ -2273,7 +2361,7 @@ const Mapmodel = () => {
                                                                     
                                                                     <div
                                                                       key={index}
-                                                                      className='flex flex-col bg-transparent h-32 rounded-xl items-center justify-start cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out' style={{boxShadow:'inset 0 5px 6px rgba(0, 0, 0, 0.2),  2px 4px 10px rgba(0, 0, 0, 0.2)' ,width:'116px'}}>
+                                                                      className='flex flex-col bg-transparent h-32 rounded-xl items-center justify-start cursor-pointer focus:border-4 focus:border-cyan-800 hover:scale-105 transition-transform duration-300 ease-in-out' style={{boxShadow:'inset 0 5px 6px rgba(0, 0, 0, 0.2),  2px 4px 10px rgba(0, 0, 0, 0.2)' ,width:'116px'}}>
 
                                                                         {/* item image componenet */}
                                                                         <div className='flex  h-20 rounded-t-xl items-center justify-center overflow-hidden' style={{width:'116px'}}>

@@ -193,6 +193,34 @@ router.get("/get/:floorID", async (req, res) => {
   }
 });
 
+
+
+// Route to get shops by category
+router.get("/getByCategory/:category", async (req, res) => {
+  try {
+    const { category } = req.params; // Extract the category from request params
+
+    // Find all shops with the given category
+    const shops = await Shops.find({ category: category });
+
+    // Check if any shops are found
+    if (shops.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No shops found for this category" });
+    }
+
+    res.status(200).json(shops); // Return the list of shops for the category
+  } catch (error) {
+    console.error("Error fetching shops by category:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch shops by category", error });
+  }
+});
+
+
+
 // Route to update a shop by floorID
 router.put("/update/:floorID", async (req, res) => {
   try {
