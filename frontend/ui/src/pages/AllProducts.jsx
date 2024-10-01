@@ -41,14 +41,15 @@ export const AllProducts = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:3000/api/products/${productToDelete}`
+        `http://localhost:3000/api/products/${productToDelete}` // Using custom id
       );
-      setProducts((prevProducts) =>
-        prevProducts.filter((product) => product.id !== productToDelete)
+      setProducts(
+        (prevProducts) =>
+          prevProducts.filter((product) => product._id !== productToDelete) // Filter based on _id
       );
       setShowConfirmModal(false);
     } catch (error) {
-      console.error("Failed to delete product:", error);
+      console.error("Failed to delete product:", error.response?.data || error);
     }
   };
 

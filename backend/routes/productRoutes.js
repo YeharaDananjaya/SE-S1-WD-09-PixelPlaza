@@ -102,7 +102,9 @@ router.get("/:id", async (req, res) => {
     }
     res.status(200).json(product);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch product", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch product", error: error.message });
   }
 });
 // Get products by shopID
@@ -206,12 +208,15 @@ router.put("/removePromotion/:id", async (req, res) => {
 // Delete a product by ID
 router.delete("/:id", async (req, res) => {
   try {
+    // Use the MongoDB `_id` field to find and delete the product
     const deletedProduct = await Product.findOneAndDelete({
-      id: req.params.id,
-    }); // Find by UUID
+      _id: req.params.id, // Use `_id` instead of `id`
+    });
+
     if (!deletedProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
+
     res.status(200).json({
       message: "Product deleted successfully",
       product: deletedProduct,

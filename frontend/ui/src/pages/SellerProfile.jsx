@@ -231,79 +231,59 @@ export const SellerProfile = () => {
         <Skeleton count={5} height={100} />
       )}
 
-      {/* Edit Shop Modal */}
+      {/* Modal for Updating Shop Info */}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         style={customStyles}
-        contentLabel="Edit Shop Details"
       >
-        <h2 className="font-russo text-[#212529] text-2xl mb-4">
-          Edit Store Info
-        </h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-sm font-semibold mb-2">
-              Shop Description
-            </label>
-            <textarea
-              className="w-full p-2 border rounded-md"
-              name="description"
-              value={updatedShop.description}
-              onChange={handleChange}
-            ></textarea>
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-semibold mb-2">
-              Contact Info
-            </label>
-            <input
-              className="w-full p-2 border rounded-md"
-              type="text"
-              name="contactInfo"
-              value={updatedShop.contactInfo}
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* Category Dropdown */}
-          <div className="mb-4">
-            <label className="block text-sm font-semibold mb-2">Category</label>
-            <select
-              name="category"
-              value={updatedShop.category}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-md"
-            >
-              <option value="">Select Category</option>
-              <option value="Fashion">Fashion</option>
-              <option value="Electronics">Electronics</option>
-              <option value="Home & Garden">Home & Garden</option>
-              <option value="Health & Beauty">Health & Beauty</option>
-              <option value="Sport & Outdoor">Sport & Outdoor</option>
-              <option value="Groceries">Groceries</option>
-              <option value="Gaming & Entertainment">
-                Gaming & Entertainment
-              </option>
-              <option value="Toys">Toys</option>
-            </select>
-          </div>
-
-          <div className="flex justify-end gap-4">
-            <button
-              type="button"
-              className="bg-gray-300 py-2 px-4 rounded-lg"
-              onClick={closeModal}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="bg-[#E76F51] text-white py-2 px-4 rounded-lg"
-            >
-              Save Changes
-            </button>
-          </div>
+        <h2 className="text-lg font-semibold mb-4">Edit Shop Info</h2>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="text"
+            name="shopKeeperPhoto"
+            placeholder="Shop Keeper Photo URL"
+            value={updatedShop.shopKeeperPhoto}
+            onChange={handleChange}
+            className="border border-gray-300 rounded-lg p-2"
+          />
+          <textarea
+            name="description"
+            placeholder="Description"
+            value={updatedShop.description}
+            onChange={handleChange}
+            className="border border-gray-300 rounded-lg p-2"
+            rows="3"
+          />
+          <input
+            type="text"
+            name="contactInfo"
+            placeholder="Contact Information"
+            value={updatedShop.contactInfo}
+            onChange={handleChange}
+            className="border border-gray-300 rounded-lg p-2"
+          />
+          <input
+            type="text"
+            name="category"
+            placeholder="Category"
+            value={updatedShop.category}
+            onChange={handleChange}
+            className="border border-gray-300 rounded-lg p-2"
+          />
+          <button
+            type="submit"
+            className="mt-4 bg-[#E76F51] text-white py-2 rounded-lg hover:bg-[#d65b4f] transition"
+          >
+            Update Shop Info
+          </button>
+          <button
+            type="button"
+            onClick={closeModal}
+            className="mt-2 border border-gray-400 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition"
+          >
+            Cancel
+          </button>
         </form>
       </Modal>
     </div>
