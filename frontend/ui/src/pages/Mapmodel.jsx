@@ -41,29 +41,7 @@ const Mapmodel = () => {
   const floor4Ref = useRef(null);
 
 
-  //Temporary array of items
-  const items = [
-    {
-      name: "Dell Inspiron i5",
-      url: "https://www.luluhypermarket.com/cdn-cgi/image/f=auto/medias/1729318-12.jpg-1200Wx1200H?context=bWFzdGVyfGltYWdlc3wxNzk0NzJ8aW1hZ2UvanBlZ3xhREU1TDJnd01TODVOelEzTlRjeE5qY3hNRGN3THpFM01qa3pNVGd0TVRJdWFuQm5YekV5TURCWGVERXlNREJJfDRkZjIwMzAyNzAwMWEzODgwOTE2YzVmNTlmMTBlNzYzZTQyYzgxYTU1NjY0OTA5ZjA4MjNjY2YxMzVhNzUxM2Y"
-    },
-    {
-      name: "Msi Katana i5 G751",
-      url: "https://c1.neweggimages.com/ProductImage/34-297-735-02.jpg"
-    },
-    {
-      name: "DELL Laptop XPS 13 i7",
-      url: "https://c1.neweggimages.com/ProductImage/34-297-735-02.jpg"
-    },
-    {
-      name: "NVIDIA GeForce RTX 4070",
-      url: "https://www.notebookcheck.com/fileadmin/Notebooks/Asus/TUF_Gaming_GeForce_RTX_4070_Ti/TUF_Gaming_GeForce_RTX_4070_Ti_5.jpg"
-    },
-    {
-      name: "NVIDIA GeForce RTX 4090",
-      url: "https://www.notebookcheck.com/fileadmin/Notebooks/Asus/TUF_Gaming_GeForce_RTX_4070_Ti/TUF_Gaming_GeForce_RTX_4070_Ti_5.jpg"
-    }
-  ];
+
   
 
 
@@ -314,10 +292,10 @@ const handleCategory = (category) => {
                                           value={searchQuery}
                                           placeholder='Search...' 
                                           onChange={(e) => handleSearch(e.target.value)}
-                                          className='flex-grow outline-none bg-transparent text-sm pr-3'
+                                          className='flex-grow  bg-transparent text-sm pr-3'
                                         />
                                         <button
-                                        onClick={()=> handleSearch('')} className='flex text-gray-500 items-center h-[2rem] justify-center bg-black w-[6vw] rounded-full hover:scale-105 transition-transform duration-300 ease-in-o' style={{
+                                        onClick={()=> handleSearch('')} className='flex text-gray-500 items-center h-[2rem] justify-center bg-black w-[6vw] rounded-full hover:scale-105 transition-transform duration-300 ease-in-out' style={{
                                             boxShadow: 'inset 0 2px 8px rgba(0, 255, 255, 1)'
                                         }}>
                                               <h2 className='flex text-sm font-ibmplexsans text-baseextra6'>
@@ -2132,8 +2110,8 @@ const handleCategory = (category) => {
 
 
                    {/* Shop Detail Modal */}
-                      {isModVisible && selectedShop &&  fetchProducts && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex w-[100vw] items-center justify-center z-50">
+                      {isModVisible && selectedShop &&  (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex w-[100vw] items-center justify-center z-40">
 
                             <div className='flex w-[25vw] bg-transparent h-auto'/>
 
@@ -2193,6 +2171,11 @@ const handleCategory = (category) => {
                                                                         }}>
                                                                           {selectedShop.shopName}
                                                                         </h2>
+                                                                        <h2 className='font-ibmplexsans text-2xl text-baseextra7'style={{
+                                                                          fontWeight:'500'
+                                                                        }}>
+                                                                          {selectedShop.category}
+                                                                        </h2>
 
                                                                         <div className='flex mt-2 bg-slate-900 rounded-full w-[8vw] focus:w-[10vw]' style={{
                                                                           height:'0.1rem'
@@ -2205,7 +2188,7 @@ const handleCategory = (category) => {
                                                                     </div>
 
                                                                     <div className='flex flex-col w-20 h-20 mt-2 items-center overflow-hidden rounded-full justify-center' style={{
-                                                                       boxShadow:'inset 0 2px 10px rgba(0, 255, 255, 0.8),  2px 4px 5px rgba(0, 0, 0, 0.6) ',
+                                                                       boxShadow:'2px 4px 5px rgba(0, 0, 0, 0.6) ',
                                                                     }}>
 
                                                                         <img src={selectedShop.shopKeeperPhoto} alt='' className='scale-110 mt-1'/>
@@ -2217,7 +2200,7 @@ const handleCategory = (category) => {
 
                                                                   </div>
 
-                                                                  <p className='flex flex-col w-[15vw] font-ibmplexsans' style={{
+                                                                  <p className='flex flex-col w-[15vw] font-ibmplexsans text-baseextra7' style={{
                                                                     fontSize:'0.65rem'
                                                                   }}>
                                                                     Here’s a preview of the {selectedShop.shopName}. You will need to visit the store to make your purchase
@@ -2369,13 +2352,13 @@ const handleCategory = (category) => {
 
                                                                   <div className='grid grid-cols-3  gap-3 mt-2'>
                                                                     <div className='flex h-12 w-12 border-cyan-900 bg-baseextra6 items-center justify-center rounded-full cursor-pointer hover:scale-110 hover:border-2 transition-transform duration-300 ease-in-out' style={{ boxShadow:'inset 0 4px 3px rgba(0, 0, 0, 0.2),  1px 1px 10px rgba(0, 0, 0, 0.2)'}}>
-                                                                        <FontAwesomeIcon icon={faGlobe} className='h-6'/>
+                                                                        <FontAwesomeIcon icon={faGlobe} className='h-6 text-baseextra7'/>
                                                                     </div>
                                                                     <div className='flex h-12 w-12 border-cyan-900 bg-baseextra6 items-center justify-center rounded-full cursor-pointer hover:scale-110 hover:border-2 transition-transform duration-300 ease-in-out' style={{ boxShadow:'inset 0 4px 3px rgba(0, 0, 0, 0.2),  1px 1px 10px rgba(0, 0, 0, 0.2)'}}>
-                                                                      <FontAwesomeIcon icon={faPhone} className='h-6'/>
+                                                                      <FontAwesomeIcon icon={faPhone} className='h-6 text-baseextra7'/>
                                                                     </div>
                                                                     <div className='flex h-12 w-12 border-cyan-900 bg-baseextra6 items-center justify-center rounded-full cursor-pointer hover:scale-110 hover:border-2 transition-transform duration-300 ease-in-out ' style={{ boxShadow:'inset 0 4px 3px rgba(0, 0, 0, 0.2),  1px 1px 10px rgba(0, 0, 0, 0.2)'}}>
-                                                                       <FontAwesomeIcon icon={faMailForward} className='h-6'/>
+                                                                       <FontAwesomeIcon icon={faMailForward} className='h-6 text-baseextra7'/>
                                                                     </div>
 
 
@@ -2412,8 +2395,9 @@ const handleCategory = (category) => {
                                                                     }}/></h2>
 
                                                                     <p className='font-ibmplexsans w-[35vw] text-baseextra7 text-start' style={{fontSize:'0.8rem'}}>
-                                                                    DHI Computer Shop is a popular destination for computers and computer parts. Known for its excellent product selection and service, DHI has established a strong reputation. The store branch in Pixel Plaza shopping mall provides convenient access to a variety of high-quality tech products and expert assistance
+                                                                   {selectedShop.description}                                                                   
                                                                     </p>
+                                                                    
 
                                                                     {/* Top Selling row */}
                                                                     <div className='flex justify-between items-center w-[42vw]'>
@@ -2434,7 +2418,7 @@ const handleCategory = (category) => {
 
                                                                     {/* Top Selling Product */}
                                                                     <div className='grid grid-cols-5 gap-4'>
-                                                                        {items.map((item, index) => (
+                                                                        {fetchProducts.map((item, index) => (
                                                                          
                                                                          <div
                                                                            key={index}
@@ -2442,7 +2426,7 @@ const handleCategory = (category) => {
 
                                                                             {/* item image componenet */}
                                                                             <div className='flex  h-20 rounded-t-xl items-center justify-center overflow-hidden' style={{width:'116px'}}>
-                                                                              <img src={item.url} alt={item.name} style={{width:'120px'}}/>
+                                                                              <img src={item.images[0]} alt={item.name} style={{width:'120px'}}/>
 
                                                                             </div>  
 
@@ -2481,7 +2465,7 @@ const handleCategory = (category) => {
 
                                                                     {/* Top Selling Product with Promotions */}
                                                                     <div className='grid grid-cols-5 gap-4'>
-                                                                    {items.map((item, index) => (
+                                                                    {fetchProducts.map((item, index) => (
                                                                     
                                                                     <div
                                                                       key={index}
@@ -2489,7 +2473,7 @@ const handleCategory = (category) => {
 
                                                                         {/* item image componenet */}
                                                                         <div className='flex  h-20 rounded-t-xl items-center justify-center overflow-hidden' style={{width:'116px'}}>
-                                                                          <img src={item.url} alt={item.name} style={{width:'120px'}}/>
+                                                                          <img src={item.images[0]} alt={item.name} style={{width:'120px'}}/>
 
                                                                         </div>  
 

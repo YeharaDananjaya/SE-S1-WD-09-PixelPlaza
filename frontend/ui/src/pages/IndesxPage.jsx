@@ -66,7 +66,7 @@ const IndexPage = () => {
             />
             <div>Electronics</div>
           </Link>
-          <Link to="/itemlist?category=fashion" className="category-item">
+          <Link to="/itemlist?category=Fashion" className="category-item">
             <img
               src="https://img.freepik.com/free-photo/portrait-smiling-beautiful-girl-her-handsome-boyfriend-laughing-happy-cheerful-couple-sunglasses_158538-5002.jpg?t=st=1723301802~exp=1723305402~hmac=1ca1bc78964225539b12f228a6368ad0c06948a549d391422613e1c67fc4f830&w=740"
               alt="Fashion"
