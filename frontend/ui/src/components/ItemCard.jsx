@@ -33,7 +33,7 @@ const ItemCard = ({ item }) => {
           <span className="category">{item.category}</span>
 
           <div className="item-price">
-            <span className="current-price">{item.price}</span>
+            <span className="current-price">Rs.{item.price}</span>
             <span className="original-price">{item.originalPrice}</span>
           </div>
 

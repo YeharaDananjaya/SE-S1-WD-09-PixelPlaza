@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Card, CardContent, Typography, CardActions, Button } from '@mui/material';
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable'; // Ensure this is imported
+import 'jspdf-autotable';
 
 const AdminFeedbacks = () => {
     const [feedbacks, setFeedbacks] = useState([]);
@@ -10,11 +10,12 @@ const AdminFeedbacks = () => {
     const [error, setError] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [filterType, setFilterType] = useState('All'); // Filter by positive/negative
+    const [feedbackFor, setFeedbackFor] = useState('All'); // New filter for Item/Shop
 
     useEffect(() => {
         const fetchFeedbacks = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/api/feedback'); // Adjust URL for admin feedbacks
+                const res = await axios.get('http://localhost:3000/api/feedback');
                 setFeedbacks(res.data);
             } catch (error) {
                 setError('Error fetching feedbacks');
@@ -27,12 +28,13 @@ const AdminFeedbacks = () => {
         fetchFeedbacks();
     }, []);
 
-    // Filter feedbacks by search term and feedback type
+    // Filter feedbacks by search term, feedback type, and feedbackFor type
     const filteredFeedbacks = feedbacks.filter((feedback) => {
         const matchesSearch = feedback.itemName && feedback.itemName.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesFilter = filterType === 'All' || feedback.feedbackType === filterType;
+        const matchesFeedbackFor = feedbackFor === 'All' || feedback.feedbackFor === feedbackFor;
 
-        return matchesSearch && matchesFilter;
+        return matchesSearch && matchesFilter && matchesFeedbackFor;
     });
 
     // Generate PDF report
@@ -41,10 +43,7 @@ const AdminFeedbacks = () => {
         doc.setFontSize(18);
         doc.text('Filtered Feedback Report', 10, 10);
 
-        // Table headers
         const tableColumnHeaders = ["Item Name", "Content", "Rating", "Type", "Created At"];
-
-        // Table data
         const tableRows = filteredFeedbacks.map(feedback => [
             feedback.itemName,
             feedback.content,
@@ -53,7 +52,6 @@ const AdminFeedbacks = () => {
             new Date(feedback.createdAt).toLocaleDateString()
         ]);
 
-        // Add table to PDF
         doc.autoTable({
             head: [tableColumnHeaders],
             body: tableRows,
@@ -61,7 +59,6 @@ const AdminFeedbacks = () => {
             theme: 'grid'
         });
 
-        // Save the PDF
         doc.save('Feedback_Report.pdf');
     };
 
@@ -96,6 +93,19 @@ const AdminFeedbacks = () => {
                     </select>
                 </div>
 
+                {/* New Filter by Item or Shop */}
+                <div className="feedback-for-container">
+                    <select
+                        value={feedbackFor}
+                        onChange={(e) => setFeedbackFor(e.target.value)}
+                        className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="All">All</option>
+                        <option value="Item">Item</option>
+                        <option value="Shop">Shop</option>
+                    </select>
+                </div>
+
                 {/* Generate PDF button */}
                 <button
                     className="bg-gray-600 text-white rounded-lg px-4 py-2 hover:bg-gray-700 transition duration-300"
@@ -123,7 +133,7 @@ const AdminFeedbacks = () => {
                             </Typography>
                         </CardContent>
                         <CardActions>
-                           
+                            {/* Additional actions can be added here */}
                         </CardActions>
                     </Card>
                 ))}
