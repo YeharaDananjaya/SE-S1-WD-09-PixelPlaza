@@ -2,8 +2,8 @@ import axios from 'axios';
 import React, { useEffect, useState , useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
 import Aos from 'aos';
-import { getBotResponse } from '../utils/botResponses.jsx';
 import 'aos/dist/aos.css'; 
+import { handleChatInput } from '../utils/chatFunctions.jsx'; 
 
 
 //import image files
@@ -32,8 +32,8 @@ const Mapmodel = () => {
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const [isModVisible, setIsModVisible] = useState(false);
-  const [input, setInput] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
+  const [message, setMessage] = useState('');
 
   //navigate hook
   const navigate = useNavigate();
@@ -45,41 +45,32 @@ const Mapmodel = () => {
   const floor4Ref = useRef(null);
 
 
-
-  
-
-
-//Chat Bot Feature for handle messages
-  const handleSendMessage = () => {
-    if (input.trim()) {
-      setChatMessages([...chatMessages, { sender: 'user', text: input }]);
-      setInput('');
-
-      // Get bot response based on user input
-      const botResponse = getBotResponse(input);
-      setChatMessages(prevMessages => [...prevMessages, { sender: 'bot', text: botResponse }]);
-    }
-  };
-
-
+  //Floors scrolling section
   const scrollToFloor = (floor) => {
     if (floor === 'floor1' && floor1Ref.current) {
       floor1Ref.current.scrollIntoView({ behavior: 'smooth' });
     } else if (floor === 'floor2' && floor2Ref.current) {
       floor2Ref.current.scrollIntoView({ behavior: 'smooth' });
-    } else if (floor === 'floor3' && floor3Ref.current){
-      floor3Ref.current.scrollIntoView({ behavior: 'smooth'});
-    } else if (floor === 'floor4' && floor4Ref.current){
-      floor4Ref.current.scrollIntoView({ behavior: 'smooth' })
+    } else if (floor === 'floor3' && floor3Ref.current) {
+      floor3Ref.current.scrollIntoView({ behavior: 'smooth' });
+    } else if (floor === 'floor4' && floor4Ref.current) {
+      floor4Ref.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+
+
 
   //purchase item api
   const handleItemClick = (item_id) =>{
     navigate(`/purchase/${item_id}`)
-
 };
 
+//category hadling
+
+const handleCategoryClick = (category) => {
+  navigate(`/itemlist?category=${category}`);
+};
 
 
   // Search Function
@@ -97,7 +88,12 @@ const Mapmodel = () => {
     }
   };
 
-
+  //chat bot handling
+  const submitChat = (event) => {
+    event.preventDefault(); 
+    handleChatInput(message, setChatMessages, handleSearch, filteredShops, setMessage, shops);
+  };
+  
 
 
 // Category Filter Function
@@ -125,7 +121,7 @@ const handleCategory = (category) => {
 
   };
   
-
+//function for Animation on scroll
   useEffect(()=>{
     Aos.init({
       duration: 1000
@@ -134,6 +130,7 @@ const handleCategory = (category) => {
   
   //
 
+  //fetch shop details
   useEffect(() => {
     const fetchShopsDetails = async () => {
       try {
@@ -169,6 +166,7 @@ const handleCategory = (category) => {
     }
   };
   
+  //for the popup window
   const closeModal = () => {
 
     setIsModVisible(false);
@@ -205,6 +203,7 @@ const handleCategory = (category) => {
                               <div className='flex flex-col h-auto w-[20vw] justify-center items-center'>
 
                                   <div className='flex w-[15vw] h-auto justify-center items-center space-x-2'>
+                                    
                                     <div className='flex bg-baseextra6 h-0.5 w-[4vw]'/>
                                     <div className='flex bg-baseextra6 h-4 w-4 rounded-full'/>
                                     <div className='flex bg-baseextra6 h-4 w-4 rounded-full'/>
@@ -243,7 +242,7 @@ const handleCategory = (category) => {
                                       }}>
                                         <h2 className='flex font-ibmplexsans text-md text-baseextra7' style={{
                                           fontWeight:'300'
-                                        }}>Use Menu Manually</h2><FontAwesomeIcon icon={faListSquares} className='mx-2'/>
+                                        }}>Use Menu Manually</h2><FontAwesomeIcon icon={faListSquares} className='mx-2 text-baseextra7'/>
                                       </button>
 
                                       <button onClick={()=> setShowChatBot(true)} className='flex h-[3rem] w-[18vw] bg-baseextra6 items-center justify-center rounded-full drop-shadow-2xl hover:scale-105 transition-transform duration-300 ease-in-out' style={{
@@ -251,7 +250,7 @@ const handleCategory = (category) => {
                                       }}>
                                       <h2 className='flex font-ibmplexsans text-md text-baseextra7' style={{
                                           fontWeight:'300'
-                                        }}>Use Chat Bot</h2><FontAwesomeIcon icon={faRobot} className='mx-2'/>
+                                        }}>Use Chat Bot</h2><FontAwesomeIcon icon={faRobot} className='mx-2 text-baseextra7'/>
 
                                       </button>
                               </div>
@@ -301,7 +300,7 @@ const handleCategory = (category) => {
                                           value={searchQuery}
                                           placeholder='Search...' 
                                           onChange={(e) => handleSearch(e.target.value)}
-                                          className='flex-grow  bg-transparent text-sm pr-3'
+                                          className='flex-grow bg-transparent border-none text-sm pr-3'
                                         />
                                         <button
                                         onClick={()=> handleSearch('')} className='flex text-gray-500 items-center h-[2rem] justify-center bg-black w-[6vw] rounded-full hover:scale-105 transition-transform duration-300 ease-in-out' style={{
@@ -323,7 +322,7 @@ const handleCategory = (category) => {
                                             boxShadow: 'inset 0 2px 8px rgba(0, 0, 0, 1)'
                                         }}>
                                             <div className='relative'>
-                                              <button onClick={toggleDropDown} className='text-gray-500 hover:text-gray-700 focus:outline-double'>
+                                              <button onClick={toggleDropDown} className='text-gray-500 hover:text-gray-700 focus:outline-none'>
                                                 <FontAwesomeIcon icon={faCaretDown} /><span className='mx-4 font-ibmplexsans'>DropDown Categories</span>
                                               </button>
                                               {/* Dropdown menu */}
@@ -506,7 +505,7 @@ const handleCategory = (category) => {
 
                               <div className='flex flex-col w-[24vw] h-[60vh] items-center justify-center p-2 space-y-5'>
 
-                              <div className='flex flex-col w-[24vw] h-[50vh] overflow-y-auto bg-white p-4 rounded-xl shadow-inner space-y-2 scrollbar-none' style={{
+                              <div className='flex flex-col w-[23vw] h-[50vh] overflow-y-auto bg-white p-4 rounded-xl shadow-inner space-y-2 scrollbar-none' style={{
                                               boxShadow:'inset 0 3px 10px rgba(0, 0, 0, 0.8)'
                                             }}>
                                                   {/* Example message from chatbot */}
@@ -525,7 +524,7 @@ const handleCategory = (category) => {
                                                                 <h2 className='flex flex-col font-ibmplexsans text-xs text-baseextra7' style={{
                                                                   fontWeight:'200'
                                                                 }}>
-                                                                    Welcome to {''}<span className='flex flex-col font-russo text-lg text-baseextra6 text-shadow-DEFAULT'>
+                                                                    Welcome to {''}<span className='flex flex-col font-russo text-lg text-baseextra8 text-shadow-DEFAULT'>
                                                                       PixelPlaza
                                                                 </span>
                                                                 </h2>
@@ -541,7 +540,7 @@ const handleCategory = (category) => {
                                                                 {''}<span className='text-colorButton1' style={{fontSize:'15px', fontWeight:'300'}}>E</span>xplore our shopping complex with a variety of stores, tasty dining options, and fun activities. I’m here to help you find great deals and make your shopping experience enjoyable. Happy shopping!
                                                                 </p>
 
-                                                                <div className='bg-baseextra2 w-[8vw] mt-2 rounded-full' style={{
+                                                                <div className='bg-baseextra8 w-[8vw] mt-2 rounded-full' style={{
                                                                   height:'0.1rem'
                                                                 }}/>
 
@@ -599,7 +598,7 @@ const handleCategory = (category) => {
 
                                                                 </div>  
 
-                                                                <div className='bg-baseextra2 w-[8vw] mt-3 rounded-full' style={{
+                                                                <div className='bg-baseextra8 w-[8vw] mt-3 rounded-full' style={{
                                                                   height:'0.1rem'
                                                                 }}/>
 
@@ -609,48 +608,109 @@ const handleCategory = (category) => {
                                                   </div>
                                                  
                                                   
-                                                  {/* Render dynamic messages here */}
-                                                  {chatMessages.map((msg, index) => (
-                                                        <div
-                                                          key={index}
-                                                          className={`${
-                                                            msg.sender === 'user'
-                                                              ? 'self-end bg-blue-500 text-white p-2'
-                                                              : 'self-start bg-transparent flex w-[20vw] h-auto text-black'
-                                                          } p-2 `}
-                                                        >
-                                                          {msg.sender === 'bot' && (
-                                                            <div className='flex bg-transparent w-[5vw] h-[12vh]'>
-                                                              <img src={bot} alt='' className='max-h-18' />
-                                                            </div>
-                                                          )}
-                                                          <div className={msg.sender === 'bot' ? 'flex p-2 shadow-lg border-2 bg-transparent rounded-2xl w-[15vw] h-auto' : ''} style={{
-                                                            fontSize:'0.8rem'
-                                                          }}>
-                                                            {msg.text}
-                                                          </div>
-                                                        </div>
-                                                      ))}
+                                                        {/* Render dynamic messages here */}
+                                                        {chatMessages.map((msg, index) => (
+                                                              <div
+                                                                key={index}
+                                                                className={`${
+                                                                  msg.sender === 'user'
+                                                                    ? 'self-end flex bg-blue-500 text-white p-2'
+                                                                    : 'self-start bg-transparent flex w-[25vw] h-auto text-black'
+                                                                } p-2`}
+                                                              >
+                                                                {msg.sender === 'bot' && (
+                                                                  <div className='flex bg-transparent w-[5vw] h-[12vh]'>
+                                                                    <img src={bot} alt='Bot Avatar' className='max-h-18' />
+                                                                  </div>
+                                                                )}
+                                                                <div
+                                                                  className={`${
+                                                                    msg.sender === 'bot'
+                                                                      ? 'flex flex-col p-2 shadow-lg border-2 bg-transparent rounded-2xl w-[15vw] h-auto'
+                                                                      : ''
+                                                                  }`}
+                                                                  style={{ fontSize: '0.8rem' }}
+                                                                >
+
+                                                                <span className='text-center font-ibmplexsans'>{msg.text}</span>
+                                                                  {msg.sender === 'bot' && (
+                                                                        <div className="flex gap-4 mt-5">
+              
+                                                                          <button onClick={()=> {setCurrentFloor('floor1'); scrollToFloor('floor1');}} className='flex h-[1.3rem] w-[3vw]  bg-baseextra7 items-center justify-center rounded-full drop-shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out' style={{
+                                                                              boxShadow: 'inset 0 3px 10px rgba(0, 255, 255, 0.8), 1px 2px 10px rgba(0, 0, 0, 0.3), 5px 2px 10px rgba(0, 0, 0, 0.2)'
+
+                                                                          }}>
+                                                                            <h2 className='flex font-ibmplexsans text-baseextra6' style={{
+                                                                              fontWeight:'300',
+                                                                              fontSize:'10px'
+                                                                            }}>F1</h2>
+                                                                          </button>
+
+
+                                                                          <button onClick={()=> { setCurrentFloor('floor2'); scrollToFloor('floor2');}} className='flex h-[1.3rem] w-[3vw]  bg-baseextra7 items-center justify-center rounded-full drop-shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out' style={{
+                                                                              boxShadow: 'inset 0 3px 10px rgba(0, 255, 255, 0.8), 1px 2px 10px rgba(0, 0, 0, 0.3), 5px 2px 10px rgba(0, 0, 0, 0.2)'
+
+                                                                          }}>
+                                                                            <h2 className='flex font-ibmplexsans text-baseextra6' style={{
+                                                                              fontWeight:'300',
+                                                                              fontSize:'10px'
+                                                                            }}>F2</h2>
+                                                                          </button>
+
+                                                                          
+                                                                          <button onClick={()=> {setCurrentFloor('floor3'); scrollToFloor('floor3');}} className='flex h-[1.3rem] w-[3vw]  bg-baseextra7 items-center justify-center rounded-full drop-shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out' style={{
+                                                                              boxShadow: 'inset 0 3px 10px rgba(0, 255, 255, 0.8), 1px 2px 10px rgba(0, 0, 0, 0.3), 5px 2px 10px rgba(0, 0, 0, 0.2)'
+
+                                                                          }}>
+                                                                            <h2 className='flex font-ibmplexsans text-baseextra6' style={{
+                                                                              fontWeight:'300',
+                                                                              fontSize:'10px'
+                                                                            }}>F3</h2>
+                                                                          </button>
+
+
+                                                                          <button onClick={()=> {setCurrentFloor('floor4'); scrollToFloor('floor4');}} className='flex h-[1.3rem] w-[3vw]  bg-baseextra7 items-center justify-center rounded-full drop-shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out' style={{
+                                                                              boxShadow: 'inset 0 3px 10px rgba(0, 255, 255, 0.8), 1px 2px 10px rgba(0, 0, 0, 0.3), 5px 2px 10px rgba(0, 0, 0, 0.2)'
+
+                                                                          }}>
+                                                                            <h2 className='flex font-ibmplexsans text-baseextra6' style={{
+                                                                              fontWeight:'300',
+                                                                              fontSize:'10px'
+                                                                            }}>F4</h2>
+                                                                          </button>
+                                                                        </div>
+                                                                  )}
+                                                                </div>
+
+
+                                                              </div>
+                                                            ))}
+
                                                 </div>
 
-                                                {/* Chat Input */}
-                                                <div className='flex w-[24vw] space-x-2'>
-                                                              <input
-                                                                type='text'
-                                                                value={input}
-                                                                onChange={e => setInput(e.target.value)}
-                                                                className='w-[80%] p-2 border rounded-xl shadow focus:outline-none focus:ring-2 focus:ring-blue-500'
-                                                                placeholder='Type a message...'
-                                                              />
-                                                              <button
-                                                                onClick={handleSendMessage}
-                                                                className='w-[15%] p-2 bg-baseextra7 text-white rounded-lg shadow hover:bg-blue-900 transition duration-300'
-                                                                style={{
-                                                                  boxShadow: 'inset 0 3px 8px rgba(0, 255, 255, 0.8)',
-                                                                }}
-                                                              >
-                                                                <FontAwesomeIcon icon={faMessage} className='text-baseextra6' />
-                                                              </button>
+                                                            {/* Chat Input */}
+                                                           <div className='flex w-[24vw] space-x-2'>
+                                                           <input
+                                                              type="text"
+                                                              value={message}
+                                                              onChange={(e) => setMessage(e.target.value)}
+                                                              onKeyDown={(e) => {
+                                                                if (e.key === 'Enter') {
+                                                                  submitChat(e);
+                                                                }
+                                                              }}
+                                                              placeholder="Type your shop name..."
+                                                              className="p-2 border rounded-md w-full"
+                                                            />
+                                                            <button
+                                                              onClick={submitChat} // Call submitChat to handle button click
+                                                              className='w-[15%] p-2 bg-baseextra7 text-white rounded-lg shadow hover:bg-blue-900 transition duration-300'
+                                                              style={{
+                                                                boxShadow: 'inset 0 3px 8px rgba(0, 255, 255, 0.8)',
+                                                              }}
+                                                            >
+                                                              <FontAwesomeIcon icon={faMessage} className='text-baseextra6' />
+                                                            </button>
                                                             </div>
 
 
@@ -676,7 +736,7 @@ const handleCategory = (category) => {
                                       }}>
                                       <h2 className='flex font-ibmplexsans text-md text-baseextra7' style={{
                                           fontWeight:'300'
-                                        }}>Back</h2><FontAwesomeIcon icon={faUndo} className='mx-2'/>
+                                        }}>Back</h2><FontAwesomeIcon icon={faUndo} className='mx-2 text-baseextra7'/>
 
                                       </button>
                               </div>
@@ -2180,11 +2240,6 @@ const handleCategory = (category) => {
                                                                         }}>
                                                                           {selectedShop.shopName}
                                                                         </h2>
-                                                                        <h2 className='font-ibmplexsans text-2xl text-baseextra7'style={{
-                                                                          fontWeight:'500'
-                                                                        }}>
-                                                                          {selectedShop.category}
-                                                                        </h2>
 
                                                                         <div className='flex mt-2 bg-slate-900 rounded-full w-[8vw] focus:w-[10vw]' style={{
                                                                           height:'0.1rem'
@@ -2417,7 +2472,8 @@ const handleCategory = (category) => {
                                                                           height:'0.1rem'
                                                                         }}/></h2>
 
-                                                                        <button className='flex bg-baseextra4 text-xs items-center justify-center text-baseextra6 font-ibmplexsans w-[8vw] h-[2rem] rounded-full hover:scale-110 transition-transform duration-300 ease-in-out' style={{boxShadow:'inset 0 2px 5px rgba(0, 255, 255, 0.8),   1px 3px 10px rgba(0, 0, 0, 0.3) '}}>
+                                                                        <button
+                                                                        onClick={()=> handleCategoryClick(selectedShop.category)} className='flex bg-baseextra4 text-xs items-center justify-center text-baseextra6 font-ibmplexsans w-[8vw] h-[2rem] rounded-full hover:scale-110 transition-transform duration-300 ease-in-out' style={{boxShadow:'inset 0 2px 5px rgba(0, 255, 255, 0.8),   1px 3px 10px rgba(0, 0, 0, 0.3) '}}>
                                                                           More Products
                                                                         </button>
 

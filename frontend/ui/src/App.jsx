@@ -26,7 +26,7 @@ import Profile from "./pages/Profile";
 import EditCartItem from "./pages/EditCartItem";
 import InsertFeedback from "./pages/InsertFeedback";
 import FeedbackList from "./pages/FeedbackList";
-import Loading from "./utils/Loading";
+//import Loading from "./utils/Loading";
 
 const toggleTheme = () => {
   document.documentElement.classList.toggle("friend-theme");
