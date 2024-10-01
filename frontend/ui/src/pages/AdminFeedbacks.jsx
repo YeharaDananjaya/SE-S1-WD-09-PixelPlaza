@@ -123,9 +123,7 @@ const AdminFeedbacks = () => {
                             </Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small" className="bg-orange-500 text-white hover:bg-orange-700">
-                                View Details
-                            </Button>
+                           
                         </CardActions>
                     </Card>
                 ))}

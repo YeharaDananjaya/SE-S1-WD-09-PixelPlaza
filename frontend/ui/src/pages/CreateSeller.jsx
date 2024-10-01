@@ -78,7 +78,7 @@ export const CreateSeller = () => {
         if (shopResponse.status === 200) {
           alert("Seller and shop updated successfully!");
           resetForm();
-          navigate("/allSellers"); // Redirect to the allSellers page
+          navigate("/createSeller"); // Redirect to the allSellers page
         } else {
           throw new Error("Failed to update the shop's shopKeeperName.");
         }

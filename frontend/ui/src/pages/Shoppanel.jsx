@@ -213,13 +213,7 @@ const Shoppanel = () => {
                     className="mt-1 h-10 block border border-gray-300 rounded-md shadow-sm p-3 drop-shadow-md w-full"
                     readOnly
                   />
-                  <button
-                    type="button"
-                    onClick={() => generateShopID(shop.floorID)} // Call function to generate Shop ID
-                    className="ml-2 bg-blue-500 text-white px-4 rounded-md"
-                  >
-                    Generate ID
-                  </button>
+                  
                 </div>
               </div>
             </div>
