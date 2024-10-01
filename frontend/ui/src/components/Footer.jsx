@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 const Footer = () => {
   return (
     <footer className="bg-[#212529] text-white">
-      <div className="container mx-auto py-8 px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="container mx-auto py-8 px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-9">
         {/* About Us Section */}
         <motion.div
           className="footer-section"
@@ -16,7 +16,7 @@ const Footer = () => {
         >
           <h3 className="text-xl font-bold text-[#ff9800] mb-4">About Us</h3>
           <p className="text-sm leading-relaxed">
-            Shopping Eye is your one-stop shop for the best deals and exclusive offers. Explore our wide range of products and enjoy shopping like never before.
+            Pixel Plaza is your one-stop shop for the best deals and exclusive offers. Explore our wide range of products and enjoy shopping like never before.
           </p>
         </motion.div>
 
@@ -47,7 +47,7 @@ const Footer = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <h3 className="text-xl font-bold text-[#ff9800] mb-4">Contact Us</h3>
-          <p className="text-sm leading-relaxed">Email: support@shoppingeye.com</p>
+          <p className="text-sm leading-relaxed">Email: support@pixelplaza.com</p>
           <p className="text-sm leading-relaxed">Phone: +123 456 7890</p>
           <p className="text-sm leading-relaxed">Address: 123 Shopping Ave, Mall City</p>
         </motion.div>
@@ -89,7 +89,7 @@ const Footer = () => {
       </div>
 
       {/* Newsletter Signup Section */}
-      <div className="bg-[#2c2f33] py-6">
+      <div className="bg-[#212529] py-6">
         <div className="container mx-auto text-center">
           <h3 className="text-lg font-bold text-[#ff9800] mb-4">Join Our Newsletter</h3>
           <p className="text-sm mb-3">Subscribe to get the latest updates and exclusive offers.</p>
@@ -111,7 +111,7 @@ const Footer = () => {
       {/* Footer Bottom */}
       <div className="bg-black py-4 ">
         <div className="container mx-auto text-center">
-          <p className="text-sm text-[#ff9800]">&copy; 2024 Shopping Eye. All rights reserved.</p>
+          <p className="text-sm text-[#ff9800]">&copy; 2024 Pixel Plaza. All rights reserved.</p>
           </div>
       </div>
     </footer>
