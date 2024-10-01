@@ -232,7 +232,7 @@ useEffect(() => {
           item.name,
           item.count,
           `Rs.${item.price.toFixed(2)}`,
-          `RS.${(item.price * item.count).toFixed(2)}`,
+          `Rs.${(item.price * item.count).toFixed(2)}`,
         ]);
 
         doc.autoTable({
@@ -543,7 +543,7 @@ useEffect(() => {
                     />
                     <div className="item-details">
                       <h4 className="item-name">{item.name}</h4>
-                      <p className="item-price">Price: ${item.price.toFixed(2)}</p>
+                      <p className="item-price">Price: Rs{item.price.toFixed(2)}</p>
                       <p className="item-quantity">Quantity: {item.count}</p>
 
                       {/* Add feedback button here */}

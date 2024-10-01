@@ -115,26 +115,33 @@ const CartPage = () => {
   };
 
   // Add this function to handle the clear all functionality
-  const handleClearAll = () => {
-    const confirmClearAll = window.confirm(
-      "Are you sure you want to clear all items from the cart?"
-    );
+ // Add this function to handle the clear all functionality
+const handleClearAll = () => {
+  const confirmClearAll = window.confirm(
+    "Are you sure you want to clear all items from the cart? This action will remove all items, regardless of selection."
+  );
 
-    if (confirmClearAll) {
-      axios
-        .delete("http://localhost:3000/api/cartProduct/clearAll")
-        .then(() => {
-          setItems([]); // Clear all items from the cart state
-          setSelectedItems([]); // Clear all selected items
-          alert("All items have been cleared from the cart.");
-        })
-        .catch((err) => {
-          console.log("Clear all error", err);
-        });
-    } else {
-      console.log("Clear all action cancelled");
-    }
-  };
+  if (confirmClearAll) {
+    const userId = localStorage.getItem("userId");
+    console.log("UserID being sent:", userId);  // Log userId for debugging
+
+    axios
+      .delete("http://localhost:3000/api/cartProduct/clearAll", {
+        data: { userId },  // Ensure data is sent correctly
+      })
+      .then(() => {
+        setItems([]); // Clear all items from the state
+        setSelectedItems([]); // Clear any selected items
+        alert("All items have been cleared from the cart.");
+      })
+      .catch((err) => {
+        console.error("Clear all error", err);
+      });
+  }
+};
+
+  
+  
 
   // Add this button next to your "Clear Selected" button in the return JSX
   <button
@@ -256,21 +263,7 @@ const CartPage = () => {
           >
             Clear Selected
           </button>
-          <button
-            name="delete-all-button"
-            onClick={handleClearAll}
-            style={{
-              margin: "15px",
-              padding: "10px 20px",
-              backgroundColor: "#dc3545",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            Clear Cart
-          </button>
+         
           <div className="cart-item-list">
             {filteredItems.length === 0
               ? "No Cart Items"
