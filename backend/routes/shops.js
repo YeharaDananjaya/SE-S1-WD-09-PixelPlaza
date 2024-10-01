@@ -291,4 +291,38 @@ router.delete("/delete/:floorID", async (req, res) => {
   }
 });
 
+// Route to delete multiple shops by floorIDs
+router.delete("/deleteMultiple", async (req, res) => {
+  try {
+    const floorIDs = req.body.floorIDs; // Get the array of floor IDs from the request body
+
+    // Validate that the request body is an array
+    if (!Array.isArray(floorIDs) || floorIDs.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Request body must be an array of floorIDs" });
+    }
+
+    // Delete shops with the provided floor IDs
+    const result = await Shops.deleteMany({ floorID: { $in: floorIDs } });
+
+    // Check if any shops were deleted
+    if (result.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ message: "No shops found with the provided floor IDs" });
+    }
+
+    res
+      .status(200)
+      .json({
+        message: "Shops deleted successfully",
+        deletedCount: result.deletedCount,
+      });
+  } catch (error) {
+    console.error("Error deleting shops:", error);
+    res.status(500).json({ message: "Failed to delete shops", error });
+  }
+});
+
 module.exports = router;

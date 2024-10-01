@@ -53,6 +53,9 @@ app.use("/api/wishlist", wishlistRoutes);
 const feedback = require("./routes/feedback");
 app.use("/api/feedback", feedback);
 
+const sellsReportRoutes = require("./routes/sellsReport");
+app.use("/api/sellsReport", sellsReportRoutes);
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
