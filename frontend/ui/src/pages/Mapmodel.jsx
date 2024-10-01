@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState , useRef} from 'react';
+import { useNavigate } from 'react-router-dom';
 import Aos from 'aos';
 import { getBotResponse } from '../utils/botResponses.jsx';
 import 'aos/dist/aos.css'; 
@@ -33,6 +34,9 @@ const Mapmodel = () => {
   const [isModVisible, setIsModVisible] = useState(false);
   const [input, setInput] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
+
+  //navigate hook
+  const navigate = useNavigate();
 
   //floor references
   const floor1Ref = useRef(null);
@@ -70,6 +74,11 @@ const Mapmodel = () => {
     }
   };
 
+  //purchase item api
+  const handleItemClick = (item_id) =>{
+    navigate(`/purchase/${item_id}`)
+
+};
 
 
 
@@ -2422,6 +2431,7 @@ const handleCategory = (category) => {
                                                                          
                                                                          <div
                                                                            key={index}
+                                                                           onClick={()=> handleItemClick(item._id)}
                                                                           className='flex flex-col bg-transparent h-32 rounded-xl items-center justify-start cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out' style={{boxShadow:'inset 0 5px 6px rgba(0, 0, 0, 0.2),  2px 4px 10px rgba(0, 0, 0, 0.2)' ,width:'116px'}}>
 
                                                                             {/* item image componenet */}
