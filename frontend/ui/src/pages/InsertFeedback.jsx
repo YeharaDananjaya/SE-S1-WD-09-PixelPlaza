@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const InsertFeedback = () => {
     const userId = localStorage.getItem("userId"); 
+    const location = useLocation(); // Get location state
+    const itemName = location.state?.itemName || "Item"; // Default to "Item" if not set
 
-    
     const [formData, setFormData] = useState({
         title: '',
         content: '',
         rating: '',
         feedbackType: '',
         feedbackFor: '',
+        itemName: itemName, // Set itemName in formData
         userId: userId || "exampleUserId",
     });
 
@@ -34,6 +36,7 @@ const InsertFeedback = () => {
                 rating: '',
                 feedbackType: '',
                 feedbackFor: '',
+                itemName: itemName, // Keep itemName on form reset
             });
 
             navigate('/feedbacklist');
@@ -46,7 +49,7 @@ const InsertFeedback = () => {
     return (
         <div className="flex justify-center items-center min-h-screen bg-dark-100 p-6 w-[98vw]">
             <div className="bg-white p-8 rounded-lg shadow-xl max-w-lg w-full transition-transform duration-300 hover:shadow-2xl">
-                <h2 className="text-4xl font-bold text-center text-primary mb-6 font-poppins">Submit Your Feedback</h2>
+                <h2 className="text-4xl font-bold text-center text-primary mb-6 font-poppins">Submit Your Feedback for {itemName}</h2> {/* Display item name */}
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="form-group">
                         <label htmlFor="feedbackFor" className="block text-lg font-semibold text-gray-700 mb-2">Category</label>
