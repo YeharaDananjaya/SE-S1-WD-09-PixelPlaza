@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SellerLayout from "./layouts/SellerLayout"; // Import SellerLayout
 import AdminLayout from "./layouts/AdminLayout"; // Import AdminLayout
 import ClientLayout from "./layouts/ClientLayout";
+import ClientLayoutMap from "./layouts/ClientLayoutMap";
 import { Overview } from "./pages/Overview";
 import { LoginRegister } from "./pages/LoginRegister";
 import { AddProduct } from "./pages/AddProduct"; // Import the AddProduct component
@@ -113,14 +114,6 @@ function App() {
           }
         />
         <Route
-          path="/Mapmodel"
-          element={
-            <AdminLayout>
-              <Mapmodel />
-            </AdminLayout>
-          }
-        />
-        <Route
           path="/Shoppanel"
           element={
             <AdminLayout>
@@ -136,6 +129,15 @@ function App() {
             <ClientLayout>
               <IndexPage />
             </ClientLayout>
+          }
+        />
+
+        <Route
+          path="/mapModel"
+          element={
+            <ClientLayoutMap>
+              <Mapmodel />
+            </ClientLayoutMap>
           }
         />
 

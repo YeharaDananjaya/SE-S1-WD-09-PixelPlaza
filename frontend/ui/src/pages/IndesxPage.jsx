@@ -45,7 +45,7 @@ const IndexPage = () => {
         </Slider>
       </div>
       <div className="map-button-container">
-        <Link to="/map" className="map-button">
+        <Link to="/mapModel" className="map-button">
           <img
             src="https://img.icons8.com/ios-filled/100/ffffff/map-marker.png" // Replace with your button image
             alt="View on Map"
