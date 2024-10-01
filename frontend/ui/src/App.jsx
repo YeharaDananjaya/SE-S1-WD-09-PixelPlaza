@@ -25,6 +25,7 @@ import ScrollToTop from "./pages/ScrollToTop";
 import EditCartItem from "./pages/EditCartItem";
 import InsertFeedback from "./pages/InsertFeedback";
 import FeedbackList from "./pages/FeedbackList";
+import ContactPage from "./pages/ContactPage";
 
 const toggleTheme = () => {
   document.documentElement.classList.toggle("friend-theme");
@@ -207,6 +208,23 @@ function App() {
           element={
             <ClientLayout>
               <FeedbackList />
+            </ClientLayout>
+          }
+        />
+         <Route
+          path="/feedbacklist"
+          element={
+            <ClientLayout>
+              <FeedbackList />
+            </ClientLayout>
+          }
+        />
+
+        <Route
+          path="/contact"
+          element={
+            <ClientLayout>
+              <ContactPage />
             </ClientLayout>
           }
         />
