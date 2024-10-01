@@ -25,6 +25,9 @@ import ScrollToTop from "./pages/ScrollToTop";
 import EditCartItem from "./pages/EditCartItem";
 import InsertFeedback from "./pages/InsertFeedback";
 import FeedbackList from "./pages/FeedbackList";
+import ContactPage from "./pages/ContactPage";
+import AdminFeedbacks from "./pages/AdminFeedbacks";
+
 
 const toggleTheme = () => {
   document.documentElement.classList.toggle("friend-theme");
@@ -96,6 +99,16 @@ function App() {
             </AdminLayout>
           }
         />
+        
+        <Route
+          path="/feedbacksadmin"
+          element={
+            <AdminLayout>
+              <AdminFeedbacks />
+            </AdminLayout>
+          }
+        />
+
         <Route
           path="/CreateAdmin"
           element={
@@ -120,6 +133,8 @@ function App() {
             </AdminLayout>
           }
         />
+       
+       
         <Route
           path="/Shoppanel"
           element={
@@ -207,6 +222,23 @@ function App() {
           element={
             <ClientLayout>
               <FeedbackList />
+            </ClientLayout>
+          }
+        />
+         <Route
+          path="/feedbacklist"
+          element={
+            <ClientLayout>
+              <FeedbackList />
+            </ClientLayout>
+          }
+        />
+
+        <Route
+          path="/contact"
+          element={
+            <ClientLayout>
+              <ContactPage />
             </ClientLayout>
           }
         />

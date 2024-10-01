@@ -55,27 +55,70 @@ const FeedbackList = () => {
         const doc = new jsPDF();
         doc.setFontSize(18);
         doc.text('Filtered Feedback Report', 10, 10);
-
-        let y = 20;
-
-        filteredFeedbacks.forEach((feedback, index) => {
-            doc.setFontSize(12);
-            doc.text(`${index + 1}. Title: ${feedback.title}`, 10, y);
-            doc.text(`Content: ${feedback.content}`, 10, y + 10);
-            doc.text(`Rating: ${feedback.rating}`, 10, y + 20);
-            doc.text(`Category: ${feedback.feedbackFor}`, 10, y + 30);
-            doc.text(`Type: ${feedback.feedbackType}`, 10, y + 40);
-            doc.text(`Created At: ${new Date(feedback.createdAt).toLocaleDateString()}`, 10, y + 50);
-
-            y += 60;
-
-            // If page is full, add a new page
-            if (y > 270) {
-                doc.addPage();
-                y = 20;
-            }
-        });
-
+    
+        // Table headers
+        const tableColumnHeaders = ["Content", "Rating", "Category", "Type", "Created At"];
+    
+        // Filter feedbacks by type
+        const positiveFeedbacks = filteredFeedbacks.filter(feedback => feedback.feedbackType === 'Positive');
+        const negativeFeedbacks = filteredFeedbacks.filter(feedback => feedback.feedbackType === 'Negative');
+    
+        // Prepare table data for positive feedback
+        const positiveTableRows = positiveFeedbacks.map((feedback) => [
+            feedback.content,
+            feedback.rating,
+            feedback.feedbackFor,
+            feedback.feedbackType,
+            new Date(feedback.createdAt).toLocaleDateString(),
+        ]);
+    
+        // Prepare table data for negative feedback
+        const negativeTableRows = negativeFeedbacks.map((feedback) => [
+            feedback.content,
+            feedback.rating,
+            feedback.feedbackFor,
+            feedback.feedbackType,
+            new Date(feedback.createdAt).toLocaleDateString(),
+        ]);
+    
+        // Add "Positive" section
+        if (positiveTableRows.length > 0) {
+            doc.setFontSize(16);
+            doc.text('Positive Feedback', 10, 30);
+            doc.autoTable({
+                head: [tableColumnHeaders],
+                body: positiveTableRows,
+                startY: 35, // Start below the "Positive Feedback" title
+                theme: 'grid',
+                margin: { top: 35 },
+            });
+        } else {
+            doc.setFontSize(16);
+            doc.text('Positive Feedback: No data available', 10, 30);
+        }
+    
+        // Add a new page if necessary before the negative section
+        let yPosition = doc.lastAutoTable.finalY + 10; // Position below the last table
+        if (yPosition + 20 > doc.internal.pageSize.height) {
+            doc.addPage();
+            yPosition = 20; // Reset to the top of the new page
+        }
+    
+        // Add "Negative" section
+        if (negativeTableRows.length > 0) {
+            doc.setFontSize(16);
+            doc.text('Negative Feedback', 10, yPosition);
+            doc.autoTable({
+                head: [tableColumnHeaders],
+                body: negativeTableRows,
+                startY: yPosition + 5, // Start below the "Negative Feedback" title
+                theme: 'grid',
+            });
+        } else {
+            doc.setFontSize(16);
+            doc.text('Negative Feedback: No data available', 10, yPosition);
+        }
+    
         // Save the PDF
         doc.save('Feedback_Report.pdf');
     };

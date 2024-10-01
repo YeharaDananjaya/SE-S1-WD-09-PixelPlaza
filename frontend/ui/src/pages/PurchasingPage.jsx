@@ -277,28 +277,27 @@ const PurchasingPage = () => {
               </div>
             )}
 
-            {product.sizes && product.sizes.length > 0 && (
-              <div className="mt-4">
-                <label className="block mb-2 text-dark font-semibold">
-                  Select Size:
-                </label>
-                <div className="flex gap-2 text-gray-600">
-                  {product.sizes.map((size, index) => (
-                    <div
-                      key={index}
-                      className={`p-4 border rounded cursor-pointer ${
-                        selectedSize === size
-                          ? "border-gray-900"
-                          : "border-gray-500"
-                      }`}
-                      onClick={() => setSelectedSize(size)}
-                    >
-                      {size}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+{product.sizes && product.sizes.length > 0 && (
+  <div className="mt-4">
+    <label className="block mb-2 text-dark font-semibold">
+      Select Size:
+    </label>
+    <div className="flex gap-2 text-gray-600">
+      {product.sizes.map((size, index) => (
+        <div
+          key={index}
+          className={`p-4 border rounded cursor-pointer transition-all duration-300 
+            ${selectedSize === size ? "bg-orange-500 text-white border-orange-600 scale-105" : "border-gray-300 bg-white hover:bg-gray-100"}
+          `}
+          onClick={() => setSelectedSize(size)}
+        >
+          {size}
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
 
             <div className="mt-4">
               <label className="block mb-2  text-dark font-semibold">

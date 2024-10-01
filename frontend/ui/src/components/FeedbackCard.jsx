@@ -96,7 +96,9 @@ const FeedbackCard = ({ review, onDelete, onUpdate }) => {
           <>
             <Typography gutterBottom variant="h5" component="div">
               {review.title}
+              
             </Typography>
+            Review for : {review.itemName}
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               {review.content}
               <br />

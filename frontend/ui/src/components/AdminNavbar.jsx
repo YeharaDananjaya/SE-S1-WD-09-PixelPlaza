@@ -39,7 +39,7 @@ const AdminNavbar = () => {
               location.pathname === "/MapModel" ? "text-baseextra2" : ""
             }`}
           >
-            <Link to={`/MapModel`}>Map Model</Link>
+            <Link to={`/feedbacksadmin`}>Feedbacks</Link>
           </li>
         </ul>
       </div>

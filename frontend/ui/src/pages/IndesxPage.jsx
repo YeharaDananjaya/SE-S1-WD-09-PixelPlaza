@@ -59,55 +59,53 @@ const IndexPage = () => {
       <section id="categories" className="section categories">
         <h2>Shop by Categories</h2>
         <div className="category-list">
-          <Link to="/itemlist?category=electronics" className="category-item">
+          <Link to="/itemlist?category=Electronics" className="category-item">
             <img
               src="https://img.freepik.com/premium-photo/gadgets-accessories-isolated-white-background_1272184-39.jpg"
               alt="Electronics"
             />
             <div>Electronics</div>
           </Link>
-          <Link to="/itemlist?category=fashion" className="category-item">
+          <Link to="/itemlist?category=Fashion" className="category-item">
             <img
               src="https://img.freepik.com/free-photo/portrait-smiling-beautiful-girl-her-handsome-boyfriend-laughing-happy-cheerful-couple-sunglasses_158538-5002.jpg?t=st=1723301802~exp=1723305402~hmac=1ca1bc78964225539b12f228a6368ad0c06948a549d391422613e1c67fc4f830&w=740"
               alt="Fashion"
             />
             <div>Fashion</div>
           </Link>
-          <Link to="/itemlist?category=home-garden" className="category-item">
+          <Link to={`/itemlist?category=${encodeURIComponent('Home & Garden')}`} className="category-item">
+
             <img
               src="https://img.freepik.com/premium-photo/gardening-gardener-rustic-shed-wellington-flowerpot-potted_488220-80989.jpg?ga=GA1.1.1753345720.1723288546&semt=ais_hybrid"
               alt="Home & Garden"
             />
             <div>Home & Garden</div>
           </Link>
-          <Link to="/itemlist?category=health-beauty" className="category-item">
+          <Link to={`/itemlist?category=${encodeURIComponent('Health & Beauty')}`} className="category-item">
+
             <img
               src="https://img.freepik.com/free-vector/spa-health-beauty-template_23-2147494970.jpg?ga=GA1.1.1753345720.1723288546&semt=ais_hybrid"
               alt="Health and Beauty"
             />
             <div>Health and Beauty</div>
           </Link>
-          <Link
-            to="/itemlist?category=sports-outdoor"
-            className="category-item"
-          >
+          <Link to={`/itemlist?category=${encodeURIComponent('Sport & Outdoor')}`} className="category-item">
+
             <img
               src="https://img.freepik.com/free-photo/kettlebell-fitness-still-life_23-2151739196.jpg?ga=GA1.1.1753345720.1723288546&semt=ais_hybrid"
               alt="Sports and Outdoor"
             />
             <div>Sports and Outdoor</div>
           </Link>
-          <Link to="/itemlist?category=groceries" className="category-item">
+          <Link to="/itemlist?category=Groceries" className="category-item">
             <img
               src="https://img.freepik.com/free-photo/shopping-cart-full-with-groceries-dark-backgrounds_1268-29508.jpg?ga=GA1.1.1753345720.1723288546&semt=ais_hybrid"
               alt="Groceries"
             />
             <div>Groceries</div>
           </Link>
-          <Link
-            to="/itemlist?category=gaming-entertainment"
-            className="category-item"
-          >
+          <Link to={`/itemlist?category=${encodeURIComponent('Gaming & Entertainment')}`} className="category-item">
+
             <img
               src="https://img.freepik.com/free-photo/person-wearing-futuristic-virtual-reality-glasses-gaming_23-2151133155.jpg?ga=GA1.1.1753345720.1723288546&semt=ais_hybrid"
               alt="Gaming & Entertainment"
