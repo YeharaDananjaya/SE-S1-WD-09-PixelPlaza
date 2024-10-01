@@ -32,7 +32,7 @@ const CartPage = () => {
 
   useEffect(() => {
     const userId = localStorage.getItem("userId"); // Retrieve the userId from localStorage
-  
+
     axios
       .get(`http://localhost:3000/api/cartProduct/user/${userId}`) // Append userId to the URL
       .then((res) => {
@@ -42,42 +42,50 @@ const CartPage = () => {
         console.log("Error while getting data");
       });
   }, []);
-  
 
   const handleCheckout = () => {
     const itemsToCheckout = items.filter((item) =>
       selectedItems.includes(item._id)
     );
-  
+
     if (itemsToCheckout.length === 0) {
       showAlert("No items selected for checkout.");
       return;
     }
-  
+
     if (selectedPaymentMethod === "") {
       showAlert("Please select a payment method.");
       return;
     }
-  
+
     if (deliveryOption === "") {
       showAlert("Please select a delivery or pickup option.");
       return;
     }
-  
+
     const confirmCheckout = window.confirm(
       "Are you sure you want to proceed with checkout?"
     );
-  
+
     if (confirmCheckout) {
       const userId = localStorage.getItem("userId"); // Retrieve userId from localStorage
-      const requestData = { 
-        userId, // Include the userId in the request 
-        items: itemsToCheckout 
+      const requestData = {
+        userId, // Include the userId in the request
+        items: itemsToCheckout.map((item) => ({
+          name: item.name,
+          price: item.price,
+          count: item.count,
+          color: item.color,
+          sizes: item.sizes,
+          description: item.description,
+          images: item.images,
+          shopID: item.shopID, // Include shopID in the request
+        })),
       };
-  
+
       // Move selected items to Previous Orders
       axios
-        .post("http://localhost:3000/api/previousOrders", requestData) // Pass userId along with items
+        .post("http://localhost:3000/api/previousOrders", requestData) // Pass userId along with items and their shopID
         .then(() => {
           // Delete selected items from Cart
           return axios.delete("http://localhost:3000/api/cartProduct", {
@@ -105,7 +113,6 @@ const CartPage = () => {
       console.log("Checkout cancelled");
     }
   };
-  
 
   // Add this function to handle the clear all functionality
   const handleClearAll = () => {
@@ -227,152 +234,152 @@ const CartPage = () => {
 
   return (
     <div className="w-[100vw] bg-dark">
-    <div className="cart-page">
-     <br/>
-      <div className="cart-container">
-        <div className="cart-header">
-          <h1>Your Cart</h1>
-        </div>
-
-        <button
-          name="delete-all-button"
-          onClick={handleDeleteAll}
-          style={{
-            margin: "15px",
-            padding: "10px 20px",
-            backgroundColor: "#dc3545",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Clear Selected
-        </button>
-        <button
-          name="delete-all-button"
-          onClick={handleClearAll}
-          style={{
-            margin: "15px",
-            padding: "10px 20px",
-            backgroundColor: "#dc3545",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Clear Cart
-        </button>
-        <div className="cart-item-list">
-          {filteredItems.length === 0
-            ? "No Cart Items"
-            : filteredItems.map((item) => (
-                <CartItem
-                  key={item._id}
-                  item={item}
-                  onDelete={handleDelete}
-                  onSelect={toggleItemSelection} // New prop for selection
-                  isSelected={selectedItems.includes(item._id)} // Pass selected state
-                />
-              ))}
-        </div>
-
-        <div className="cart-summary">
-          <h2>Total: Rs.{totalAmount.toFixed(2)}</h2>
-          <div className="options-container">
-            <div className="payment-options">
-              <label>Select Payment Method:</label>
-              <div>
-                <input
-                  type="radio"
-                  id="credit-card"
-                  name="payment"
-                  value="credit-card"
-                  onChange={() => setSelectedPaymentMethod("credit-card")}
-                />
-                <label htmlFor="credit-card">Credit Card</label>
-              </div>
-              <div>
-                <input
-                  type="radio"
-                  id="paypal"
-                  name="payment"
-                  value="paypal"
-                  onChange={() => setSelectedPaymentMethod("paypal")}
-                />
-                <label htmlFor="paypal">PayPal</label>
-              </div>
-              <div>
-                <input
-                  type="radio"
-                  id="koko"
-                  name="payment"
-                  value="koko"
-                  onChange={() => setSelectedPaymentMethod("koko")}
-                />
-                <label htmlFor="koko">Koko</label>
-              </div>
-              {selectedCard && (
-                <div className="selected-card-details">
-                  <p>
-                    <strong>Card Number:</strong> {selectedCard.number}
-                  </p>
-                  <p>
-                    <strong>Card Holder:</strong> {selectedCard.holder}
-                  </p>
-                  <p>
-                    <strong>Expiry Date:</strong> {selectedCard.expiry}
-                  </p>
-                  <p>
-                    <strong>CVV:</strong> {selectedCard.cvv}
-                  </p>
-                </div>
-              )}
-            </div>
-            <div className="delivery-options">
-              <label>Select Delivery or Pickup:</label>
-              <div>
-                <input
-                  type="radio"
-                  id="delivery"
-                  name="delivery"
-                  value="delivery"
-                  onChange={() => setDeliveryOption("delivery")}
-                />
-                <label htmlFor="delivery">Delivery</label>
-              </div>
-              <div>
-                <input
-                  type="radio"
-                  id="pickup"
-                  name="delivery"
-                  value="pickup"
-                  onChange={() => setDeliveryOption("pickup")}
-                />
-                <label htmlFor="pickup">Pickup</label>
-              </div>
-            </div>
+      <div className="cart-page">
+        <br />
+        <div className="cart-container">
+          <div className="cart-header">
+            <h1>Your Cart</h1>
           </div>
-          <button className="checkout-button" onClick={handleCheckout}>
-            Proceed to Checkout
-          </button>
-        </div>
-      </div>
 
-      <CardPopup
-        isOpen={isPopupOpen}
-        onClose={handlePopupClose}
-        onCardSelect={handleCardSelection}
-      />
-      <CustomAlert
-        isOpen={isAlertOpen}
-        message={alertMessage}
-        onClose={() => setIsAlertOpen(false)}
-      />
-      <br />
-      <br />
-    </div>
+          <button
+            name="delete-all-button"
+            onClick={handleDeleteAll}
+            style={{
+              margin: "15px",
+              padding: "10px 20px",
+              backgroundColor: "#dc3545",
+              color: "#fff",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            Clear Selected
+          </button>
+          <button
+            name="delete-all-button"
+            onClick={handleClearAll}
+            style={{
+              margin: "15px",
+              padding: "10px 20px",
+              backgroundColor: "#dc3545",
+              color: "#fff",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            Clear Cart
+          </button>
+          <div className="cart-item-list">
+            {filteredItems.length === 0
+              ? "No Cart Items"
+              : filteredItems.map((item) => (
+                  <CartItem
+                    key={item._id}
+                    item={item}
+                    onDelete={handleDelete}
+                    onSelect={toggleItemSelection} // New prop for selection
+                    isSelected={selectedItems.includes(item._id)} // Pass selected state
+                  />
+                ))}
+          </div>
+
+          <div className="cart-summary">
+            <h2>Total: Rs.{totalAmount.toFixed(2)}</h2>
+            <div className="options-container">
+              <div className="payment-options">
+                <label>Select Payment Method:</label>
+                <div>
+                  <input
+                    type="radio"
+                    id="credit-card"
+                    name="payment"
+                    value="credit-card"
+                    onChange={() => setSelectedPaymentMethod("credit-card")}
+                  />
+                  <label htmlFor="credit-card">Credit Card</label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="paypal"
+                    name="payment"
+                    value="paypal"
+                    onChange={() => setSelectedPaymentMethod("paypal")}
+                  />
+                  <label htmlFor="paypal">PayPal</label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="koko"
+                    name="payment"
+                    value="koko"
+                    onChange={() => setSelectedPaymentMethod("koko")}
+                  />
+                  <label htmlFor="koko">Koko</label>
+                </div>
+                {selectedCard && (
+                  <div className="selected-card-details">
+                    <p>
+                      <strong>Card Number:</strong> {selectedCard.number}
+                    </p>
+                    <p>
+                      <strong>Card Holder:</strong> {selectedCard.holder}
+                    </p>
+                    <p>
+                      <strong>Expiry Date:</strong> {selectedCard.expiry}
+                    </p>
+                    <p>
+                      <strong>CVV:</strong> {selectedCard.cvv}
+                    </p>
+                  </div>
+                )}
+              </div>
+              <div className="delivery-options">
+                <label>Select Delivery or Pickup:</label>
+                <div>
+                  <input
+                    type="radio"
+                    id="delivery"
+                    name="delivery"
+                    value="delivery"
+                    onChange={() => setDeliveryOption("delivery")}
+                  />
+                  <label htmlFor="delivery">Delivery</label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    id="pickup"
+                    name="delivery"
+                    value="pickup"
+                    onChange={() => setDeliveryOption("pickup")}
+                  />
+                  <label htmlFor="pickup">Pickup</label>
+                </div>
+              </div>
+            </div>
+            <button className="checkout-button" onClick={handleCheckout}>
+              Proceed to Checkout
+            </button>
+          </div>
+        </div>
+
+        <CardPopup
+          isOpen={isPopupOpen}
+          onClose={handlePopupClose}
+          onCardSelect={handleCardSelection}
+        />
+        <CustomAlert
+          isOpen={isAlertOpen}
+          message={alertMessage}
+          onClose={() => setIsAlertOpen(false)}
+        />
+        <br />
+        <br />
+      </div>
     </div>
   );
 };

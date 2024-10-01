@@ -6,12 +6,15 @@ const cartproductSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   count: { type: Number, required: true },
-  color:{ type: String  },
+  color: { type: String },
   sizes: { type: String },
   description: { type: String, required: true },
   images: [String],
+  shopID: {
+    type: String,
+  },
 });
 
 const cartProduct = mongoose.model("cartProduct", cartproductSchema);
 
-module.exports = cartProduct; 
+module.exports = cartProduct;
