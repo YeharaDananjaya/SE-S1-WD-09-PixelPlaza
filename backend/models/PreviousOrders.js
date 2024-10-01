@@ -11,6 +11,9 @@ const previousOrderSchema = new mongoose.Schema({
       sizes: { type: String, default: "" },
       description: { type: String, default: "" },
       images: { type: [String], default: [] },
+      shopID: {
+        type: String,
+      },
     },
   ],
   date: { type: Date, default: Date.now },

@@ -29,11 +29,13 @@ const PurchasingPage = () => {
             ? productData.images[0]
             : "/default-image.png"
         );
-  
+
         // Fetch the shop details using the shopID from the product
         if (productData.shopID) {
           axios
-            .get(`http://localhost:3000/api/shops/getByShopID/${productData.shopID}`)
+            .get(
+              `http://localhost:3000/api/shops/getByShopID/${productData.shopID}`
+            )
             .then((shopRes) => {
               setShopDetails(shopRes.data);
             })
@@ -46,7 +48,7 @@ const PurchasingPage = () => {
         console.log("Error fetching product:", err);
       });
   }, [id]);
-  
+
   const handleThumbnailClick = (src) => {
     setMainImage(src);
   };
@@ -80,89 +82,88 @@ const PurchasingPage = () => {
     calculateDeliveryDates();
   }, []);
 
-
   const handleAddToCart = () => {
     const userID = localStorage.getItem("userId"); // Get the userID from localStorage
-  
+
+    // Check if color and size are required
     const isColorRequired = product.colors && product.colors.length > 0;
     const isSizeRequired = product.sizes && product.sizes.length > 0;
-  
+
+    // Validate color and size selection
     if (isColorRequired && !selectedColor) {
       alert("Please select a color.");
       return;
     }
-  
+
     if (isSizeRequired && !selectedSize) {
       alert("Please select a size.");
       return;
     }
-  
+
+    // Send data to the backend using axios
     axios
       .post("http://localhost:3000/api/cartProduct", {
-        userId: userID, // Add userID to the payload
-        productId:product._id,
-        name: product.name,
-        price: product.price,
-        count: quantity,
-        color: selectedColor,
-        sizes: selectedSize,
-        description: product.description,
-        images: product.images,
+        userId: userID, // Include the userId from localStorage
+        productId: product._id, // Product ID
+        name: product.name, // Product name
+        price: product.price, // Product price
+        count: quantity, // Selected quantity
+        color: selectedColor, // Selected color
+        sizes: selectedSize, // Selected size
+        description: product.description, // Product description
+        images: product.images, // Product images
+        shopID: product.shopID, // Include shopID for the product
       })
       .then(() => {
         alert("Item added to cart successfully!");
-        navigate("/cart");
+        navigate("/cart"); // Navigate to the cart page upon success
       })
       .catch((err) => {
-        console.log("Error adding item to cart:", err);
-        alert("Failed to add item to cart.");
+        console.log("Error adding item to cart:", err); // Log any errors
+        alert("Failed to add item to cart."); // Notify user of failure
       });
   };
-  
 
   const handleBuyNow = () => {
     const isColorRequired = product.colors && product.colors.length > 0;
     const isSizeRequired = product.sizes && product.sizes.length > 0;
-  
+
     if (isColorRequired && !selectedColor) {
       alert("Please select a color.");
       return;
     }
-  
+
     if (isSizeRequired && !selectedSize) {
       alert("Please select a size.");
       return;
     }
-  
+
     // Setting the state to open the checkout popup
     setIsCheckoutOpen(true);
   };
-  
-
-
 
   const handleAddToWishlist = async () => {
-    const userID = localStorage.getItem("userId"); 
+    const userID = localStorage.getItem("userId");
 
     try {
-      const response = await axios.post('http://localhost:3000/api/wishlist', {
+      const response = await axios.post("http://localhost:3000/api/wishlist", {
         productId: product._id, // Use the appropriate product ID
         userID: userID,
       });
-  
+
       if (response.status === 200) {
-        alert('Item added to wishlist!');
+        alert("Item added to wishlist!");
       }
     } catch (error) {
-      console.error('Error adding item to wishlist:', error);
-      alert('Failed to add item to wishlist.');
+      console.error("Error adding item to wishlist:", error);
+      alert("Failed to add item to wishlist.");
     }
   };
-  
+
   const handleCheckoutConfirm = ({ selectedPaymentMethod, deliveryOption }) => {
     // Retrieve the userId from localStorage or any authentication state
-    const userId = localStorage.getItem("userId"); 
-  
+    const userId = localStorage.getItem("userId");
+
     const orderData = {
       userId: userId || "exampleUserId", // Use the dynamically retrieved userId
       items: [
@@ -174,12 +175,13 @@ const PurchasingPage = () => {
           sizes: selectedSize,
           description: product.description,
           images: product.images,
+          shopID: product.shopID, // Include the shopID here
         },
       ],
       paymentMethod: selectedPaymentMethod, // Add the selected payment method
-      deliveryOption: deliveryOption,       // Add the selected delivery option
+      deliveryOption: deliveryOption, // Add the selected delivery option
     };
-  
+
     axios
       .post("http://localhost:3000/api/previousOrders", orderData)
       .then(() => {
@@ -200,7 +202,7 @@ const PurchasingPage = () => {
         setIsCheckoutOpen(false);
       });
   };
-  
+
   if (!product) {
     return <div>Loading...</div>;
   }
@@ -233,17 +235,18 @@ const PurchasingPage = () => {
             <div className="mt-4">
               <h3 className="text-lg font-semibold">Seller Details</h3>
               <p>
-                <strong>Seller Name:</strong>{" "}
-                {shopDetails?.shopName || "N/A" }
+                <strong>Seller Name:</strong> {shopDetails?.shopName || "N/A"}
               </p>
               <p>
                 <strong>Description:</strong>{" "}
-                {shopDetails?.description|| "N/A"}
+                {shopDetails?.description || "N/A"}
               </p>
             </div>
           </div>
           <div>
-            <h2 className="text-6xl text-gray-700 font-bold mb-7">{product.name}</h2>
+            <h2 className="text-6xl text-gray-700 font-bold mb-7">
+              {product.name}
+            </h2>
             <p className="text-4xl text-gray-600 mb-6">
               Rs. {product.price}
               {product.originalPrice && (
@@ -256,7 +259,9 @@ const PurchasingPage = () => {
 
             {product.colors && product.colors.length > 0 && (
               <div className="mt-4">
-                <label className="block mb-2 text-dark font-semibold">Select Color:</label>
+                <label className="block mb-2 text-dark font-semibold">
+                  Select Color:
+                </label>
                 <div className="flex gap-2">
                   {product.colors.map((color, index) => (
                     <div
@@ -274,7 +279,9 @@ const PurchasingPage = () => {
 
             {product.sizes && product.sizes.length > 0 && (
               <div className="mt-4">
-                <label className="block mb-2 text-dark font-semibold">Select Size:</label>
+                <label className="block mb-2 text-dark font-semibold">
+                  Select Size:
+                </label>
                 <div className="flex gap-2 text-gray-600">
                   {product.sizes.map((size, index) => (
                     <div
@@ -294,7 +301,9 @@ const PurchasingPage = () => {
             )}
 
             <div className="mt-4">
-              <label className="block mb-2  text-dark font-semibold">Quantity:</label>
+              <label className="block mb-2  text-dark font-semibold">
+                Quantity:
+              </label>
               <div className="flex items-center">
                 <button
                   onClick={handleDecrement}
@@ -323,30 +332,29 @@ const PurchasingPage = () => {
             <p className="mt-1 text-sm text-gray-500 font-semibold">
               Delivery between {deliveryDates.start} and {deliveryDates.end}
             </p>
-          
 
-          <div className="flex items-center mt-10 space-x-2">
-            <button
-              onClick={handleAddToCart}
-              className="px-6 py-4 bg-orange-600 text-white rounded-md hover:bg-orange-700"
-            >
-              Add to Cart
-            </button>
-            <button
-              onClick={handleBuyNow}
-              className="px-6 py-4 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-            >
-              Buy Now
-            </button>
-            <button
-              onClick={handleAddToWishlist}
-              className="px-6 py-4 bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center"
-            >
-              <FaHeart className="mr-2" />
-              Add to Wishlist
-            </button>
+            <div className="flex items-center mt-10 space-x-2">
+              <button
+                onClick={handleAddToCart}
+                className="px-6 py-4 bg-orange-600 text-white rounded-md hover:bg-orange-700"
+              >
+                Add to Cart
+              </button>
+              <button
+                onClick={handleBuyNow}
+                className="px-6 py-4 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+              >
+                Buy Now
+              </button>
+              <button
+                onClick={handleAddToWishlist}
+                className="px-6 py-4 bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center"
+              >
+                <FaHeart className="mr-2" />
+                Add to Wishlist
+              </button>
+            </div>
           </div>
-        </div>
         </div>
       </div>
       {isCheckoutOpen && (
