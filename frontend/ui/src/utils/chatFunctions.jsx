@@ -21,7 +21,7 @@ export const handleChatInput = (message, setChatMessages, handleSearch, filtered
   }
 
   // Regex to match "show me" or "display me" followed by the shop name
-  const regex = /^(show me|display me)\s+(.+)/i;
+  const regex = /^(show me|display me|show|display)\s+(.+)/i;
   const match = message.match(regex);
 
   if (match && match[2]) {

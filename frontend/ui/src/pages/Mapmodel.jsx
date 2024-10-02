@@ -44,6 +44,14 @@ const Mapmodel = () => {
   const floor2Ref = useRef(null);
   const floor3Ref = useRef(null);
   const floor4Ref = useRef(null);
+  const lastMessageRef = useRef(null);
+
+
+  useEffect(() => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [chatMessages]);
 
 
   //Floors scrolling section
@@ -638,6 +646,7 @@ const handleCategory = (category) => {
                                                                     ? 'self-end flex rounded-xl bg-blue-500 text-white p-2'
                                                                     : 'self-start bg-transparent flex w-[25vw] h-auto text-black'
                                                                 } p-2`}
+                                                                ref={msg.sender === 'bot' ? lastMessageRef : null}
                                                               >
                                                                 {msg.sender === 'bot' && (
                                                                   <div className='flex bg-transparent w-[5vw] h-[12vh]'>
