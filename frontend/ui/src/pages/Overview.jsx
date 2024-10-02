@@ -2,22 +2,41 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "daisyui";
 import { HorizontalLine } from "../components/HorizontalLine"; // Assuming you have this component
+import { Bar } from "react-chartjs-2"; // Import Chart.js
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+} from "chart.js";
+import jsPDF from "jspdf"; // Import jsPDF
+import "jspdf-autotable";
+
+// Register Chart.js components
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+);
 
 export const Overview = () => {
   const [reports, setReports] = useState([]);
-  const [selectedSalesShop, setSelectedSalesShop] = useState(
-    localStorage.getItem("shopId") || ""
-  );
   const [salesView, setSalesView] = useState("daily");
-  const [salesData, setSalesData] = useState([]);
+  const [salesData, setSalesData] = useState(null);
   const [day, setDay] = useState("");
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-  const [showSalesButton, setShowSalesButton] = useState(false);
 
+  const selectedSalesShop = localStorage.getItem("shopId") || "";
   const monthNames = [
     "January",
     "February",
@@ -37,76 +56,50 @@ export const Overview = () => {
     setSalesView(view);
   };
 
-  const handleCalculateSales = async (type) => {
-    setError(null);
-    setSuccessMessage(null);
-    try {
-      let response;
-      const specificDate = `${year}-${month}-${day}`;
-
-      if (type === "daily") {
-        response = await axios.post(
-          "http://localhost:3000/api/sellsReport/dailyIncomeByShop",
-          {
-            shopId: selectedSalesShop,
-            specificDate,
-          }
-        );
-      } else if (type === "monthly") {
-        response = await axios.post(
-          "http://localhost:3000/api/sellsReport/monthlyIncomeByShop",
-          {
-            shopId: selectedSalesShop,
-            year,
-            month,
-          }
-        );
-      } else if (type === "yearly") {
-        response = await axios.post(
-          "http://localhost:3000/api/sellsReport/yearlyIncomeByShop",
-          {
-            shopId: selectedSalesShop,
-            year,
-          }
-        );
-      }
-
-      console.log("Sales data calculated:", response.data);
-      setSalesData(response.data);
-      setShowSalesButton(true);
-    } catch (err) {
-      setError(err.response?.data?.error || "An error occurred");
-      console.error("Error calculating sales:", err);
-    }
-  };
-
   const handleShowSales = async (type) => {
     setError(null);
     setSuccessMessage(null);
+    setLoading(true); // Start loading
+
     try {
       let response;
-      const specificDate = `${year}-${month}-${day}`;
-      const params = {
-        shopId: selectedSalesShop,
-      };
+      const params = { shopId: selectedSalesShop };
 
+      // Build params based on sales view type
       if (type === "daily") {
-        params.specificDate = specificDate;
+        if (!year || !month || !day) {
+          setError("Please select a valid year, month, and day.");
+          return;
+        }
+        params.year = year;
+        params.month = month;
+        params.day = day;
+
         response = await axios.get(
-          "http://localhost:3000/api/sellsReport/dailyIncomeByShop",
+          "http://localhost:3000/api/sells/dailyIncomeByShop",
           { params }
         );
       } else if (type === "monthly") {
+        if (!year || !month) {
+          setError("Please select a valid year and month.");
+          return;
+        }
         params.year = year;
         params.month = month;
+
         response = await axios.get(
-          "http://localhost:3000/api/sellsReport/monthlyIncomeByShop",
+          "http://localhost:3000/api/sells/monthlyIncomeByShop",
           { params }
         );
       } else if (type === "yearly") {
+        if (!year) {
+          setError("Please select a valid year.");
+          return;
+        }
         params.year = year;
+
         response = await axios.get(
-          "http://localhost:3000/api/sellsReport/yearlyIncomeByShop",
+          "http://localhost:3000/api/sells/yearlyIncomeByShop",
           { params }
         );
       }
@@ -114,39 +107,80 @@ export const Overview = () => {
       console.log("Sales data shown:", response.data);
       const incomeData = response.data.data;
 
-      // Check if incomeData is an object and handle accordingly
-      if (
-        incomeData &&
-        typeof incomeData === "object" &&
-        !Array.isArray(incomeData)
-      ) {
-        // Set sales data with shop details
-        setSalesData([
-          {
-            shopId: incomeData._id.shopId,
-            year: incomeData._id.year,
-            month: incomeData._id.month,
-            day: incomeData._id.day || "N/A",
-            totalIncome: incomeData.totalIncome,
-            salesDetails: incomeData.salesDetails,
-          },
-        ]);
+      if (incomeData) {
+        setSalesData(incomeData);
         setSuccessMessage(response.data.message);
       } else {
         setError("No sales data found.");
-        console.warn(
-          "Expected incomeData to be an object but got:",
-          incomeData
-        );
       }
     } catch (err) {
       setError(err.response?.data?.error || "An error occurred");
       console.error("Error showing sales:", err);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
+  // Prepare data for the graph
+  const chartData = {
+    labels: salesData?.salesDetails?.map((item) => item.itemName) || [],
+    datasets: [
+      {
+        label: "Total Sales",
+        data: salesData?.salesDetails?.map((item) => item.totalSales) || [],
+        backgroundColor: "rgba(255, 99, 132, 0.6)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 2,
+      },
+    ],
+  };
+
+  const downloadPDF = () => {
+    const pdf = new jsPDF();
+
+    // Add title
+    pdf.setFontSize(20);
+    pdf.text("Sales Report", 10, 10);
+
+    // Add date
+    const formattedDate = `${salesData.day || "N/A"} ${
+      monthNames[salesData.month - 1]
+    } ${salesData.year}`;
+    pdf.setFontSize(12);
+    pdf.text(`Date: ${formattedDate}`, 10, 20);
+
+    // Add shop ID and total income
+    pdf.text(`Shop ID: ${salesData.shopId}`, 10, 30);
+    pdf.text(`Total Income: Rs. ${salesData.totalIncome}`, 10, 40);
+
+    // Prepare table
+    const tableColumn = ["Item Name", "Price", "Quantity", "Total Sales"];
+    const tableRows = salesData.salesDetails.map((item) => [
+      item.itemName,
+      `Rs. ${item.price.toFixed(2)}`,
+      item.quantity,
+      `Rs. ${item.totalSales.toFixed(2)}`,
+    ]);
+
+    // Add table to PDF
+    pdf.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 50,
+    });
+
+    // Generate file name based on shop ID and date
+    const fileName = `sales_report_${salesData.shopId}_${formattedDate.replace(
+      /\s+/g,
+      "_"
+    )}.pdf`;
+
+    // Save the PDF
+    pdf.save(fileName);
+  };
+
   return (
-    <div className="flex-1 w-[83vw] bg-[#F4F4F4] p-8">
+    <div className="flex-1 w-[82vw] bg-[#F4F4F4] p-8">
       <h1 className="font-russo text-[#212529] text-4xl">Sales Overview</h1>
       <HorizontalLine />
 
@@ -178,20 +212,8 @@ export const Overview = () => {
             ))}
           </div>
 
-          {/* Dropdowns for Sales Data */}
-          <div className="grid grid-cols-4 gap-4 mb-4">
-            <select
-              className="p-2 border border-[#E76F51] rounded"
-              value={selectedSalesShop}
-              onChange={(e) => setSelectedSalesShop(e.target.value)}
-              disabled
-            >
-              <option value={selectedSalesShop}>
-                Current Shop: {selectedSalesShop}
-              </option>
-            </select>
-
-            {/* Year Dropdown for Yearly Sales */}
+          {/* Year, Month, Day Dropdowns for Sales Data */}
+          <div className="grid grid-cols-3 gap-4 mb-4">
             <select
               className="p-2 border border-[#E76F51] rounded"
               value={year}
@@ -205,7 +227,6 @@ export const Overview = () => {
               ))}
             </select>
 
-            {/* Month Dropdown for Monthly Sales */}
             {salesView !== "yearly" && (
               <select
                 className="p-2 border border-[#E76F51] rounded"
@@ -221,7 +242,6 @@ export const Overview = () => {
               </select>
             )}
 
-            {/* Day Dropdown for Daily Sales */}
             {salesView === "daily" && (
               <select
                 className="p-2 border border-[#E76F51] rounded"
@@ -240,22 +260,24 @@ export const Overview = () => {
             )}
           </div>
 
-          {/* Calculate and Show Sales Buttons */}
+          {/* Show Sales Button */}
           <div className="flex space-x-4">
-            <button
-              onClick={() => handleCalculateSales(salesView)}
-              className="p-2 bg-[#E76F51] text-white rounded"
-            >
-              Calculate Sales
-            </button>
             <button
               onClick={() => handleShowSales(salesView)}
               className="p-2 bg-[#5C646C] text-white rounded"
-              disabled={!showSalesButton}
             >
               Show Sales
             </button>
+            <button
+              onClick={downloadPDF}
+              className="p-2 bg-[#E76F51] text-white rounded"
+            >
+              Download PDF
+            </button>
           </div>
+
+          {/* Loading Indicator */}
+          {loading && <div className="mt-4 text-blue-500">Loading...</div>}
 
           {/* Error/Success Message */}
           {error && <div className="text-red-600 mt-4">{error}</div>}
@@ -264,61 +286,93 @@ export const Overview = () => {
           )}
 
           {/* Display Sales Data */}
-          {salesData.length > 0 && (
+          {salesData && (
             <div className="mt-8">
-              {salesData.map((data, index) => (
-                <div key={index} className="mb-6">
-                  <h3 className="text-xl font-semibold">
-                    Shop ID: {data.shopId}
-                  </h3>
-                  <p>
-                    Total Income: <strong>${data.totalIncome}</strong>
-                  </p>
-                  <p>
-                    Date: {data.day}/{data.month}/{data.year}
-                  </p>
+              <h3 className="text-xl font-semibold">
+                Shop ID: {salesData.shopId}
+              </h3>
+              <p>
+                Total Income: <strong>Rs. {salesData.totalIncome}</strong>
+              </p>
+              <p>
+                Date: {salesData.day || "N/A"} {monthNames[salesData.month - 1]}{" "}
+                {salesData.year}
+              </p>
 
-                  {/* Sales Details Table */}
-                  <table className="table w-full border-collapse border border-gray-200 mt-4">
-                    <thead>
-                      <tr>
-                        <th className="border border-gray-300 p-2">Item ID</th>
-                        <th className="border border-gray-300 p-2">Quantity</th>
-                        <th className="border border-gray-300 p-2">
-                          Total Sales
-                        </th>
+              {/* Sales Details Table */}
+              {salesData.salesDetails && (
+                <table className="table w-full border-collapse border border-gray-200 mt-4">
+                  <thead className="bg-[#E76F51] text-white">
+                    <tr>
+                      <th className="border border-gray-300 p-2">Item Name</th>
+                      <th className="border border-gray-300 p-2">Price</th>
+                      <th className="border border-gray-300 p-2">Quantity</th>
+                      <th className="border border-gray-300 p-2">
+                        Total Sales
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {salesData.salesDetails.map((item, index) => (
+                      <tr
+                        key={index}
+                        className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
+                      >
+                        <td className="border border-gray-300 p-2">
+                          {item.itemName}
+                        </td>
+                        <td className="border border-gray-300 p-2">
+                          Rs. {item.price.toFixed(2)}
+                        </td>
+                        <td className="border border-gray-300 p-2">
+                          {item.quantity}
+                        </td>
+                        <td className="border border-gray-300 p-2">
+                          Rs. {item.totalSales.toFixed(2)}
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {data.salesDetails.map((item, idx) => (
-                        <tr key={idx}>
-                          <td className="border border-gray-300 p-2">
-                            {item.itemId}
-                          </td>
-                          <td className="border border-gray-300 p-2">
-                            {item.quantity}
-                          </td>
-                          <td className="border border-gray-300 p-2">
-                            ${item.totalSales}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ))}
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           )}
+        </Card>
+
+        {/* Bar Chart */}
+        <Card title="Sales Graph">
+          <Bar
+            data={chartData}
+            options={{
+              responsive: true,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: "top",
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      const label = context.dataset.label || "";
+                      const value = context.raw;
+                      return `${label}: Rs. ${value}`;
+                    },
+                  },
+                },
+              },
+            }}
+          />
         </Card>
       </div>
     </div>
   );
 };
 
-// Card Component (example)
-const Card = ({ title, children }) => (
-  <div className="bg-white p-6 rounded-lg shadow">
-    <h2 className="font-bold text-xl">{title}</h2>
-    {children}
-  </div>
-);
+const Card = ({ title, children }) => {
+  return (
+    <div className="bg-white shadow-lg rounded-lg p-6">
+      <h2 className="font-semibold text-xl mb-4">{title}</h2>
+      {children}
+    </div>
+  );
+};

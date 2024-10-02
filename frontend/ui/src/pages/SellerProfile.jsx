@@ -98,7 +98,7 @@ export const SellerProfile = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full lg:w-[80vw] bg-[#F4F4F4] p-8">
+    <div className="flex flex-col items-center w-full lg:w-[82vw] bg-[#F4F4F4] p-8">
       <h1 className="font-russo text-[#212529] text-4xl mb-6">Profile</h1>
 
       {/* Store Details Section */}
