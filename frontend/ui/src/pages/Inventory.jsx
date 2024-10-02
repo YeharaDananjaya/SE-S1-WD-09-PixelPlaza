@@ -139,7 +139,7 @@ export const Inventory = () => {
   };
 
   return (
-    <div className="flex-1 w-[80vw] bg-[#F4F4F4] p-8">
+    <div className="flex-1 w-[82vw] bg-[#F4F4F4] p-8">
       <h1 className="font-russo text-[#212529] text-4xl text-center mb-4">
         Inventory
       </h1>

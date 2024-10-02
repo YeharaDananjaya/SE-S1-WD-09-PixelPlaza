@@ -109,7 +109,7 @@ export const Promotions = () => {
   };
 
   return (
-    <div className="flex-1 w-[80vw] bg-[#F4F4F4] p-8">
+    <div className="flex-1 w-[82vw] bg-[#F4F4F4] p-8">
       <h1 className="font-russo text-[#212529] text-4xl text-center">
         Promotions
       </h1>
@@ -233,33 +233,54 @@ export const Promotions = () => {
 
       {/* Display ongoing promotions */}
       <div className="mt-8">
-        <h2 className="font-russo text-[#212529] text-2xl">
+        <h2 className="font-russo text-[#212529] text-2xl mb-4 text-center">
           Ongoing Promotions
         </h2>
-        <div className="flex flex-wrap">
-          {promotions.map((promotion) => (
-            <div
-              key={promotion._id}
-              className="bg-white p-4 m-2 rounded-lg shadow-md w-1/4"
-            >
-              <img
-                src={promotion.poster}
-                alt="Promotion Poster"
-                className="w-full h-32 object-cover mb-2 rounded-lg"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "path/to/placeholder-image.jpg"; // Optional: Add a placeholder image
-                }}
-              />
-              <h3 className="font-semibold text-lg">{promotion.description}</h3>
-              <p>
-                Discount: {promotion.discount}%<br />
-                Valid: {promotion.startDate} - {promotion.endDate}
-                <br />
-                Countdown: {countdowns[promotion._id] || "Loading..."}
-              </p>
-            </div>
-          ))}
+        <div className="flex flex-wrap justify-center">
+          {promotions.length > 0 ? (
+            promotions.map((promotion) => (
+              <div
+                key={promotion._id}
+                className="bg-white p-4 m-2 rounded-lg shadow-md w-1/4 transform transition-transform duration-300 hover:scale-105"
+              >
+                <img
+                  src={promotion.poster}
+                  alt="Promotion Poster"
+                  className="w-full h-40 object-cover mb-4 rounded-lg border-2 border-[#E76F51] shadow-md"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "path/to/placeholder-image.jpg"; // Optional: Add a placeholder image
+                  }}
+                />
+                <h3 className="font-semibold text-lg text-[#212529]">
+                  {promotion.description}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Discount:{" "}
+                  <span className="font-bold text-[#E76F51]">
+                    {promotion.discount}%
+                  </span>
+                  <br />
+                  Valid: {new Date(
+                    promotion.startDate
+                  ).toLocaleDateString()} -{" "}
+                  {new Date(promotion.endDate).toLocaleDateString()}
+                </p>
+                <div className="mt-2 p-2 bg-[#F4F4F4] rounded-md">
+                  <p className="text-center font-semibold">
+                    Countdown:{" "}
+                    <span className="text-[#E76F51]">
+                      {countdowns[promotion._id] || "Loading..."}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-600 text-center w-full">
+              No ongoing promotions at the moment.
+            </p>
+          )}
         </div>
       </div>
     </div>

@@ -15,7 +15,7 @@ const incomeSchema = new mongoose.Schema({
   },
   day: {
     type: Number,
-    required: false,
+    required: false, // For daily income, optional for monthly
   },
   totalIncome: {
     type: Number,
@@ -23,7 +23,8 @@ const incomeSchema = new mongoose.Schema({
   },
   salesDetails: [
     {
-      itemId: { type: String },
+      itemName: { type: String },
+      price: { type: Number },
       quantity: { type: Number },
       totalSales: { type: Number },
     },

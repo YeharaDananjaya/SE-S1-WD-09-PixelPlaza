@@ -54,7 +54,7 @@ const feedback = require("./routes/feedback");
 app.use("/api/feedback", feedback);
 
 const sellsReportRoutes = require("./routes/sellsReport");
-app.use("/api/sellsReport", sellsReportRoutes);
+app.use("/api/sells", sellsReportRoutes);
 
 // Start the server
 app.listen(port, () => {

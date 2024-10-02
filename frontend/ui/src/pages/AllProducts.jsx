@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { HiOutlinePlusCircle } from "react-icons/hi";
+import { HiOutlinePlusCircle, HiOutlineFilter } from "react-icons/hi";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { HorizontalLine } from "../components/HorizontalLine";
 import { motion } from "framer-motion";
@@ -87,7 +87,7 @@ export const AllProducts = () => {
   );
 
   return (
-    <div className="flex-1 w-[80vw] bg-[#F4F4F4] p-8">
+    <div className="flex-1 w-[82vw] bg-[#F4F4F4] p-8">
       <h1 className="font-russo text-[#212529] text-4xl text-center mb-4">
         Products
       </h1>
@@ -96,26 +96,34 @@ export const AllProducts = () => {
         <div className="absolute top-0 left-0 bg-[#E76F51] w-full h-12 flex items-center justify-center rounded-t-lg">
           <h2 className="font-russo text-white text-2xl">All Products</h2>
         </div>
-        <div className="flex justify-between items-center mt-12 mb-4">
-          <div className="flex space-x-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-8 mb-6">
+          <div className="flex space-x-4 mb-4 sm:mb-0">
+            {/* Add Product Button */}
             <button
               onClick={() => navigate("/addproduct")}
-              className="btn bg-[#E76F51] text-white px-4 py-2 rounded-md shadow-md hover:bg-[#D64F3D] transition-colors"
+              className="flex items-center bg-[#E76F51] text-white px-4 py-2 rounded-lg shadow-lg hover:bg-[#D64F3D] transition-transform duration-300 transform hover:scale-105"
             >
-              <HiOutlinePlusCircle className="mr-2" /> Add Product
+              <HiOutlinePlusCircle className="mr-2 text-xl" />
+              <span className="font-semibold">Add Product</span>
             </button>
-            <button className="btn bg-gray-200 text-black px-4 py-2 rounded-md shadow-md hover:bg-gray-300 transition-colors">
-              Filter
+
+            {/* Filter Button */}
+            <button className="flex items-center bg-gray-100 text-gray-700 px-4 py-2 rounded-lg shadow-lg hover:bg-gray-200 transition-colors duration-300">
+              <HiOutlineFilter className="mr-2 text-lg" />
+              <span className="font-semibold">Filter</span>
             </button>
           </div>
+
+          {/* Search Input */}
           <input
             type="text"
             value={searchQuery}
             onChange={handleSearchChange}
             placeholder="Search for products..."
-            className="input input-bordered rounded-md w-1/3 shadow-md"
+            className="input input-bordered rounded-lg w-full sm:w-1/3 shadow-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#E76F51] transition-all duration-300"
           />
         </div>
+
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           initial={{ opacity: 0, y: 20 }}
@@ -173,50 +181,126 @@ export const AllProducts = () => {
       <Dialog
         open={showDetailModal}
         onClose={() => setShowDetailModal(false)}
-        className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50"
+        className="fixed inset-0 flex items-center justify-center p-4 bg-gradient-to-br from-black/60 to-gray-800/60"
       >
-        <Dialog.Panel className="bg-white border-4 border-[#E76F51] p-6 rounded-lg shadow-lg w-full max-w-2xl font-sans relative overflow-hidden">
+        <Dialog.Panel className="bg-white border-4 border-[#E76F51] p-6 rounded-xl shadow-2xl w-full max-w-2xl font-sans relative overflow-hidden transition-transform transform hover:scale-105">
           <button
             onClick={() => setShowDetailModal(false)}
-            className="absolute top-2 right-2 p-2 bg-[#E76F51] text-white rounded-full shadow-lg hover:bg-[#D64F3D] transition-colors"
+            className="absolute top-3 right-3 p-2 bg-[#E76F51] text-white rounded-full shadow-lg hover:bg-[#D64F3D] transition-transform transform hover:rotate-90"
           >
             ✕
           </button>
 
           <div className="flex flex-col sm:flex-row items-center">
-            <div className="flex-shrink-0 w-full sm:w-1/2 mb-4 sm:mb-0">
+            <div className="flex-shrink-0 w-full sm:w-1/2 mb-6 sm:mb-0">
               {selectedProduct?.images && selectedProduct.images.length > 0 ? (
                 <ImageCarousel images={selectedProduct.images} />
               ) : (
-                <div className="h-48 bg-gray-300 rounded-lg flex items-center justify-center text-gray-500 text-lg">
+                <div className="h-48 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 text-lg">
                   No Images Available
                 </div>
               )}
             </div>
 
             <div className="flex-1 sm:pl-6">
-              <Dialog.Title className="text-3xl font-bold text-[#212529] mb-4">
+              <Dialog.Title className="text-4xl font-extrabold text-[#212529] mb-4 tracking-wide">
                 {selectedProduct?.name}
               </Dialog.Title>
-              <div className="space-y-3">
+              <div className="space-y-4">
+                {/* Price */}
                 <div className="flex items-center">
-                  <span className="bg-[#E76F51] text-white rounded-md px-2 py-1 mr-2 text-sm">
+                  <span className="bg-[#E76F51] text-white rounded-lg px-3 py-1 mr-2 text-sm font-medium">
                     Price:
                   </span>
-                  <span className="text-lg font-semibold text-[#E76F51]">
+                  <span className="text-2xl font-bold text-[#E76F51]">
                     Rs. {selectedProduct?.price}
                   </span>
                 </div>
-                <div>
-                  <span className="font-semibold">Description:</span>
-                  <p>
-                    {selectedProduct?.description ||
-                      "No description available."}
+
+                {/* Category */}
+                <div className="flex items-center">
+                  <span className="bg-[#E76F51] text-white rounded-lg px-3 py-1 mr-2 text-sm font-medium">
+                    Category:
+                  </span>
+                  <span className="text-lg text-gray-700">
+                    {selectedProduct?.category || "No category specified"}
+                  </span>
+                </div>
+
+                {/* Manufactured Date */}
+                <div className="flex items-center">
+                  <span className="bg-[#E76F51] text-white rounded-lg px-3 py-1 mr-2 text-sm font-medium">
+                    Manufactured Date:
+                  </span>
+                  <span className="text-lg text-gray-700">
+                    {selectedProduct?.manufacturedDate
+                      ? new Date(
+                          selectedProduct.manufacturedDate
+                        ).toLocaleDateString()
+                      : "No date available"}
+                  </span>
+                </div>
+
+                {/* Colors */}
+                <div className="flex items-center">
+                  <span className="bg-[#E76F51] text-white rounded-lg px-3 py-1 mr-2 text-sm font-medium">
+                    Available Colors:
+                  </span>
+                  <span className="text-lg text-gray-700">
+                    {selectedProduct?.colors?.join(", ") ||
+                      "No colors available"}
+                  </span>
+                </div>
+
+                {/* Sizes */}
+                <div className="flex items-center">
+                  <span className="bg-[#E76F51] text-white rounded-lg px-3 py-1 mr-2 text-sm font-medium">
+                    Available Sizes:
+                  </span>
+                  <span className="text-lg text-gray-700">
+                    {selectedProduct?.sizes?.join(", ") || "No sizes available"}
+                  </span>
+                </div>
+
+                {/* Description */}
+                <div className="flex items-start">
+                  <span className="bg-[#E76F51] text-white rounded-lg px-3 py-1 mr-2 text-sm font-medium">
+                    Description:
+                  </span>
+                  <p className="text-gray-700 text-base leading-relaxed">
+                    {selectedProduct?.description || "No description available"}
                   </p>
                 </div>
-                {/* Add more details as necessary */}
               </div>
             </div>
+          </div>
+        </Dialog.Panel>
+      </Dialog>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog
+        open={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50"
+      >
+        <Dialog.Panel className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <Dialog.Title className="text-xl font-semibold mb-4">
+            Confirm Deletion
+          </Dialog.Title>
+          <p>Are you sure you want to delete this product?</p>
+          <div className="mt-6 flex justify-end space-x-4">
+            <button
+              onClick={() => setShowConfirmModal(false)}
+              className="btn bg-gray-300 text-black px-4 py-2 rounded-md shadow-md hover:bg-gray-400 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDelete}
+              className="btn bg-red-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-red-600 transition-colors"
+            >
+              Delete
+            </button>
           </div>
         </Dialog.Panel>
       </Dialog>
@@ -227,88 +311,69 @@ export const AllProducts = () => {
         onClose={() => setShowEditModal(false)}
         className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50"
       >
-        <Dialog.Panel className="bg-white border-4 border-[#E76F51] p-6 rounded-lg shadow-lg w-full max-w-md">
-          <Dialog.Title className="text-xl font-bold text-[#212529] mb-4">
+        <Dialog.Panel className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <Dialog.Title className="text-xl font-semibold mb-4">
             Edit Product
           </Dialog.Title>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleUpdateProduct();
-            }}
-          >
-            <div className="mb-4">
-              <label className="block mb-2 text-sm font-semibold text-[#212529]">
-                Product Name
-              </label>
+          <form>
+            <label className="block mb-2">
+              Product Name:
               <input
                 type="text"
                 value={selectedProduct?.name || ""}
                 onChange={(e) =>
-                  setSelectedProduct((prev) => ({
-                    ...prev,
+                  setSelectedProduct({
+                    ...selectedProduct,
                     name: e.target.value,
-                  }))
+                  })
                 }
-                required
-                className="input input-bordered w-full"
+                className="input input-bordered w-full rounded-md shadow-md mt-1"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2 text-sm font-semibold text-[#212529]">
-                Price
-              </label>
+            </label>
+            <label className="block mb-2">
+              Product Price:
               <input
                 type="number"
                 value={selectedProduct?.price || ""}
                 onChange={(e) =>
-                  setSelectedProduct((prev) => ({
-                    ...prev,
+                  setSelectedProduct({
+                    ...selectedProduct,
                     price: e.target.value,
-                  }))
+                  })
                 }
-                required
-                className="input input-bordered w-full"
+                className="input input-bordered w-full rounded-md shadow-md mt-1"
               />
-            </div>
-            {/* Add more fields as needed */}
-            <div className="flex justify-end">
+            </label>
+            <label className="block mb-2">
+              Description:
+              <textarea
+                value={selectedProduct?.description || ""}
+                onChange={(e) =>
+                  setSelectedProduct({
+                    ...selectedProduct,
+                    description: e.target.value,
+                  })
+                }
+                className="textarea textarea-bordered w-full rounded-md shadow-md mt-1"
+              ></textarea>
+            </label>
+            <div className="flex justify-end mt-4 space-x-4">
               <button
-                type="submit"
+                type="button"
+                onClick={() => setShowEditModal(false)}
+                className="btn bg-gray-300 text-black px-4 py-2 rounded-md shadow-md hover:bg-gray-400 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleUpdateProduct}
                 className="btn bg-[#E76F51] text-white px-4 py-2 rounded-md shadow-md hover:bg-[#D64F3D] transition-colors"
               >
                 Update Product
               </button>
             </div>
           </form>
-        </Dialog.Panel>
-      </Dialog>
-
-      {/* Confirm Delete Modal */}
-      <Dialog
-        open={showConfirmModal}
-        onClose={() => setShowConfirmModal(false)}
-        className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50"
-      >
-        <Dialog.Panel className="bg-white border-4 border-[#E76F51] p-6 rounded-lg shadow-lg w-full max-w-md text-center">
-          <Dialog.Title className="text-lg font-bold text-[#212529] mb-4">
-            Confirm Deletion
-          </Dialog.Title>
-          <p>Are you sure you want to delete this product?</p>
-          <div className="flex justify-around mt-4">
-            <button
-              onClick={() => setShowConfirmModal(false)}
-              className="btn bg-gray-300 text-black px-4 py-2 rounded-md"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleDelete}
-              className="btn bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-            >
-              Delete
-            </button>
-          </div>
         </Dialog.Panel>
       </Dialog>
     </div>
