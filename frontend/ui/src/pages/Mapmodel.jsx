@@ -27,6 +27,7 @@ const Mapmodel = () => {
   const [currentFloor, setCurrentFloor] = useState('floor1');
   const [selectedShop, setSelectedShop] = useState(null);
   const [fetchProducts , setFetchProducts] = useState([]);
+  const [promotions,setPromotions] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredShops, setFilteredShops] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState([]);
@@ -159,12 +160,32 @@ const handleCategory = (category) => {
       console.log('Products Response:', productsResponse.data);  
       setFetchProducts(productsResponse.data);
 
+
+
       
       setIsModVisible(true);
     } catch (error) {
       console.error('Error Fetching Shop Details:', error);
     }
   };
+
+
+  const handlePromotions = async(shopID) => {
+
+    try {
+
+      const promotionsResponse = await axios.get(`http://localhost:3000/api/promotions/shop/${shopID}`);
+      console.log('Products Response:', promotionsResponse.data);  
+      setPromotions(promotionsResponse.data);
+      setIsModVisible(true);
+      
+    } catch (error) {
+
+      console.error('Error Fetching Shop Details:', error);
+
+    }
+
+  }
   
   //for the popup window
   const closeModal = () => {
@@ -614,7 +635,7 @@ const handleCategory = (category) => {
                                                                 key={index}
                                                                 className={`${
                                                                   msg.sender === 'user'
-                                                                    ? 'self-end flex bg-blue-500 text-white p-2'
+                                                                    ? 'self-end flex rounded-xl bg-blue-500 text-white p-2'
                                                                     : 'self-start bg-transparent flex w-[25vw] h-auto text-black'
                                                                 } p-2`}
                                                               >
@@ -800,7 +821,10 @@ const handleCategory = (category) => {
                                                 return (
                                                 <div
                                                   key={index}
-                                                  onClick={()=> handleClickShopView(shop?.shopID)}
+                                                  onClick={() => {
+                                                    handleClickShopView(shop?.shopID);
+                                                    handlePromotions(shop?.shopID);
+                                                  }}
                                                   className={`flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out ${
                                                     (isFiltered || isCategorized || filteredShops.length === 0 || !selectedCategory) 
                                                       ? 'opacity-100 scale-100' 
@@ -978,7 +1002,10 @@ const handleCategory = (category) => {
                                                       return (
                                                       <div
                                                         key={index}
-                                                        onClick={()=> handleClickShopView(shop?.shopID)}
+                                                        onClick={() => {
+                                                          handleClickShopView(shop?.shopID);
+                                                          handlePromotions(shop?.shopID);
+                                                        }}
                                                         className={`flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out ${
                                                           (isFiltered || isCategorized || filteredShops.length === 0 || !selectedCategory) 
                                                             ? 'opacity-100 scale-100' 
@@ -1154,7 +1181,10 @@ const handleCategory = (category) => {
                                               return (
                                               <div
                                                 key={index}
-                                                onClick={()=> handleClickShopView(shop?.shopID)}
+                                                onClick={() => {
+                                                  handleClickShopView(shop?.shopID);
+                                                  handlePromotions(shop?.shopID);
+                                                }}
                                                 className={`flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out ${
                                                   (isFiltered || isCategorized || filteredShops.length === 0 || !selectedCategory) 
                                                     ? 'opacity-100 scale-100' 
@@ -1331,7 +1361,10 @@ const handleCategory = (category) => {
                                                         return (
                                                         <div
                                                           key={index}
-                                                          onClick={()=> handleClickShopView(shop?.shopID)}
+                                                          onClick={() => {
+                                                            handleClickShopView(shop?.shopID);
+                                                            handlePromotions(shop?.shopID);
+                                                          }}
                                                           className={`flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out ${
                                                             (isFiltered || isCategorized || filteredShops.length === 0 || !selectedCategory) 
                                                               ? 'opacity-100 scale-100' 
@@ -1504,7 +1537,10 @@ const handleCategory = (category) => {
                                                 return (
                                                 <div
                                                   key={index}
-                                                  onClick={()=> handleClickShopView(shop?.shopID)}
+                                                  onClick={() => {
+                                                    handleClickShopView(shop?.shopID);
+                                                    handlePromotions(shop?.shopID);
+                                                  }}
                                                   className={`flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out ${
                                                     (isFiltered || isCategorized || filteredShops.length === 0 || !selectedCategory) 
                                                       ? 'opacity-100 scale-100' 
@@ -1681,7 +1717,10 @@ const handleCategory = (category) => {
                                                     return (
                                                     <div
                                                       key={index}
-                                                      onClick={()=> handleClickShopView(shop?.shopID)}
+                                                      onClick={() => {
+                                                        handleClickShopView(shop?.shopID);
+                                                        handlePromotions(shop?.shopID);
+                                                      }}
                                                       className={`flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out ${
                                                         (isFiltered || isCategorized || filteredShops.length === 0 || !selectedCategory) 
                                                           ? 'opacity-100 scale-100' 
@@ -1854,7 +1893,10 @@ const handleCategory = (category) => {
                                                         return (
                                                         <div
                                                           key={index}
-                                                          onClick={()=> handleClickShopView(shop?.shopID)}
+                                                          onClick={() => {
+                                                            handleClickShopView(shop?.shopID);
+                                                            handlePromotions(shop?.shopID);
+                                                          }}
                                                           className={`flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out ${
                                                             (isFiltered || isCategorized || filteredShops.length === 0 || !selectedCategory) 
                                                               ? 'opacity-100 scale-100' 
@@ -2031,7 +2073,10 @@ const handleCategory = (category) => {
                                                         return (
                                                         <div
                                                           key={index}
-                                                          onClick={()=> handleClickShopView(shop?.shopID)}
+                                                          onClick={() => {
+                                                            handleClickShopView(shop?.shopID);
+                                                            handlePromotions(shop?.shopID);
+                                                          }}
                                                           className={`flex flex-col w-[14vw] h-[26vh] items-center border-t-8 border-t-cyan-700 justify-end bg-baseextra4 opacity-100 rounded-t-3xl cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out ${
                                                             (isFiltered || isCategorized || filteredShops.length === 0 || !selectedCategory) 
                                                               ? 'opacity-100 scale-100' 
@@ -2514,7 +2559,7 @@ const handleCategory = (category) => {
                                                                             {/* Row for top selling product */}
                                                                             <h2 className='flex items-center text-center font-ibmplexsans text-lg text-baseextra7' style={{
                                                                               fontWeight:'400'
-                                                                            }}>Top Selling Products with Promotions {''}<div className='bg-slate-900 w-[5vw] mx-2' style={{
+                                                                            }}>Top Ongoing Promotions This Week{''}<div className='bg-slate-900 w-[5vw] mx-2' style={{
                                                                               height:'0.1rem'
                                                                             }}/></h2>
 
@@ -2531,7 +2576,7 @@ const handleCategory = (category) => {
 
                                                                     {/* Top Selling Product with Promotions */}
                                                                     <div className='grid grid-cols-5 gap-4'>
-                                                                    {fetchProducts.map((item, index) => (
+                                                                    {promotions.map((item, index) => (
                                                                     
                                                                     <div
                                                                       key={index}
@@ -2539,12 +2584,12 @@ const handleCategory = (category) => {
 
                                                                         {/* item image componenet */}
                                                                         <div className='flex  h-20 rounded-t-xl items-center justify-center overflow-hidden' style={{width:'116px'}}>
-                                                                          <img src={item.images[0]} alt={item.name} style={{width:'120px'}}/>
+                                                                          <img src={item.poster} alt={item.discount} style={{width:'120px'}}/>
 
                                                                         </div>  
 
                                                                         <h2 className='flex h-8 font-ibmplexsans text-baseextra7 items-center text-center justify-center overflow-hidden' style={{width:'100px', fontSize:'0.6rem'}}>
-                                                                            {item.name}
+                                                                            {item.discount}% Discount
                                                                         </h2>  
 
                                                                     </div>
